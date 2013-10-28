@@ -1,0 +1,12 @@
+*.aux
+*~
+*.pdf
+*.toc
+*.bbl
+*.blg
+*.kate-swp
+*.log
+*.out
+*.nav
+*.snm
+*.backup
