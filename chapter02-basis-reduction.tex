@@ -621,14 +621,14 @@ These inequalities fit together:
 \begin{align*}
   \| x - t \|_2^2 &\leq \frac{1}{4} (2^{r-1} + 2^{r-2} + \dots + 2 + 1) \|b_r^\star\|_2^2 \\
     &\leq 2^{r-2} \|b_r^\star\|_2^2 \\
-    &\leq 2^{r-1} \| x^\star - t \|_2^2
+    &\leq 2^r \| x^\star - t \|_2^2
 \end{align*}
 That is, if $x^\star$ is \emph{not} on the lattice hyperplane we rounded to -- a situation
 that intuition tells us should be a bad one --
-\proc{NearestPlane} nevertheless computes a $2^{(r-1)/2}$-approximate solution to the closest vector problem.
+\proc{NearestPlane} nevertheless computes a $2^{r/2}$-approximate solution to the closest vector problem.
 
 \begin{theorem}
-  If $B$ is LLL-reduced, $\proc{NearestPlane}$ is a $2^{(r-1)/2}$-approximation algorithm
+  If $B$ is LLL-reduced, $\proc{NearestPlane}$ is a $2^{r/2}$-approximation algorithm
   for the closest vector problem.
 \end{theorem}
 \begin{proof}
@@ -636,12 +636,12 @@ that intuition tells us should be a bad one --
   For $r = 0,1$, $\proc{NearestPlane}$ does in fact return a closest vector,
   so let us consider the case $r \geq 2$.
 
-  We have seen that we get a $2^{(r-1)/2}$-approximation when $x^\star$ lies on a different lattice hyperplane than $t'$,
+  We have seen that we get a $2^{r/2}$-approximation when $x^\star$ lies on a different lattice hyperplane than $t'$,
   so let us now deal with the case when $x^\star$ and $t'$ lie on the same lattice hyperplane.
-  Observe that, in this case, $x^\star$ is also a closest lattice vector to $t'$.
+  Observe that, in this case, $x^\star$ is also a closest vector to $t'$.
   We recursively compute a vector $x' \in \Lambda$ that satisfies
   \[
-    \| x' - t' \|_2^2 \leq 2^{r-2} \| x^\star - t' \|_2^2
+    \| x' - t' \|_2^2 \leq 2^{r-1} \| x^\star - t' \|_2^2
   \]
   by the induction hypothesis.
   Observe that
@@ -654,7 +654,9 @@ that intuition tells us should be a bad one --
   as the same (positive) quantity is added to both numerator and denominator.
   Read the other way, the inequality yields
   \[
-    \frac{ \| x' - t \|_2^2 }{ \| x^\star - t \|_2^2 } \leq  \frac{ \| x' - t' \|_2^2 }{ \| x^\star - t' \|_2^2 } \leq 2^{r-2}
+    \frac{ \| x' - t \|_2^2 }{ \| x^\star - t \|_2^2 }
+      \leq  \frac{ \| x' - t' \|_2^2 }{ \| x^\star - t' \|_2^2 }
+      \leq 2^{r-1}
     \qedhere
   \]
 \end{proof}
