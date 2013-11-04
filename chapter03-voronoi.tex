@@ -40,30 +40,32 @@ which is due to Micciancio and Voulgaris~\cite{MR2743283}.
   \[
     \cV_\Lambda := \bigcup_{x \in \Lambda\setminus\{0\}} H_x
   \]
+  Figure~\ref{fig:voronoi-diagram} shows a $2$-dimensional example.
 \end{definition}
 
-In the following $2$-dimensional example,
-the Voronoi cell $\cV_\Lambda$ is shaded.
-Its translates $x + \cV_\Lambda$ for $x \in \Lambda$ are shown as well.
-\begin{center}
-  \begin{tikzpicture}
-    \clip (-2.2,-2.3) rectangle (2.2,4.3);
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}
+      \clip (-2.2,-2.3) rectangle (2.2,4.3);
 
-    \fill[black!10]
-      (0,1.0625) -- (0.5,0.9375) -- (0.5,-0.9375) -- (0,-1.0625) --
-      (-0.5,-0.9375) -- (-0.5,0.9375) --cycle;
+      \fill[black!10]
+        (0,1.0625) -- (0.5,0.9375) -- (0.5,-0.9375) -- (0,-1.0625) --
+        (-0.5,-0.9375) -- (-0.5,0.9375) --cycle;
 
-    \foreach \y in {-1,0,1,2}
-      \foreach \x in {-3,-2,-1,0,1,2}
-        \fill ($\x*(1,0) + \y*(0.5,2)$) circle[radius=2pt];
+      \foreach \y in {-1,0,1,2}
+        \foreach \x in {-3,-2,-1,0,1,2}
+          \fill ($\x*(1,0) + \y*(0.5,2)$) circle[radius=2pt];
 
-    \draw (0,0) node[below] {$0$};
+      \draw (0,0) node[below] {$0$};
 
-    \foreach \y in {-1,0,1,2}
-      \foreach \x in {-4,-3,-2,-1,0,1,2}
-        \draw ($\x*(1,0) + \y*(0.5,2)$) +(0,1.0625) -- +(0.5,0.9375) -- +(0.5,-0.9375) -- +(0,-1.0625);
-  \end{tikzpicture}
-\end{center}
+      \foreach \y in {-1,0,1,2}
+        \foreach \x in {-4,-3,-2,-1,0,1,2}
+          \draw ($\x*(1,0) + \y*(0.5,2)$) +(0,1.0625) -- +(0.5,0.9375) -- +(0.5,-0.9375) -- +(0,-1.0625);
+    \end{tikzpicture}
+  \end{center}
+  \caption{The Voronoi diagram of a lattice. The Voronoi cell of $0$ is shaded.}
+  \label{fig:voronoi-diagram}
+\end{figure}
 
 \begin{lemma}
   If $\Lambda$ is full-dimensional, $\overline{\cV_\Lambda}$ is a polytope.
@@ -88,7 +90,7 @@ Its translates $x + \cV_\Lambda$ for $x \in \Lambda$ are shown as well.
     \|p\|_2 = \|x - p\|_2 \iff 2p^Tx = x^Tx
   \]
   for some $x = \pm x_j$.
-  Note that $\|p\|_2 \geq \frac{1}{2} \|x\|$ for all points $p$ on the facet.
+  Note that $\|p\|_2 \geq \frac{1}{2} \|x\|_2$ for all points $p$ on the facet.
   On the other hand, $\|p\|_2 \leq R$ by definition of $R$,
   so that we get $\|\pm x_j\|_2 \leq 2R$ for all $j$.
 
@@ -100,7 +102,7 @@ Its translates $x + \cV_\Lambda$ for $x \in \Lambda$ are shown as well.
   The inclusion from left to right is clear from the definition.
   For the inclusion from right to left,
   let $p \in H_x$ for all $x \in \Lambda\setminus\{0\}$ with $\|x\|_2 \leq 2R$.
-  In particular, this implies $\|x\|_2 \leq R$ by our choice of $R$.
+  In particular, this implies $x \in \overline{Q}$ and therefore $\|x\|_2 \leq R$.
   This in turn implies $x \in H_y$ for all $y$ with $\|y\|_2 > 2R$.
   To summarize,
   \[
@@ -130,7 +132,7 @@ a natural algorithmic representation suggests itself:
 
 Given a representation of $\cV_\Lambda$ in terms of Voronoi relevant vectors,
 simple tasks such as testing whether a point is contained in $\cV_\Lambda$
-can be solved in time $N \cdot \poly(d, b)$,
+can be solved in time $N \cdot \poly(d, b)$
 where $b$ is the encoding size of the coordinates
 and $N$ is the number of Voronoi relevant vectors.
 Our first goal in this chapter will be to bound this number $N$.
@@ -161,7 +163,7 @@ can be found -- we need some basic tools.
 \begin{proof}
   The facet associated to $x$ is
   \[
-    F = \cV_\Lambda \cap \{ 2p^x = x^Tx \}
+    F = \cV_\Lambda \cap \{ 2p^Tx = x^Tx \}
   \]
   The point $x/2$ lies on the hyperplane defining $F$,
   and by Lemma~\ref{lemma:voronoi-diagram-symmetry},
@@ -198,8 +200,10 @@ can be found -- we need some basic tools.
 
   Now suppose $0$ and $x$ are the unique closest vectors to $\frac{1}{2} x$.
   By compactness, there is a neighborhood of $\frac{1}{2} x$
-  in the bounding hyperplane $\partial H_x$ that is contained in $\overline{\cV_\Lambda}$.
-  This means that there is a facet of $\overline{\cV_\Lambda}$ in $\partial H_x$,
+  in the bounding hyperplane $\partial H_x$
+  for which $0$ and $x$ are the unique closest vectors as well.
+  The neighborhood is therefore contained in $\overline{\cV_\Lambda}$,
+  which means that there is a facet of $\overline{\cV_\Lambda}$ in $\partial H_x$,
   i.e., $x$ is Voronoi relevant.
 \end{proof}
 
@@ -243,6 +247,7 @@ This suggests the following algorithm for finding Voronoi relevant vectors:
   \li \Do $u \gets$ representative of $U$
   \li     $x \gets \proc{CVP}(\Lambda, u)$
   \li     $X \gets X \cup \{ 2(x - u), 2(u - x) \}$
+      \End
   \li \Return $X$
 \end{codebox}
 We are purposefully imprecise about how the lattice $\Lambda$ is represented
@@ -292,6 +297,7 @@ by solving $2^d - 1$ closest vector problems:
 
 
 \begin{corollary}
+  \label{cor:number-of-voronoi-relevant}
   There are at most $2 \cdot (2^d - 1)$ Voronoi relevant vectors.
 \end{corollary}
 
@@ -324,7 +330,7 @@ First, we see that it contains a list of all shortest vectors of the lattice.
 \end{proof}
 
 \begin{corollary}
-  Every lattice has at most $2 \cdot (2^d - 1)$ Voronoi relevant vectors.
+  Every lattice has at most $2 \cdot (2^d - 1)$ shortest vectors.
 \end{corollary}
 %TODO: kissing number, etc.
 
@@ -333,8 +339,9 @@ This may seem absurd at first,
 because we needed to compute closest vectors in the first place to be able to
 find the Voronoi relevant vectors.
 However, if we need to solve \emph{many} closest vector problems,
-then it turns out to be useful to compute the Voronoi cell first.
-We will apply this idea in the Section~\ref{sec:voronoi-full-algorithm}.
+then it may be useful to compute the Voronoi cell as a pre-processing step
+to speed up future CVP computations.
+We will apply this idea in Section~\ref{sec:voronoi-full-algorithm}.
 
 For now, suppose we know the Voronoi cell $\cV$ of a lattice $\Lambda$
 and are given a target vector $t \in \R^d$.
@@ -496,4 +503,15 @@ This is illustrated in Figure~\ref{fig:cvp-via-scaling}.
 
     \item Show that $|(\Z_2)^d| = 2^d = \frac{\det\Lambda}{\det \frac{1}{2} \Lambda}$.
     \end{enumerate}
+
+  \item
+    Define a suitable parity function on $\Lambda$ such that:
+    \begin{enumerate}[(i)]
+      \item A lattice vector of parity $0$ cannot define a facet of $\cV_\Lambda$.
+
+      \item Given two vectors $x, y \in \Lambda$, $y \neq \pm x$, of the \emph{same} parity,
+        show that at least one of them does not define a facet of $\cV_\Lambda$.
+    \end{enumerate}
+    Conclude with an alternative proof of the statement of Corollary~\ref{cor:number-of-voronoi-relevant}:
+    there can be at most $2 \cdot (2^d - 1)$ Voronoi relevant vectors.
 \end{enumerate}
