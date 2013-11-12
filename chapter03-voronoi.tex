@@ -378,8 +378,6 @@ First, we see that it contains a list of all shortest vectors of the lattice.
   A classical source on the study of sphere spackings is~\cite{MR1662447}.
 \end{remark}
 
-%TODO: kissing number, etc.
-
 We can also use the Voronoi cell to compute closest vectors.
 This may seem absurd at first,
 because we needed to compute closest vectors in the first place to be able to
@@ -496,15 +494,38 @@ This is illustrated in Figure~\ref{fig:cvp-via-scaling}.
 
 \begin{codebox}
   \Procname{$\proc{CVP-via-Voronoi-Scaling}(\Lambda, \cV_\Lambda, t)$}
-  \li $x \gets 0$
-  \li \While $t \not\in \cV_\Lambda$
-  \li \Do Let $\kappa \in \N_0$ minimal such that $t \in 2\cdot 2^\kappa \cdot \cV_\Lambda$
-  \li     $x' \gets \proc{CVP-via-Voronoi-Simple}(2^\kappa \cdot \Lambda, 2^\kappa \cV_\Lambda, t)$
-  \li     $t \gets t - x'$
-  \li     $x \gets x + x'$
+  \li \If $t \in \cV_\Lambda$
+  \li \Then \Return $0$
       \End
-  \li \Return $x$
+  \li $x' \gets \proc{CVP-via-Voronoi-Scaling}(2\Lambda, 2\cV_\Lambda, t)$
+  \li $x'' \gets \proc{CVP-via-Voronoi-Simple}(\Lambda, \cV_\Lambda, t - x')$
+  \li \Return $x' + x''$
 \end{codebox}
+Let $\kappa \in \N_0$ be minimal with $t \in 2^\kappa \cV_\Lambda$.
+Then it is easy to see by induction over $\kappa$
+that the recursion depth given input $t$ is exactly $\kappa$.
+
+We see the correctness of the algorithm via induction over $\kappa$ as well.
+It is self-evident if $\kappa = 0$, i.e., $t \in \cV_\Lambda$.
+Suppose $\kappa \in \N_0$ is minimal with $t \in \cV_\Lambda$ and $\kappa \geq 1$.
+Then we find, by the induction hypothesis,
+$x' \in 2\Lambda$ such that $t \in x' + 2\cV_\Lambda$.
+We also find $x'' \in \Lambda$ with $(t-x') \in x'' + \cV_\Lambda$,
+and therefore $t \in (x' + x'') + \cV_\Lambda$,
+which means the returned lattice vector is a closest vector to $t$.
+
+Since we have $(t - x') \in 2\cV_\Lambda$,
+each call of $\proc{CVP-via-Voronoi-Simple}$
+takes time $2^{O(d)} \poly(b)$.
+That is, the overall running of the algorithm is essentially $\kappa \cdot 2^{O(d)} \poly(b)$.
+The recursion depth $\kappa$ is bounded by $\log \|t\|_2$ if $\Lambda \subseteq \Z^d$.
+That is, after an appropriate scaling, we get:
+
+\begin{theorem}
+  Given a list of Voronoi relevant vectors,
+  $\proc{CVP-via-Voronoi-Scaling}$ computes a closest vector to $t$ in time $2^{O(d)} \poly(b)$.
+\end{theorem}
+
 
 \begin{figure}
 \begin{center}
@@ -544,6 +565,94 @@ This is illustrated in Figure~\ref{fig:cvp-via-scaling}.
 
 \section{A single exponential time algorithm for computing the Voronoi cell}
 \label{sec:voronoi-full-algorithm}
+
+We find ourselves in an oddly circular situation.
+Given some way of computing closest vectors in $\Lambda$,
+we can also compute its Voronoi relevant vectors,
+and given a way of computing its Voronoi relevant vectors,
+we can also computed closest vectors in $\Lambda$.
+\begin{center}
+  \begin{tikzpicture}
+    \node[left,inner sep=3mm,draw] (cvp) at (0,0) {Closest vectors};
+    \node[right,inner sep=3mm,draw] (vc) at (3,0) {Voronoi cell};
+
+    \draw[->] ($(cvp.east) + (0,-0.1)$) -- ($(vc.west) + (0,-0.1)$);
+    \draw[->] ($(vc.west) + (0,0.1)$) -- ($(cvp.east) + (0,0.1)$);
+  \end{tikzpicture}
+\end{center}
+We will break out of this cycle by a strengthening of the nearest plane method
+of Section~\ref{sec:nearest-plane-approximation}.
+Given an LLL-reduced basis $B$ of $\Lambda$,
+we will see how a closest vector problem in $\Lambda$
+can be solved by $2^{d/2}$ closest vector problems in $\Lambda' = \Lambda(b_1,\ldots,b_{d-1})$.
+
+Each of those closest vector problems can be solved using the Voronoi cell of $\Lambda'$,
+which has to be computed only once.
+The circular dependency above becomes a linear chain of dependencies
+in which we compute Voronoi cells of lattices of successively higher dimension,
+see Figure~\ref{fig:voronoi-cell-dimension-reduction}.
+
+The key point of the construction is that
+even though up to $2^{O(d)}$ closest vector problems are solved in each dimension,
+only one Voronoi cell needs to be computed in each dimension.
+Hence the overall running time remains singly exponential.
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}
+      \node[left,inner sep=3mm,draw] (cvp1) at (0,0) {Closest vectors in $\dim = 1$};
+      \node[left,inner sep=3mm,draw] (cvp2a) at (0,-1.2) {Closest vectors in $\dim = 2$};
+      \node[right,inner sep=3mm,draw] (vc2) at (2.5,-1.8) {Voronoi cell in $\dim = 2$};
+      \node[left,inner sep=3mm,draw] (cvp2b) at (0,-2.4) {Closest vectors in $\dim = 2$};
+      \node[left,inner sep=3mm,draw] (cvp3a) at (0,-3.6) {Closest vectors in $\dim = 3$};
+      \node[right,inner sep=3mm,draw] (vc3) at (2.5,-4.2) {Voronoi cell in $\dim = 3$};
+      \node[left,inner sep=3mm,draw] (cvp3b) at (0,-4.8) {Closest vectors in $\dim = 3$};
+
+      \node[left,inner sep=3mm,draw] (cvpca) at (0,-7.0) {Closest vectors in $\dim = d-1$};
+      \node[right,inner sep=3mm,draw] (vcc) at (2.5,-7.6) {Voronoi cell in $\dim = d-1$};
+      \node[left,inner sep=3mm,draw] (cvpcb) at (0,-8.2) {Closest vectors in $\dim = d-1$};
+      \node[left,inner sep=3mm,draw] (cvpda) at (0,-9.4) {Closest vectors in $\dim = d$};
+      \node[right,inner sep=3mm,draw] (vcd) at (2.5,-10.0) {Voronoi cell in $\dim = d$};
+
+      \draw[->] (cvp1) -- (cvp2a);
+      \draw[->] (cvp2a.east) -- (vc2);
+      \draw[->] (vc2) -- (cvp2b.east);
+      \draw[->] (cvp2b) -- (cvp3a);
+      \draw[->] (cvp3a.east) -- (vc3);
+      \draw[->] (vc3) -- (cvp3b.east);
+
+      \draw[->] (cvpca.east) -- (vcc);
+      \draw[->] (vcc) -- (cvpcb.east);
+      \draw[->] (cvpcb) -- (cvpda);
+      \draw[->] (cvpda.east) -- (vcd);
+    \end{tikzpicture}
+  \end{center}
+  \caption{Iteratively building Voronoi cells of larger dimension.}
+  \label{fig:voronoi-cell-dimension-reduction}
+\end{figure}
+
+Let us recall the nearest plane method, see Figure~\ref{fig:nearest-plane-approximation}.
+We have seen that, assuming the basis $B$ is LLL-reduced,
+there is a vector $x \in \Lambda$ such that
+\[
+  \|x-t\|_2^2 \leq 2^{d-2} \|b_d^\star\|_2^2
+\]
+Since $\|b_d^\star\|_2$ is the distance between adjacent lattice hyperplanes,
+it follows that a closest vector to $t$ must lie,
+if not on the nearest lattice hyperplane,
+then on one of the $2 \cdot 2^{(d-2)/2} = 2^{d/2}$ lattice hyperplanes closest to $t$.
+By projecting $t$ orthogonal onto each of those hyperplanes in turn
+and solving a closest vector problem in $\Lambda'$,
+we are guaranteed to find a closest vector.
+
+\begin{theorem}
+  The Voronoi relevant vectors of a lattice can be computed in time $2^{O(d)} \poly(b)$.
+  As a consequence, the shortest and closest vector problems can be solved in the same asymptotic
+  running time.
+\end{theorem}
+
+
+
+
 
 
 \section*{Exercises}

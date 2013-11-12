@@ -547,6 +547,7 @@ It only becomes useful, however, because we an analogue of Lemma~\ref{lemma:size
 
 
 \section{Nearest plane approximation for the closest vector problem}
+\label{sec:nearest-plane-approximation}
 
 Now that we can approximate the shortest vector problem in the $\ell_2$-norm
 in polynomial time to within an exponential factor,
@@ -566,6 +567,8 @@ It turns out that the answer is positive:
 When $B$ is LLL-reduced, this simple procedure is a $2^{O(d)}$-approximation algorithm~\cite{MR856638}.
 However, the proof is somewhat involved.
 A different, equally simple idea yields a better approximation algorithm with a simpler proof!
+
+\begin{figure}
 \begin{center}
   \begin{tikzpicture}
     \clip (-2.1,-1.1) rectangle (5.1,3.1);
@@ -584,7 +587,12 @@ A different, equally simple idea yields a better approximation algorithm with a 
     \fill (t') circle[radius=2pt] node[right] {$t'$};
   \end{tikzpicture}
 \end{center}
-The drawing shows the parallel translates of $\Lambda' := \Lambda(b_1,\ldots,b_{d-1})$
+  \caption{Approximating the closest vector problem by recursively projecting onto a lattice hyperplane.}
+  \label{fig:nearest-plane-approximation}
+\end{figure}
+
+Figure~\ref{fig:nearest-plane-approximation}
+shows the parallel translates of $\Lambda' := \Lambda(b_1,\ldots,b_{d-1})$
 that contain lattice points.
 That is, the parallel lines correspond to $\alpha b_n + \Lambda'$ for $\alpha \in \Z$.
 The idea is to project the target vector $t$ orthogonally onto the affine subspace
