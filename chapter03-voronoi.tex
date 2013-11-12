@@ -295,6 +295,37 @@ by solving $2^d - 1$ closest vector problems:
   \label{fig:voronoi-cell-computation}
 \end{figure}
 
+\begin{example}
+  The computed set $X$ may contain vectors that are not Voronoi relevant.
+  Consider the case $\Lambda = \Z^2$ as shown below with its Voronoi cell.
+  \begin{center}
+    \begin{tikzpicture}
+      \draw[fill=black!10] (-1,1) rectangle (1,-1) node[right] {$\overline{\cV_\Lambda}$};
+
+      \foreach \x in {-1,0,1}
+        \foreach \y in {-1,0,1}
+          \fill ($\x*(2,0) + \y*(0,2)$) circle[radius=2pt];
+
+      \draw (0,0) node[below] {$0$};
+
+      \draw[fill=white] (1,1) circle[radius=2pt] node[right] {$u$};
+
+      \draw (1,1) circle[radius=1.41cm];
+    \end{tikzpicture}
+  \end{center}
+  During one iteration of the algorithm, $u$ will be as shown (or equivalent modulo $\Lambda$).
+  There are four closest vectors to $u$, and no matter which of them is returned,
+  the algorithm adds two vectors to $X$ that are not Voronoi relevant because
+  the corresponding hyperplane $\partial H_x$ only induces
+  a lower-dimensional face of $\overline{\cV_\Lambda}$.
+\end{example}
+
+If desired, we can detect vectors in $X$ that are not Voronoi relevant
+using $O(N^2 d) = 2^{O(d)}$ arithmetic operations:
+according to Lemma~\ref{lemma:voronoi-relevant-facet-interior},
+it suffices to check every $x/2$ for $x \in X$ against every other $y \in X$
+and compare distances.
+
 
 \begin{corollary}
   \label{cor:number-of-voronoi-relevant}
@@ -325,13 +356,28 @@ First, we see that it contains a list of all shortest vectors of the lattice.
     \draw (0,0) +(-75:2cm) arc[start angle=-75,end angle=75,radius=2cm];
   \end{tikzpicture}
   \end{center}
-  Clearly, $0$ and $x$ are the unique closest vectors to $x/2$.
+  Since $x$ is a shortest vector, $0$ and $x$ are the unique closest vectors to $x/2$.
   By Lemma~\ref{lemma:voronoi-relevant-as-closest}, $x$ is Voronoi relevant.
 \end{proof}
 
 \begin{corollary}
   Every lattice has at most $2 \cdot (2^d - 1)$ shortest vectors.
 \end{corollary}
+
+\begin{remark}
+  Let us place spheres centered at every lattice point of a radius
+  such that two spheres may touch but not overlap.
+  The number of spheres that touch a fixed sphere is called the \emph{kissing number}
+  of the sphere packing,
+  and it is equal to the number of shortest vectors in the lattice.
+  Hence, the previous Corollary is an upper bound on the kissing number
+  of a lattice sphere packing.
+
+  This bound happens to be tight for $d = 2$,
+  but considerably better bounds are known in higher dimension.
+  A classical source on the study of sphere spackings is~\cite{MR1662447}.
+\end{remark}
+
 %TODO: kissing number, etc.
 
 We can also use the Voronoi cell to compute closest vectors.
@@ -345,6 +391,7 @@ We will apply this idea in Section~\ref{sec:voronoi-full-algorithm}.
 
 For now, suppose we know the Voronoi cell $\cV$ of a lattice $\Lambda$
 and are given a target vector $t \in \R^d$.
+\begin{figure}
 \begin{center}
   \begin{tikzpicture}
     \clip (-2.2,-2.3) rectangle (2.2,4.3);
@@ -364,9 +411,13 @@ and are given a target vector $t \in \R^d$.
     \draw (0,0) -- (t);
   \end{tikzpicture}
 \end{center}
+\caption{We find the Voronoi cell containing $t$ by tracing along the segment $[0,t]$.}
+\label{fig:cvp-via-voronoi-cell-tracing}
+\end{figure}
 The problem of finding a closest lattice vector to $t$
 is essentially the problem of finding the Voronoi cell translate that contains $t$.
-We will solve that problem by following the line segment $[0,t]$.
+We will solve that problem by following the line segment $[0,t]$,
+see Figure~\ref{fig:cvp-via-voronoi-cell-tracing}.
 \begin{codebox}
   \Procname{$\proc{CVP-via-Voronoi-Simple}(\Lambda, \cV_\Lambda, t)$}
   \zi $\cV_\Lambda$ is given by a list that contains all Voronoi relevant vectors
@@ -378,7 +429,7 @@ We will solve that problem by following the line segment $[0,t]$.
       \End
   \li \Return $x$
 \end{codebox}
-Clearly, the algorithm terminates and returns a correct result.
+Clearly, the algorithm returns a correct result when it terminates.
 Each of the individual steps in this algorithm can be implemented in time $O(N \cdot \poly(d,b))$,
 where $N$ is the size of the given list containing the Voronoi relevant vectors.
 The test whether $t \in x + \overline{\cV_\Lambda}$ can be done by evaluating the $N$ linear functions
@@ -394,7 +445,8 @@ For now, let us simply assume that this degenerate situation does not happen
 and continue bounding the running time of the algorithm.
 Since the Voronoi cells are convex, every cell is entered at most once.
 Since we only enter cells that intersect the segment $[0,t]$,
-it suffices to bound the number of such cells.
+it suffices to bound the number of such cells
+to bound the overall running time of the algorithm.
 
 For every $x + \cV_\Lambda$ encountered in the algorithm,
 we have $x \in [0,t] + \cV_\Lambda$

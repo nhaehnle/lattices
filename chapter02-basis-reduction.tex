@@ -705,7 +705,7 @@ that intuition tells us should be a bad one --
     \end{enumerate}
 
   \item
-    Let $B$ be an LLL-reduced basis of $\Lambda$.
+    Let $B \in \Q^{d \times d}$ be an LLL-reduced basis of $\Lambda$.
     \begin{enumerate}[(a)]
       \item Let $x = a_1 b_1 + \dots + a_d b_d$ be a shortest vector of $\Lambda$.
         Show: $|a_j| \leq 2^{O(d)}$ for every $j = 1 \dots d$.
@@ -719,11 +719,11 @@ that intuition tells us should be a bad one --
     Let $B \in \Q^{d \times d}$ be an LLL-reduced basis of $\Lambda$ and let $t \in \R^d$.
     \begin{enumerate}[(a)]
       \item Let $x^\star \in \Lambda$ be a closest vector to $t$ and consider the lattice hyperplanes
-        orthogonal to $b_d^\star$ (i.e., parallel to $\Lambda' := \Lambda(b_1,\ldots,b_{d-1})$.
+        orthogonal to $b_d^\star$ (i.e., parallel to $\Lambda' := \Lambda(b_1,\ldots,b_{d-1})$).
         Let $\lambda \in \R^d$ such that $t = B \lambda$
         and let $\alpha \in \Z^d$ such that $x^\star = B \alpha$.
 
-        Show that $|\alpha_r - \lambda_r| \leq 2^{d-2}$.
+        Show that $|\alpha_d - \lambda_d| \leq 2^{d-2}$.
 
       \item Show that a closest vector to $t$ in $\Lambda$ can be computed in time $2^{O(d^2)}$.
     \end{enumerate}
