@@ -148,7 +148,7 @@ Let us formalize the discussion at the beginning of this chapter.
 Recall the example basis from the beginning of the chapter,
 and recall the observations from the proof of Lemma~\ref{lemma:every-lattice-has-basis}
 about lattice points in a certain ``corridor'' around the orthogonal complement of $b_1$.
-This immediately suggests that we can get a ``better'', more orthogonal basis
+This immediately suggests that we can get a basis that is closer to orthogonal and therefore ``better''
 by replacing $b_2$ by $b_2 - b_1$ without changing the lattice:
 \begin{center}
   \begin{tikzpicture}
@@ -161,7 +161,7 @@ by replacing $b_2$ by $b_2 - b_1$ without changing the lattice:
   \end{tikzpicture}
 \end{center}
 Visual inspection tells us that $b_2 - b_1$ is a shortest vector.
-However, we can get an even more orthogonal basis:
+However, we can get a basis that is even closer to orthogonal:
 note that this new vector is shorter than $\|b_1\|$,
 and if we exchange the two basis vector, the new orthogonalization suggests another ``size reduction'' step:
 \begin{center}
@@ -285,8 +285,8 @@ whether reduced bases always exist and whether we can compute them efficiently.
 Previously, we defined the determinant of a full-dimensional lattice $\Lambda$
 as $\det \Lambda = |\det B|$ for some basis $B$ of $\Lambda$,
 and we saw that $\det \Lambda = \vol \cP_B$.
-We would like a definition of the determinant of a general lattice that coincides
-with the definition we already have.
+We would like a definition of the determinant of a general lattice
+that coincides with the definition we already have when the lattice is full-dimensional.
 The definitions should coincide not only in the sense that they are equal for full-dimensional lattices,
 but also in the sense that we get the same answer for $\Lambda \subset \R^d$
 and for $\tau(\Lambda) \subset \R^r$ where $r = \dim\Lambda$ and $\tau$ is an orthogonal transformation
@@ -443,7 +443,7 @@ In the following, we will fix $\delta = 3/4$ for concreteness.
 Such a basis is also called LLL-reduced,
 after the work of Lenstra, Lenstra, and Lovász~\cite{MR682664}.
 
-Let us modify the \proc{Reduce} accordingly:
+Let us modify \proc{Reduce} accordingly:
 \begin{codebox}
   \Procname{$\proc{LLL-Reduce}(B \in \Z^{d \times d})$}
   \li Perform size reduction: ensure $|\mu_{ij}| \leq 1/2$ for all $i < j$ without changing $\Lambda(B)$
