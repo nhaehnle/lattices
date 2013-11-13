@@ -631,7 +631,8 @@ Hence the overall running time remains singly exponential.
 \end{figure}
 
 Let us recall the nearest plane method, see Figure~\ref{fig:nearest-plane-approximation}.
-We have seen that, assuming the basis $B$ is LLL-reduced,
+In Section~\ref{fig:nearest-plane-approximation},
+we saw that if the basis $B$ is LLL-reduced,
 there is a vector $x \in \Lambda$ such that
 \[
   \|x-t\|_2^2 \leq 2^{d-2} \|b_d^\star\|_2^2
@@ -640,7 +641,7 @@ Since $\|b_d^\star\|_2$ is the distance between adjacent lattice hyperplanes,
 it follows that a closest vector to $t$ must lie,
 if not on the nearest lattice hyperplane,
 then on one of the $2 \cdot 2^{(d-2)/2} = 2^{d/2}$ lattice hyperplanes closest to $t$.
-By projecting $t$ orthogonal onto each of those hyperplanes in turn
+By projecting $t$ orthogonally onto each of those hyperplanes in turn
 and solving a closest vector problem in $\Lambda'$,
 we are guaranteed to find a closest vector.
 
