@@ -464,13 +464,13 @@ We can now give an improved version of Lemma~\ref{lemma:reduce-phi-decreases} fo
   As in the proof of Lemma~\ref{lemma:reduce-phi-decreases},
   we call $B'$ the basis after swapping $b_j$ and $b_{j+1}$ and obtain:
   \[
-    \Phi(B') = \frac{\|b_{j+1}^\star + \mu_{j,j+1} b_j^\star\|_2^2}{\|b_j^\star\|_2^2} \Phi(B) < \frac{3}{4} \Phi(B) \qedhere
+    \Phi(B') = \frac{\|b_{j+1}^\star + \mu_{j,j+1} b_j^\star\|_2^2}{\|b_j^\star\|_2^2} \Phi(B) \leq \frac{3}{4} \Phi(B) \qedhere
   \]
 \end{proof}
 
 \begin{lemma}
   \label{lemma:lll-iterations}
-  The number of iterations of \proc{LLL-Reduce} is bounded by $O(d^2 \log dM)$,
+  The number of iterations of \proc{LLL-Reduce} is bounded by $O(d^2 \log (dM))$,
   where $M$ is an upper bound on the absolute value of the entries of the initial input basis $B$.
 \end{lemma}
 \begin{proof}

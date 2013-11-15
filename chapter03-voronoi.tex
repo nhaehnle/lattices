@@ -39,7 +39,7 @@ which is due to Micciancio and Voulgaris~\cite{MR2743283}.
   \]
   and the (open) \emph{Voronoi cell} of $\Lambda$
   \[
-    \cV_\Lambda := \bigcup_{x \in \Lambda\setminus\{0\}} H_x
+    \cV_\Lambda := \bigcap_{x \in \Lambda\setminus\{0\}} H_x
   \]
   Figure~\ref{fig:voronoi-diagram} shows a $2$-dimensional example.
 \end{definition}
@@ -111,7 +111,7 @@ which is due to Micciancio and Voulgaris~\cite{MR2743283}.
       \cap \left( \bigcap_{y \in \Lambda\setminus\{0\} ~:~ \|y\|_2 > 2R} H_y \right) = \cV_\Lambda
   \]
   which implies the claim.
-  That is, $\cV_\Lambda$ is bounded and defined as the intersection of finitely many half-spaces,
+  That is, $\overline{\cV_\Lambda}$ is bounded and defined as the intersection of finitely many half-spaces,
   i.e., it is a polytope.
 
   The statement of the Lemma for general lattices follows
@@ -120,7 +120,7 @@ which is due to Micciancio and Voulgaris~\cite{MR2743283}.
   onto $\langle \Lambda \rangle$.
 \end{proof}
 
-Now that we have established that $\cV_\Lambda$ is a polytope,
+Now that we have established that $\overline{\cV_\Lambda}$ is a polytope,
 a natural algorithmic representation suggests itself:
 
 \begin{definition}
