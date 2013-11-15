@@ -76,9 +76,9 @@ which allows us to bound the number of lattice hyperplanes that must be investig
     \end{array}
     =
     \begin{array}{|lcr|}
-      \hline 1 & & \\
+      \hline 1 & & 0 \\
        & \ddots & \\
-      & & 1 \\\hline
+      0 & & 1 \\\hline
     \end{array}
   \]
   Let $y \in \Lambda^\star$.
@@ -110,11 +110,15 @@ which allows us to bound the number of lattice hyperplanes that must be investig
 \end{proof}
 
 \begin{corollary}
-  Let $\Lambda$ be a full-dimensional lattice.
+  \label{corollary:transformed-dual-lattice}
+  Let $\Lambda \subset \R^d$ be a full-dimensional lattice.
   \begin{enumerate}
     \item $\det \Lambda^\star = \frac{1}{\det \Lambda}$.
 
     \item $(\Lambda^\star)^\star = \Lambda$.
+
+    \item Let $M \in \R^{d\times d}$ be an invertible matrix.
+      Then $(M \Lambda)^\star = M^{-T} \Lambda^\star$.
 
     \item $(\alpha \Lambda)^\star = \frac{1}{\alpha} \Lambda^\star$ for $\alpha > 0$.
   \end{enumerate}
@@ -249,8 +253,8 @@ The following Lemma shows that a lattice and its dual cannot be too dense at the
   both when applied to $\Lambda$ and when applied to $\Lambda^\star$.
 \end{example}
 
-We would like to have an analogous statement showing
-that a lattice and its dual cannot be too sparse at the same time.
+We are interested in analogous statements showing
+that a lattice and its dual cannot be too \emph{sparse} at the same time.
 That is, we would like to have an \emph{upper bound} on a product of the form $\lambda_1^\star \cdot \lambda_d$.
 Some bounds of this type are shown in the exercises of this chapter,
 using Minkowski's theorem and LLL-reduced bases.
@@ -258,7 +262,10 @@ We will derive a much stronger bound in Section~\ref{sec:transference-bound-bana
 
 
 
-\section{Lattice width}
+\section{Lattice width and Flatness theorems}
+
+We will now tie dual lattices and the quantities defined in the last section
+together with the approach to integer programming based on lattice hyperplanes.
 
 \begin{definition}
   Let $K \subset \R^d$ be a convex body.
@@ -274,10 +281,164 @@ We will derive a much stronger bound in Section~\ref{sec:transference-bound-bana
   We write $w_y(K)$ or $w(K)$ when the lattice is clear from the context.
 \end{definition}
 
+The lattice width with respect to $y \in \Lambda^\star$
+describes the distance in terms of lattice hyperplanes between parallel planes
+sandwiching the convex body.
+This width is particularly easy to compute for a ball $B(z,r)$,
+see Figure~\ref{fig:lattice-width-ball}:
+\begin{align*}
+  w_y(B(z,r)) &= \max_{x \in B(z,r)} y^Tx - \min_{x \in B(z,r)} y^Tx \\
+   &= y^T (z + r \frac{y}{\|y\|_2}) - y^T (z - r \frac{y}{\|y\|_2}) \\
+   &= 2r \frac{y^T y}{\|y\|_2} = 2r \|y\|_2
+\end{align*}
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}
+      \draw[thick,fill=black!10] (0,0) circle[radius=1.5cm];
+      \fill (0,0) circle[radius=2pt] node[left] {$z$};
+      \draw (-30:1.5) +(60:-2) -- +(60:2);
+      \draw (-30:-1.5) +(60:-2) -- +(60:2);
+      \draw[->] (-30:1.5) ++(60:1) -- node[above,near end] {$y$} +(-30:0.6);
+      \draw (0,0) -- node[above] {$r$} (-30:1.5);
+    \end{tikzpicture}
+  \end{center}
+  \caption{The lattice width of a ball with respect to $y \in \Lambda^\star$.}
+  \label{fig:lattice-width-ball}
+\end{figure}
+
+\begin{lemma}
+  The lattice width of a ball of radius $r$ is $2r\lambda_1^\star$.
+\end{lemma}
+\begin{proof}
+  \[
+    w(B(z,r)) = \min_{y \in \Lambda^\star \setminus 0} w_y(B(z,r))
+      = \min_{y \in \Lambda^\star \setminus 0} 2r \|y\|_2 = 2r \lambda_1^\star
+    \qedhere
+  \]
+\end{proof}
+
+Since the lattice width is invariant under linear transformations (see the exercises),
+this result easily extends to ellipsoids.
+Intuitively, we can find the lattice width of an ellipsoid $E$
+by finding a matrix $A$ such that $A \cdot E$ is a ball
+and then computing a shortest vector in $A^{-T} \cdot \Lambda^\star$,
+the dual lattice of $A \cdot \Lambda$.
+
+\begin{theorem}[Flatness Theorem for Ellipsoids]
+  \label{thm:flatness-ellipsoids}
+  Let $d \in \N$.
+  Suppose there is a constant $c_d$ such that for every full-dimensional lattice $\Lambda \subset \R^d$
+  one has $\lambda_1^\star \cdot \mu \leq c_d$.
+  Then every ellipsoid $E$ with $w(E) > 2 c_d$ contains a lattice point.
+\end{theorem}
+\begin{proof}
+  By the above remark, we only need to consider the case where $E$ is a ball.
+  We have
+  \[
+    2 \lambda_1^\star \cdot \mu \leq 2 c_d < w(E) = 2r \lambda_1^\star,
+  \]
+  where $r$ is the radius of $E$.
+  This implies $\mu < r$.
+  Since $\mu$ is the maximal distance of any point from the lattice,
+  it follows that there is a lattice point with distance less than $r$ from the center of $E$.
+\end{proof}
+
+This suggests an analysis of the approach to integer programming
+that we sketched in the beginning of this chapter,
+at least in the case where $K$ is an ellipsoid:
+Determine $w(K)$ using a shortest vector problem in an appropriately transformed dual lattice.
+If $w(K) > 2c_d$, we can assert that $K$ contains a lattice point.
+Otherwise, there are at most $\lfloor 2c_d + 1 \rfloor$
+lattice hyperplanes in which we recursively solve a lower dimensional problem.
+This leads to a running time of essentially $2^d c_d c_{d-1} \cdots c_1$.
+In the remainder of this chapter,
+we will show that we can choose $c_d = d$,
+which leads to a running time for integer programming of essentially $2^{O(d \log d)}$.
+
+For now,
+let us remark that integer programming on ellipsoids is not very interesting in itself
+because it is equivalent to a closest vector problem
+with respect to a distorted $\ell_2$ norm.
+We already saw how to solve this problem more efficiently in Chapter~\ref{chapter:voronoi-cell}.
+Unlike the approach via Voronoi diagrams, however,
+this new approach can be generalized to other convex bodies.
+
+The key to the generalization is a classical result from convex geometry
+about approximation of convex bodies by ellipsoids, see Figure~\ref{fig:loewner-john}.
+For a proof of this result, see e.g. the exposition in~\cite{MR1491097}.
+Note that the scaling factor of $d$ in the following Theorem is best possible,
+since it is tight e.g. for simplices.
+
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}
+      \draw (0,0) circle[radius=1.5cm];
+      \draw (0,0) circle[radius=3cm];
+
+      \path[name path=face1] (30:1.5) +(120:-3) -- +(120:3);
+      \path[name path=faceA] (100:2.6) +(25:-3) -- +(25:3);
+      \path[name path=face2] (150:1.5) +(60:-3) -- +(60:3);
+      \path[name path=faceB] (180:1.9) + (90:-3) -- +(90:3);
+      \path[name path=face3] (270:1.5) +(-3,0) -- +(3,0);
+      \path[name path=faceC] (-45:2.1) +(45:-3) -- +(45:3);
+
+      \path[name intersections={of=face1 and faceA}] (intersection-1) coordinate (a);
+      \path[name intersections={of=face2 and faceA}] (intersection-1) coordinate (b);
+      \path[name intersections={of=face2 and faceB}] (intersection-1) coordinate (c);
+      \path[name intersections={of=face3 and faceB}] (intersection-1) coordinate (d);
+      \path[name intersections={of=face3 and faceC}] (intersection-1) coordinate (e);
+      \path[name intersections={of=face1 and faceC}] (intersection-1) coordinate (f);
+
+      \draw[thick] (a) -- (b) -- (c) -- (d) -- (e) -- (f) -- cycle;
+    \end{tikzpicture}
+  \end{center}
+  \caption{Approximating a convex body by ellipsoids as per Theorem~\ref{thm:loewner-john}.}
+  \label{fig:loewner-john}
+\end{figure}
+
+\begin{theorem}[Löwner-John ellipsoid]
+  \label{thm:loewner-john}
+  Let $K \subset \R^d$ be a convex body of positive volume
+  and let $E \subseteq K$ be an ellipsoid of maximal volume.
+  Then
+  \begin{enumerate}
+    \item $E$ is unique and
+    \item $K \subset d \star E$, where $d \star E$ is the scaling of $E$ by a factor of $d$ around its center.
+  \end{enumerate}
+\end{theorem}
+
+\begin{corollary}[Flatness Theorem]
+  Let $d \in \N$.
+  Suppose there is a constant $c_d$ such that
+  for every full-dimensional lattice $\Lambda \subset \R^d$
+  one has $\lambda_1^\star \cdot \mu \leq c_d$.
+  Then every convex body $K$ with $w(K) > 2d \cdot c_d$ contains a lattice point.
+\end{corollary}
+\begin{proof}
+  Let $E \subseteq K \subseteq d \star E$ as in Theorem~\ref{thm:loewner-john}.
+  Since
+  \[
+    d \cdot w(E) = w(d \star E) \geq w(K) > 2d \cdot c_d
+  \]
+  we have $E > 2c_d$,
+  so there is a lattice point $x \in \Lambda \cap E \subseteq \Lambda \cap E$
+  by Theorem~\ref{thm:flatness-ellipsoids}.
+\end{proof}
+
+The best possible \emph{flatness constant} that can be derived with this approach is $\Theta(d^2)$.
+A better flatness constant has been shown using more advanced techniques~\cite{MR1854250, MR1755679}:
+if $K$ is an arbitrary convex body with $w(K) > \Omega(d^{4/3} \log^c d)$,
+then $K$ contains a lattice point.
+For centrally symmetric empty convex bodies
+and for polytopes with polynomially many vertices or facets,
+the flatness constant is known to be $O(d \log d)$~\cite{MR1410163,MR1854250}.
+
 
 
 \section{Banaszczyk's transference bound}
 \label{sec:transference-bound-banaszczyk}
+
+
 
 
 \section*{Exercises}
@@ -288,6 +449,8 @@ We will derive a much stronger bound in Section~\ref{sec:transference-bound-bana
     Show: a vector $y \in \Lambda^\star \setminus 0$ is primitive
     if and only if
     every lattice hyperplane $\{ y^T x = \alpha\}$, $\alpha \in \Z$, contains a point of $\Lambda$.
+
+  \item Prove Corollary~\ref{corollary:transformed-dual-lattice}.
 
   \item
     Show that the successive minima and the covering radius of a lattice are well-defined,
@@ -319,7 +482,7 @@ We will derive a much stronger bound in Section~\ref{sec:transference-bound-bana
 
   \item
     Show that lattice width is invariant under linear transformations:
-    Let $\Lambda$ be a lattice, $K$ be a convex body, and $f$ a linear transformation.
+    Let $\Lambda$ be a lattice, $K$ be a convex body, and $f$ an invertible linear transformation.
     Then $w(K, \Lambda) = w(f(K), f(\Lambda))$.
 
 \end{enumerate}
