@@ -244,7 +244,7 @@ This suggests the following algorithm for finding Voronoi relevant vectors:
 \begin{codebox}
   \Procname{$\proc{VoronoiCell}(\Lambda)$}
   \li $X \gets \emptyset$
-  \li \For $U \gets \left((\frac{1}{2} \Lambda) / \Lambda\right) \setminus \{ 0 \}$
+  \li \For $U \in \left((\frac{1}{2} \Lambda) / \Lambda\right) \setminus \{ 0 \}$
   \li \Do $u \gets$ representative of $U$
   \li     $x \gets \proc{CVP}(\Lambda, u)$
   \li     $X \gets X \cup \{ 2(x - u), 2(u - x) \}$
@@ -376,7 +376,7 @@ First, we see that it contains a list of all shortest vectors of the lattice.
 
   This bound happens to be tight for $d = 2$,
   but considerably better bounds are known in higher dimension.
-  A classical source on the study of sphere spackings is~\cite{MR1662447}.
+  A classical source on the study of sphere packings is~\cite{MR1662447}.
 \end{remark}
 
 We can also use the Voronoi cell to compute closest vectors.
@@ -571,7 +571,7 @@ We find ourselves in an oddly circular situation.
 Given some way of computing closest vectors in $\Lambda$,
 we can also compute its Voronoi relevant vectors,
 and given a way of computing its Voronoi relevant vectors,
-we can also computed closest vectors in $\Lambda$.
+we can also compute closest vectors in $\Lambda$.
 \begin{center}
   \begin{tikzpicture}
     \node[left,inner sep=3mm,draw] (cvp) at (0,0) {Closest vectors};
