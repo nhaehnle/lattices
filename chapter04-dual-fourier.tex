@@ -491,7 +491,7 @@ Let us establish some basic facts about $\langle \cdot, \cdot \rangle_\Lambda$ a
 
   For the second part,
   the intuitive idea is that we can slice $P$ along the tiling defined by $\cP_B$
-  and then reassemble the pieces of $P$ into a disjoint (up to parts of measure $0$) union
+  and then reassemble the pieces of $P$ into a disjoint union
   equal to $\cP_B$.
   This is similar to the proof of Theorem~\ref{thm:blichfeldt}.
 
@@ -592,6 +592,212 @@ Let us establish some basic facts about $\langle \cdot, \cdot \rangle_\Lambda$ a
 \begin{theorem}
   For sufficiently nice $\Lambda$-periodic $f$, one has $f = \sum_{y \in \Lambda^\star} \hat f(y) \omega_y$.
 \end{theorem}
+
+
+
+
+\section{The distance from a lattice and Fourier transform}
+
+The function $p \mapsto d(p,\Lambda)$,
+which we might want to use to study the covering radius $\mu$,
+is $\Lambda$-periodic.
+However,
+it is unwieldy for Fourier analysis since it is not even differentiable.
+Let us instead consider the function $g_\Lambda: \R^d \to \R$ defined by
+\[
+  g_\Lambda(p) := \sum_{x \in \Lambda} e^{-\pi \|p - x\|_2^2}
+\]
+This function is a sum of normal distributions centered at each lattice point:
+\begin{center}
+  \begin{tikzpicture}
+    \clip (-2,-1.5) rectangle (2,1.5);
+    \foreach \x in {-3,-2,...,3.01}
+      \foreach \y in {-2,-1,...,2.01} {
+        \fill ($\x*(1.4,0.1) + \y*(0.2,1.2)$) circle[radius=2pt];
+        \draw[help lines] ($\x*(1.4,0.1) + \y*(0.2,1.2)$)
+          circle[radius=0.1cm]
+          circle[radius=0.2cm]
+          circle[radius=0.28cm]
+          circle[radius=0.34cm]
+          circle[radius=0.40cm]
+          circle[radius=0.55cm];
+      }
+  \end{tikzpicture}
+\end{center}
+Intuitively, $g_\Lambda(p)$ should be quite small if $d(p,\Lambda) > \sqrt{d}$,
+because then $e^{-\pi \|p - x\|_2^2} < e^{-\pi d}$ for every $x \in \Lambda$,
+so it should be a useful tool for lattices with $\mu > \sqrt{d}$.
+
+This is not quite true in absolute terms, however.
+Consider the lattice $\Lambda := \Lambda \begin{pmatrix} \varepsilon & 0 \\ 0 & C \end{pmatrix}$
+for $\varepsilon > 0$ small and $C > 0$ large, see Figure~\ref{fig:g-sparse-dense-lattice}.
+There is a point $p$ at distance $C/2$ of the lattice,
+but $g_\Lambda(p) \to \infty$ as $\varepsilon \to 0$.
+That is, we will have to measure $g_\Lambda(p)$ relative to some other quantity.
+
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}
+      \foreach \x in {-10,-9,...,10.01}
+        \foreach \y in {0,1}
+          \fill ($\x*(0.24,0) + \y*(0,2)$) circle[radius=2pt];
+
+      \fill (0.12,1) circle[radius=2pt] node[right] {$p$};
+    \end{tikzpicture}
+  \end{center}
+  \caption{$g_\Lambda(p)$ can be arbitrarily large even for points that are far from the lattice.}
+  \label{fig:g-sparse-dense-lattice}
+\end{figure}
+
+First, let us compute the Fourier series of $g$.
+\begin{align*}
+  \widehat{g_\Lambda}(y) &= \langle g_\Lambda, \omega_y \rangle_\Lambda
+    = \frac{1}{\det\Lambda} \int_{\cP_B} g_\Lambda(p) e^{-2\pi i p^T y} \,dp \\
+    &= \frac{1}{\det\Lambda} \int_{\cP_B} \sum_{x \in \Lambda} e^{-\pi \|p - x\|_2^2} e^{-2\pi i p^T y} \,dp \\
+    &= \frac{1}{\det\Lambda} \int_{\cP_B} \sum_{x \in \Lambda} e^{-\pi \|p + x\|_2^2} e^{-2\pi i (p + x)^T y} \,dp \\
+    &= \frac{1}{\det\Lambda} \sum_{x \in \Lambda} \int_{x + \cP_B} e^{-\pi \|p\|_2^2} e^{-2\pi i p^T y} \,dp \\
+    &= \frac{1}{\det\Lambda} \int_{\R^d} e^{-\pi \|p\|_2^2} e^{-2\pi i p^T y} \,dp
+\end{align*}
+This motivates the introduction of the second main tool from Fourier analysis.
+
+\begin{definition}
+  Let $f:\R^d \to \C$ with $\int |f| < \infty$.
+  The \emph{Fourier transform} of $f$ is $\tilde f: \R^d \to \C$, where
+  \[
+    \tilde f(y) := \int_{\R^d} f(p) e^{-2\pi i p^Ty} \,dp
+  \]
+\end{definition}
+\begin{theorem}
+  For sufficiently nice $f: \R^d \to \C$, one has $f(p) = \int_{\R^d} \tilde f(y) e^{2\pi i p^Ty} \,dy$.
+\end{theorem}
+
+\begin{fact}
+  The function $\rho: \R^d \to \R$, $\rho(x) := e^{-\pi \|x\|_2^2}$
+  is a fix point of the Fourier transform.
+  That is, $\tilde \rho = \rho$.
+\end{fact}
+
+\begin{lemma}[Fourier coefficients of $g_\Lambda$]
+  \label{lemma:fourier-coeff-g}
+  $\widehat{g_\Lambda}(y) = \det\Lambda^\star \rho(y)$.
+\end{lemma}
+\begin{proof}
+  We continue the computation from above:
+  \begin{align*}
+    \widehat{g_\Lambda}(y) &= \frac{1}{\det\Lambda} \int_{\R^d} \rho(p) e^{-2\pi i p^T y} \,dp \\
+      &= \det\Lambda^\star \hat\rho(y) = \det\Lambda^\star \rho(y) \qedhere
+  \end{align*}
+\end{proof}
+
+As an aside,
+Lemma~\ref{lemma:fourier-coeff-g} is related to the more general \emph{Poisson summation formula}.
+For \emph{any} function $f(p) := \sum_{x \in \Lambda} h(p+x)$, where $h : \R^d \to \C$ is sufficiently nice,
+the same kind of computation leads to
+\[
+  \hat f(y) = \det\Lambda^\star \tilde h(y)
+\]
+In particular, we get
+\[
+  h(\Lambda) = \sum_{x\in\Lambda} h(x)
+    = f(0) = \sum_{y \in \Lambda^\star} \hat f(y)
+    = \det\Lambda^\star \sum_{y \in \Lambda^\star} \tilde h(y) = \det\Lambda^\star \tilde h(\Lambda^\star).
+\]
+In any case, knowing the Fourier coefficients of $g_\Lambda$
+opens the door to some new observations.
+For example,
+\[
+  g_\Lambda(p) = \sum_{y \in \Lambda^\star} \underbrace{\widehat{g_\Lambda}(y)}_{> 0} \underbrace{e^{2\pi i p^T y}}_{|\cdot| = 1}
+  \leq \sum_{y \in \Lambda^\star} \widehat{g_\Lambda}(y) = g_\Lambda(0)
+\]
+holds for all $p \in \R^d$.
+Let us define
+\[
+  f_\Lambda(p) := g_\Lambda(p) / g_\Lambda(0),
+\]
+measuring $g_\Lambda$ relative to its value at a lattice point.
+We can confirm our intuition that $f$ should be large for points that lie close to the lattice.
+
+\begin{lemma}
+  \label{lemma:f-large-close-to-lattice}
+  For all $p \in \R^d$, one has $f_\Lambda(p) \geq e^{-\pi d(p,\Lambda)^2}$.
+\end{lemma}
+\begin{proof}
+  For any $p \in \R^d$, we have
+  \begin{align*}
+    g_\Lambda(p) &= \sum_{x\in\Lambda} e^{-\pi \|p - x\|_2^2}
+      = \frac{1}{2} \sum_{x\in\Lambda} \left( e^{-\pi \|p-x\|_2^2} + e^{-\pi \|p+x\|_2^2} \right) \\
+      &= \sum_{x\in\Lambda} \frac{1}{2} \left( e^{-\pi (p^Tp - 2p^Tx + x^T x)} + e^{-\pi (p^Tp + 2p^Tx + x^Tx)} \right) \\
+      &= e^{-\pi \|p\|_2^2} \sum_{x\in\Lambda} \frac{1}{2} \left( e^{-\pi (x - 2p)^T x} + e^{-\pi (x + 2p)^T x} \right) \\
+      &\geq e^{-\pi \|p\|_2^2} \sum_{x\in\Lambda} e^{-\pi x^Tx} = e^{-\pi \|p\|_2^2} g_\Lambda(0),
+  \end{align*}
+  where the inequality follows from convexity.
+  This implies the result because $\Lambda$-periodicity allows us
+  to assume $\|p\|_2 = d(p,\Lambda)$ without loss of generality.
+\end{proof}
+
+In particular, if $d(p,\Lambda)$ is smaller than some constant,
+then $f_\Lambda(p)$ is larger than a corresponding constant between $0$ and $1$.
+On the other hand,
+we will see that the inequality in Lemma~\ref{lemma:f-large-close-to-lattice}
+is remarkably good even for points that are far away from the lattice.
+In particular, $f_\Lambda(p)$ is exponentially small if $d(p,\Lambda) > \sqrt{d}$.
+
+\begin{lemma}
+  \label{lemma:f-small-close-to-lattice}
+  For all $p \in \R^d$ and $k \in \N$, $k \geq 2$,
+  one has $f(p) \leq k^d e^{-(1-1/k^2) \pi d(p,\Lambda)^2}$.
+
+  When $d(p,\Lambda) > \sqrt{d}$, we have $f(p) \leq e^{-\pi d(p,\Lambda)^2 / 2}$.
+\end{lemma}
+\begin{proof}
+  We compare the lattices $\Lambda$ and $\frac{1}{k} \Lambda$.
+  \begin{align*}
+    g_{\frac{1}{k}\Lambda}(p/k) &= \sum_{x\in\Lambda} e^{-\pi/k^2 \|p - x\|_2^2} \\
+      &= \sum_{x \in\Lambda} e^{(1-1/k^2) \pi \|p - x\|_2^2} \cdot e^{-\pi \|p - x\|_2^2}
+      \geq e^{(1-1/k^2) \pi d(p,\Lambda)^2} g_\Lambda(p)
+  \end{align*}
+  On the other hand,
+  \begin{align*}
+    g_{\frac{1}{k}\Lambda}(p/k)
+      &\leq g_{\frac{1}{k}\Lambda}(0) \\
+      &= \sum_{y \in (\frac{1}{k}\Lambda)^\star} \widehat{g_{\frac{1}{k}\Lambda}}(y)
+      = \det (\frac{1}{k}\Lambda)^\star \sum_{y \in (\frac{1}{k}\Lambda)^\star} \rho(y)
+      = k^d \det\Lambda^\star \sum_{y \in k\Lambda^\star} \rho(y) \\
+      &\leq k^d \det\Lambda^\star \sum_{y \in \Lambda^\star} \rho(y)
+      = k^d \sum_{y\in\Lambda^\star} \widehat{g_\Lambda}(y) = k^d g_\Lambda(0)
+  \end{align*}
+  and the first claim follows.
+
+  The second claim follows by choosing $k = 2$,
+  since for $d(p,\Lambda) > \sqrt{d}$:
+  \begin{align*}
+    2^d e^{-\frac{3}{4} \pi d(p,\Lambda)^2}
+      &\leq e^{(\ln 2 - \frac{3}{4}\pi) d(p,\Lambda)^2} \leq e^{-\frac{1}{2} \pi d(p, \Lambda)^2}
+  \end{align*}
+  We used the fact that $\ln 2 < \pi/4$.
+\end{proof}
+
+\begin{remark}
+  \begin{enumerate}
+    \item 
+      The condition that $k$ should be a natural number can be relaxed
+      if we modify the proof using the Fourier transform of functions
+      $\rho_k(p) = e^{-\pi \|p/k\|_2^2}$.
+
+    \item
+      Is it possible to efficiently compute a good approximation of $f(p)$?
+      If yes, this might lead to a sub-exponential time algorithm that approximates
+      the closest vector problem up to a factor of $\sqrt{d}$.
+      The existence of such an algorithm is plausible
+      because it is known that $\sqrt{d}$-approximate CVP lies in $NP \cap coNP$~\cite{MR2176561}.
+      In fact, the presentation in this chapter is loosely inspired by that paper,
+      which shows that an approximation of $f$ obtained by sampling Fourier coefficients
+      may be used as a certificate that
+      a given target point lies far from the lattice, and hence the problem lies in $coNP$.
+  \end{enumerate}
+\end{remark}
+
+
 
 
 
