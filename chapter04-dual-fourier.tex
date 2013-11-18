@@ -435,6 +435,169 @@ the flatness constant is known to be $O(d \log d)$~\cite{MR1410163,MR1854250}.
 
 
 
+\section{Fourier series}
+
+Our goal for the remainder of the chapter is to show a \emph{transference bound}
+$\lambda_1^\star \cdot \mu \leq d$.
+The covering radius $\mu$ is defined as the maximum of the $\Lambda$-periodic function $d(p,\Lambda)$,
+so we will use Fourier analysis to study such functions.
+
+\begin{definition}
+  A function $f: \R^d \to \C$ is $\Lambda$-periodic if $f(p + x) = f(p)$ for all $p \in \R^d$
+  and $x \in \Lambda$.
+\end{definition}
+
+One can say that
+Fourier analysis is the study of a change of coordinates between two orthonormal bases
+of a space of functions.
+One of the bases is ``the pointwise basis'' while the other basis is in terms of simple wave functions.
+Such language is to be taken with a grain of salt when talking about spaces of functions,
+but it should serve as a reasonable guide to intuition.
+
+Talking about orthonormality requires a scalar product on $\Lambda$-periodic functions:
+\[
+  \langle f, g \rangle_\Lambda := \frac{1}{\det \Lambda} \int_{\cP_B} f(p) \overline{g(p)} \,dp
+\]
+where $B$ is some basis of $\Lambda$ and $\overline{z}$ is the complex conjugate of $z \in \C$.
+As an orthonormal basis of wave functions,
+we will use
+\[
+  \omega_y(p) := e^{2\pi i p^T y}
+\]
+for $y \in \Lambda^\star$.
+Let us establish some basic facts about $\langle \cdot, \cdot \rangle_\Lambda$ and the $\omega_y$.
+
+\begin{remark}
+  In general,
+  we will not be precise about the exact integrability (and often continuity) conditions on $f$ and $g$.
+\end{remark}
+
+\begin{lemma}
+  $\langle \cdot, \cdot \rangle_\Lambda$ is a scalar product on
+  sufficiently nice $\Lambda$-periodic functions.
+  Furthermore, for every half-open polytope $P \subset \R^d$ such that
+  the translates $x + P$, $x \in \Lambda$, form a tiling of $\R^d$
+  (that is, $\R^d = \bigcup_{x\in \Lambda} x + P$ is a disjoint union),
+  one has
+  \[
+    \langle f, g \rangle_\Lambda = \frac{1}{\det \Lambda} \int_{P} f(p) \overline{g(p)} \,dp.
+  \]
+  In particular, the definition of $\langle \cdot, \cdot \rangle_\Lambda$
+  is independent of the choice of basis $B$.
+\end{lemma}
+\begin{proof}
+  One easily checks that $\langle \cdot, \cdot \rangle_\Lambda$
+  is a scalar product, that is, it satisfies linearity, conjugate symmetry, and positive definiteness.
+
+  For the second part,
+  the intuitive idea is that we can slice $P$ along the tiling defined by $\cP_B$
+  and then reassemble the pieces of $P$ into a disjoint (up to parts of measure $0$) union
+  equal to $\cP_B$.
+  This is similar to the proof of Theorem~\ref{thm:blichfeldt}.
+
+  We define $P_x := P \cap (x + \cP_B)$ for $x \in \Lambda$
+  and note that $P$ is the disjoint union of the $P_x$.
+  It is straightforward to show that $\cP_B$ is the disjoint union of the $P_x - x$.
+  We can use this to compute
+  \begin{align*}
+    \int_P f(p) \overline{g(p)} \,dp &= \sum_{x \in \Lambda} \int_{P_x} f(p) \overline{g(p)} \,dp
+      = \sum_{x \in \Lambda} \int_{P_x - x} f(p) \overline{g(p)} \,dp
+      = \int_{\cP_B} f(p) \overline{g(p)} \,dp
+  \end{align*}
+  For the second equation, we used the $\Lambda$-periodicity of $f$ and $g$.
+  Note that even though we operate with infinite sums,
+  there are no issues of convergence because only finitely many summands are non-zero.
+\end{proof}
+
+\begin{lemma}
+  \label{lemma:omega-orthonormal}
+  The $\omega_y$ form an orthonormal system of $\Lambda$-periodic functions.
+\end{lemma}
+\begin{proof}
+  First, we check that
+  \[
+    \omega_y(p + x) = e^{2\pi i (p + x)^T y}
+      = e^{2\pi i p^Ty} \cdot \underbrace{e^{2\pi i \overbrace{x^Ty}^{\in \Z}}}_{=1} = \omega_y(p)
+  \]
+  for $y \in \Lambda^\star$ and $x \in \Lambda$.
+  Furthermore,
+  \begin{align*}
+    \langle \omega_y, \omega_y \rangle &= \frac{1}{\det \Lambda} \int_{\cP_B} \omega_y(p) \overline{\omega_y(p)} \,dp \\
+     &= \frac{1}{\det\Lambda} \int_{\cP_B} 1 \,dp = 1
+  \end{align*}
+  Finally, let $y \neq z \in \Lambda^\star$. Then
+  \begin{align*}
+    \langle \omega_y, \omega_z \rangle
+      &= \frac{1}{\det \Lambda} \int_{\cP_B} e^{2\pi i p^T(y - z)} \,dp
+  \end{align*}
+  Let $\Lambda' := \{ x \in \Lambda ~:~ x^T (y - z) = 0 \}$
+  and let $P'$ be a fundamental parallelepiped of $\Lambda'$.
+  Let $k \in \N_{\geq 1}$ be minimal such that the hyperplane $x^T (y - z) = k$
+  contains a lattice point.
+  Then $P := P' + [0,w)$, $w := k \cdot \frac{y - z}{\|y-z\|_2^2}$,
+  is a fundamental region of $\Lambda$, see Figure~\ref{fig:omega-orthogonal},
+  and we can rewrite the integral as.
+  \begin{align*}
+    \langle \omega_y, \omega_z \rangle
+      &= \frac{1}{\det \Lambda} \int_{P} e^{2\pi i p^T(y - z)} \,dp \\
+      &= \frac{1}{\det \Lambda} \int_{P'} e^{2\pi i p^T(y - z)}
+        \underbrace{\int_{[0,w)} e^{2\pi i q^T(y-z)} \,dq}_{=0} \,dp = 0
+  \end{align*}
+  The last equation follows from the fact that $w^T (y - z) = k$ is a positive integer,
+  and the inner integral can therefore be written as an integral over a closed path in the complex plane.
+\end{proof}
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}
+      \coordinate (w) at (1.8,0.6);
+      \coordinate (w') at ($(w) + (-0.4,1.2)$);
+      \fill[black!10] (0,0) -- (w) -- (w') -- (-0.4,1.2) -- cycle;
+      \draw[very thick] (0,0) -- node[left] {$P'$} (-0.4,1.2);
+      \draw (0,0) -- (w);
+      \draw (-0.4,1.2) -- (w');
+
+      \fill (0,0) circle[radius=2pt] node[left] {$0$};
+
+      \foreach \x in {0,1,...,3} {
+        \draw ($\x*(2,0)$) +(0.5,-1.5) -- +(-1.0,3);
+        \foreach \y in {-1,0,...,2.01}
+          \fill ($\x*(2,0) + \y*(-0.4,1.2)$) circle[radius=2pt];
+      }
+
+      \draw[fill=white] (w) circle[radius=2pt] node[right] {$w$};
+      \draw (0.7,0.9) node {$P$};
+
+      \draw (0.5,-1.5) node[below] {$\scriptstyle x^T(y-z) = 0$};
+      \draw (2.5,-1.5) node[below] {$\scriptstyle x^T(y-z) = 2$};
+
+      \draw[->] (2.2,-0.6) -- node[below,very near end] {$y-z$} +(1.2,0.4);
+
+      \foreach \x in {-0.5,0.5,1.5,...,3.501}
+        \draw[help lines] ($\x*(2,0)$) +(0.5,-1.5) -- +(-1.0,3);
+
+    \end{tikzpicture}
+  \end{center}
+  \caption{Integrating parallel to $y-z$ in the proof of Lemma~\ref{lemma:omega-orthonormal}.}
+  \label{fig:omega-orthogonal}
+\end{figure}
+
+\begin{definition}
+  Let $f: \R^d \to \C$ be $\Lambda$-periodic.
+  The \emph{Fourier series} of $f$ is $\hat f: \Lambda^\star \to \C$ where
+  \[
+    \hat f(y) := \langle f, \omega_y \rangle_\Lambda = \frac{1}{\det \Lambda} \int_{\cP_B} f(p) e^{-2\pi i p^T y} \,dp,
+    \quad y \in \Lambda^\star
+  \]
+\end{definition}
+\begin{theorem}
+  For sufficiently nice $\Lambda$-periodic $f$, one has $f = \sum_{y \in \Lambda^\star} \hat f(y) \omega_y$.
+\end{theorem}
+
+
+
+
+
+
 \section{Banaszczyk's transference bound}
 \label{sec:transference-bound-banaszczyk}
 
