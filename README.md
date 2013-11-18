@@ -46,6 +46,9 @@ attribution by naming me as its original author and (b) you must make your
 derivative work available under the same or similar license terms.
 
 
-Author
-------
+Authors
+-------
 Nicolai Hähnle <nhaehnle@gmail.com>
+
+Contributions by:
+Rasmus Schroeder <schroeder@or.uni-bonn.de>

@@ -39,7 +39,7 @@ which is due to Micciancio and Voulgaris~\cite{MR2743283}.
   \]
   and the (open) \emph{Voronoi cell} of $\Lambda$
   \[
-    \cV_\Lambda := \bigcup_{x \in \Lambda\setminus\{0\}} H_x
+    \cV_\Lambda := \bigcap_{x \in \Lambda\setminus\{0\}} H_x
   \]
   Figure~\ref{fig:voronoi-diagram} shows a $2$-dimensional example.
 \end{definition}
@@ -111,7 +111,7 @@ which is due to Micciancio and Voulgaris~\cite{MR2743283}.
       \cap \left( \bigcap_{y \in \Lambda\setminus\{0\} ~:~ \|y\|_2 > 2R} H_y \right) = \cV_\Lambda
   \]
   which implies the claim.
-  That is, $\cV_\Lambda$ is bounded and defined as the intersection of finitely many half-spaces,
+  That is, $\overline{\cV_\Lambda}$ is bounded and defined as the intersection of finitely many half-spaces,
   i.e., it is a polytope.
 
   The statement of the Lemma for general lattices follows
@@ -120,7 +120,7 @@ which is due to Micciancio and Voulgaris~\cite{MR2743283}.
   onto $\langle \Lambda \rangle$.
 \end{proof}
 
-Now that we have established that $\cV_\Lambda$ is a polytope,
+Now that we have established that $\overline{\cV_\Lambda}$ is a polytope,
 a natural algorithmic representation suggests itself:
 
 \begin{definition}
@@ -376,7 +376,7 @@ First, we see that it contains a list of all shortest vectors of the lattice.
 
   This bound happens to be tight for $d = 2$,
   but considerably better bounds are known in higher dimension.
-  A classical source on the study of sphere spackings is~\cite{MR1662447}.
+  A classical source on the study of sphere packings is~\cite{MR1662447}.
 \end{remark}
 
 We can also use the Voronoi cell to compute closest vectors.
@@ -571,7 +571,7 @@ We find ourselves in an oddly circular situation.
 Given some way of computing closest vectors in $\Lambda$,
 we can also compute its Voronoi relevant vectors,
 and given a way of computing its Voronoi relevant vectors,
-we can also computed closest vectors in $\Lambda$.
+we can also compute closest vectors in $\Lambda$.
 \begin{center}
   \begin{tikzpicture}
     \node[left,inner sep=3mm,draw] (cvp) at (0,0) {Closest vectors};
