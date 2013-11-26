@@ -329,16 +329,16 @@ the dual lattice of $A \cdot \Lambda$.
   Let $d \in \N$.
   Suppose there is a constant $c_d$ such that for every full-dimensional lattice $\Lambda \subset \R^d$
   one has $\lambda_1^\star \cdot \mu \leq c_d$.
-  Then every ellipsoid $E$ with $w(E) > 2 c_d$ contains a lattice point.
+  Then every ellipsoid $E$ with $w(E) \geq 2 c_d$ contains a lattice point.
 \end{theorem}
 \begin{proof}
   By the above remark, we only need to consider the case where $E$ is a ball.
   We have
   \[
-    2 \lambda_1^\star \cdot \mu \leq 2 c_d < w(E) = 2r \lambda_1^\star,
+    2 \lambda_1^\star \cdot \mu \leq 2 c_d \leq w(E) = 2r \lambda_1^\star,
   \]
   where $r$ is the radius of $E$.
-  This implies $\mu < r$.
+  This implies $\mu \leq r$.
   Since $\mu$ is the maximal distance of any point from the lattice,
   it follows that there is a lattice point with distance less than $r$ from the center of $E$.
 \end{proof}
@@ -412,15 +412,15 @@ since it is tight e.g. for simplices.
   Suppose there is a constant $c_d$ such that
   for every full-dimensional lattice $\Lambda \subset \R^d$
   one has $\lambda_1^\star \cdot \mu \leq c_d$.
-  Then every convex body $K$ with $w(K) > 2d \cdot c_d$ contains a lattice point.
+  Then every convex body $K$ with $w(K) \geq 2d \cdot c_d$ contains a lattice point.
 \end{corollary}
 \begin{proof}
   Let $E \subseteq K \subseteq d \star E$ as in Theorem~\ref{thm:loewner-john}.
   Since
   \[
-    d \cdot w(E) = w(d \star E) \geq w(K) > 2d \cdot c_d
+    d \cdot w(E) = w(d \star E) \geq w(K) \geq 2d \cdot c_d
   \]
-  we have $E > 2c_d$,
+  we have $w(E) \geq 2c_d$,
   so there is a lattice point $x \in \Lambda \cap E \subseteq \Lambda \cap E$
   by Theorem~\ref{thm:flatness-ellipsoids}.
 \end{proof}
@@ -685,7 +685,7 @@ This motivates the introduction of the second main tool from Fourier analysis.
   We continue the computation from above:
   \begin{align*}
     \widehat{g_\Lambda}(y) &= \frac{1}{\det\Lambda} \int_{\R^d} \rho(p) e^{-2\pi i p^T y} \,dp \\
-      &= \det\Lambda^\star \hat\rho(y) = \det\Lambda^\star \rho(y) \qedhere
+      &= \det\Lambda^\star \tilde\rho(y) = \det\Lambda^\star \rho(y) \qedhere
   \end{align*}
 \end{proof}
 
@@ -747,7 +747,7 @@ In particular, $f_\Lambda(p)$ is exponentially small if $d(p,\Lambda) > \sqrt{d}
   For all $p \in \R^d$ and $k \in \N$, $k \geq 2$,
   one has $f(p) \leq k^d e^{-(1-1/k^2) \pi d(p,\Lambda)^2}$.
 
-  When $d(p,\Lambda) > \sqrt{d}$, we have $f(p) \leq e^{-\pi d(p,\Lambda)^2 / 2}$.
+  When $d(p,\Lambda) \geq \sqrt{d}$, we have $f(p) \leq e^{-\pi d(p,\Lambda)^2 / 2}$.
 \end{lemma}
 \begin{proof}
   We compare the lattices $\Lambda$ and $\frac{1}{k} \Lambda$.
@@ -769,7 +769,7 @@ In particular, $f_\Lambda(p)$ is exponentially small if $d(p,\Lambda) > \sqrt{d}
   and the first claim follows.
 
   The second claim follows by choosing $k = 2$,
-  since for $d(p,\Lambda) > \sqrt{d}$:
+  since for $d(p,\Lambda) \geq \sqrt{d}$:
   \begin{align*}
     2^d e^{-\frac{3}{4} \pi d(p,\Lambda)^2}
       &\leq e^{(\ln 2 - \frac{3}{4}\pi) d(p,\Lambda)^2} \leq e^{-\frac{1}{2} \pi d(p, \Lambda)^2}
@@ -806,6 +806,106 @@ In particular, $f_\Lambda(p)$ is exponentially small if $d(p,\Lambda) > \sqrt{d}
 
 \section{Banaszczyk's transference bound}
 \label{sec:transference-bound-banaszczyk}
+
+Suppose that $\mu = \sqrt{d}$.
+By Lemma~\ref{lemma:f-small-close-to-lattice},
+there is a point $p_0$ for which $f(p_0) \leq e^{-\pi d / 2}$.
+That is, $g_\Lambda(p)$ fluctuates quite dramatically.
+On the other hand,
+\begin{align*}
+  g_\Lambda(p)
+    &= \sum_{y \in \Lambda^\star} \widehat{g_\Lambda}(y) e^{2\pi i p^T y}
+    = \det \Lambda^\star \sum_{y \in \Lambda^\star} \rho(y) e^{2\pi i p^T y},
+\end{align*}
+where the sum can be written as
+\begin{align*}
+  1 + \underbrace{\sum_{y \in \Lambda^\star \setminus 0} \rho(y) e^{2\pi i p^T y}}_{
+    |\cdot| \leq \sum_{y \in \Lambda^\star} \rho(y)}
+\end{align*}
+It stands to reason that $\sum_{y \in \Lambda^\star} \rho(y) = g_{\Lambda^\star}(0) - 1$
+is quite small when $\lambda_1^\star > \sqrt{d}$,
+and hence $g_\Lambda(p)$ cannot fluctuate much.
+This is indeed the case.
+The Lemma formulates the required result for the primal rather than the dual lattice.
+
+\begin{lemma}
+  Let $\lambda_1 > \sqrt{d}$. Then $g_\Lambda(0) < 1 + 2 \cdot 2^{-d}$.
+\end{lemma}
+\begin{proof}
+  The proof is analogous to Lemma~\ref{lemma:f-small-close-to-lattice}.
+  \begin{align*}
+   \sum_{y \in \Lambda \setminus 0} e^{-\pi/4 \|y\|_2^2}
+      &= \sum_{y \in \Lambda \setminus 0} e^{-\pi \|y\|_2^2} \cdot e^{\frac{3}{4} \pi \overbrace{\|y\|_2^2}^{>d}}
+      > e^{\frac{3}{4} \pi d} \sum_{y \in \Lambda \setminus 0} e^{-\pi \|y\|_2^2}
+%      = e^{\frac{3}{4} \pi d} (g_\Lambda(0) - 1)
+  \end{align*}
+  On the other hand,
+  \begin{align*}
+    \sum_{y \in \Lambda \setminus 0} e^{-\pi/4 \|y\|_2^2}
+      &= \sum_{y \in \frac{1}{2} \Lambda \setminus 0} e^{-\pi \|y\|_2^2}
+ \\ & < g_{\frac{1}{2} \Lambda}(0)
+      = \sum_{y \in (\frac{1}{2} \Lambda)^\star} \widehat{g_{\frac{1}{2} \Lambda}}(y)
+ \\ & = \det(\frac{1}{2} \Lambda)^\star \sum_{y \in (\frac{1}{2} \Lambda)^\star} \rho(y)
+      = 2^d \det \Lambda^\star \sum_{y \in 2\Lambda^\star} \rho(y)
+ \\ & < 2^d \det \Lambda^\star \sum_{y \in \Lambda^\star} \rho(y)
+      = 2^d \sum_{y \in \Lambda^\star} \widehat{g_\Lambda}(y)
+      = 2^d g_\Lambda(0)
+  \end{align*}
+  Overall, we obtain
+  \[
+    2^d g_\Lambda(0) > e^{\frac{3}{4}\pi d} (g_\Lambda(0) - 1) > 4^d (g_\Lambda(0) - 1).
+  \]
+  We may rearrange as
+  \[
+    g_\Lambda(0) - 1 < 2^{-d} g_\Lambda(0)
+  \]
+  and finally get
+  \[
+    g_\Lambda(0) < \frac{1}{1 - 2^{-d}}
+    = 1 + \frac{2^{-d}}{\underbrace{1 - 2^{-d}}_{\geq 1/2}} \leq 1 + 2 \cdot 2^{-d}.
+    \qedhere
+  \]
+\end{proof}
+
+Let us apply this result to the dual lattice and continue the line of thought from before.
+If $\lambda_1^\star > \sqrt{d}$,
+we now get
+\[
+  g_\Lambda(p) \geq \det \Lambda^\star (1 - (g_{\Lambda^\star}(0) - 1)) > \det \Lambda^\star (1 - 2 \cdot 2^{-d})
+\]
+for all $p \in \R^d$.
+On the other hand,
+\[
+  g_\Lambda(0) = \det \Lambda^\star g_{\Lambda^\star}(0) < \det\Lambda^\star (1 + 2 \cdot 2^{-d}).
+\]
+To summarize,
+\begin{align*}
+  f(p) &= \frac{g_\Lambda(p)}{g_\Lambda(0)}
+     > \frac{1 - 2 \cdot 2^{-d}}{1+2\cdot 2^{-d}}
+     = 1 - \frac{4 \cdot 2^{-d}}{1 + 2 \cdot 2^{-d}}
+     = 1 - \frac{2}{2^{d - 1} + 1} \geq \frac{1}{3}
+\end{align*}
+for $d \geq 2$.
+On the other hand,
+we exhibited a point with $f(p_0) \leq e^{-\pi d/2} < \frac{1}{3}$.
+This is a contradiction.
+
+\begin{theorem}
+  $\lambda_1^\star \cdot \mu \leq d$.
+\end{theorem}
+\begin{proof}
+  Scaling the lattice does not change $\lambda_1^\star \cdot \mu$,
+  so we may assume $\mu = \sqrt{d}$.
+  For $d = 2$, the discussion above shows a contradiction when $\lambda_1^\star > \sqrt{d}$.
+  For $d = 1$, observe that the claim holds for $\Lambda = \Z$.
+  The same scaling argument extends the claim to any other lattice.
+\end{proof}
+
+
+
+
+
+
 
 
 
