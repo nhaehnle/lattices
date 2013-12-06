@@ -164,7 +164,7 @@ we will see that it is most meaningful for sets that contain $0$.
       \fill[green!50!black] (-1,-1) circle[radius=2pt];
     \end{tikzpicture}
   \end{center}
-  Valid inequalities of $K$ correspond to points of $K^\star$ and vice versa,
+  Valid inequalities of $K$ correspond to points in $K^\star$ and vice versa,
   as some examples in the drawing indicate.
 \end{example}
 
@@ -245,7 +245,7 @@ where $K$ is a symmetric convex body of positive volume:
 \end{align*}
 We can immediately extend some of the statements from Chapter~\ref{chapter:dual-lattices}.
 \begin{lemma}
-  The lattice width of $K$ is related to the length of a shortest vector by
+  The lattice width of $K$ is related to the length of a shortest vector in the dual by
   $w(K,\Lambda) = 2\lambda_1(\Lambda^\star, K^\star)$.
 \end{lemma}
 \begin{proof}
@@ -262,6 +262,7 @@ We can immediately extend some of the statements from Chapter~\ref{chapter:dual-
   On the other hand, there is an $x \in K$ that satisfies the inequality with equality,
   and hence $w_y(K) / 2$ is the smallest possible factor by which $K^\star$ must be scaled to contain $y$,
   i.e. $\|y\|_{K^\star} = w_y(K) / 2$.
+  Finally,
   \[
     w(K,\Lambda) = \min_{y\in K^\star\setminus 0} w_y(K) = \min_{y\in K^\star\setminus 0} 2 \|y\|_{K^\star}
       = 2 \lambda_1(\Lambda^\star, K^\star) \qedhere
@@ -285,9 +286,210 @@ We can immediately extend some of the statements from Chapter~\ref{chapter:dual-
 
 
 
-
-
 \section{Enumerating lattice points in an ellipsoid}
+
+Let $\Lambda \subseteq \R^d$ be a lattice and $B = B(z,r)$ a ball.
+How can we quickly enumerate the points in $B \cap \Lambda$?
+
+Recall the notion of Voronoi diagram of a lattice from Chapter~\ref{chapter:voronoi-cell}.
+We can define a graph $G = (\Lambda, E)$ by saying that
+\[
+  xy \in E \iff x + \overline{\cV} \text{ and } y + \overline{\cV} \text{ share a facet}
+\]
+Equivalently, $xy \in E$ if $y - x$ is Voronoi relevant
+(recall Definition~\ref{def:voronoi-relevant}).
+Intuitively, this graph is the ``dual graph'' of the Voronoi diagram.
+Note that the degree of each vertex is bounded by $2\cdot (2^d - 1)$
+by Corollary~\ref{cor:number-of-voronoi-relevant}.
+Let $G[B]$ be the graph induced by the vertices in $B \cap \Lambda$;
+see Figure~\ref{fig:voronoi-graph} for an illustration.
+
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}
+      \clip (-2.2,-2.3) rectangle (2.2,4.3);
+
+      \foreach \y in {-1,0,1,2}
+        \foreach \x in {-3,-2,-1,0,1,2}
+          \fill ($\x*(1,0) + \y*(0.5,2)$) circle[radius=2pt];
+
+      \foreach \y in {-2,0,2,4}
+        \draw (-2.2,\y) -- (2.2,\y);
+      \foreach \x in {-4,-3,...,3.01} {
+        \draw ($(-1,-4) + \x*(1,0)$) -- +(2.5,10);
+        \draw ($(-1.5,6) + \x*(1,0)$) -- +(2.5,-10);
+      }
+
+      \foreach \y in {-1,0,1,2}
+        \foreach \x in {-4,-3,-2,-1,0,1,2}
+          \draw[help lines] ($\x*(1,0) + \y*(0.5,2)$) +(0,1.0625) -- +(0.5,0.9375) -- +(0.5,-0.9375) -- +(0,-1.0625);
+    \end{tikzpicture}
+    \qquad
+    \begin{tikzpicture}
+      \clip (-2.2,-2.3) rectangle (2.2,4.3);
+
+      \draw[fill=black!10] (-0.2,0.8) circle[radius=1.9cm];
+
+      \foreach \y in {-1,0,1,2}
+        \foreach \x in {-3,-2,-1,0,1,2}
+          \fill[help lines] ($\x*(1,0) + \y*(0.5,2)$) circle[radius=2pt];
+
+%       \foreach \y in {-2,0,2,4}
+%         \draw[help lines] (-2.2,\y) -- (2.2,\y);
+%       \foreach \x in {-4,-3,...,3.01} {
+%         \draw[help lines] ($(-1,-4) + \x*(1,0)$) -- +(2.5,10);
+%         \draw[help lines] ($(-1.5,6) + \x*(1,0)$) -- +(2.5,-10);
+%       }
+
+      \foreach \y in {-1,0,1,2}
+        \foreach \x in {-4,-3,-2,-1,0,1,2}
+          \draw[help lines] ($\x*(1,0) + \y*(0.5,2)$) +(0,1.0625) -- +(0.5,0.9375) -- +(0.5,-0.9375) -- +(0,-1.0625);
+
+      \foreach \p in {(0,0),(-1,0),(1,0),(-1.5,2),(-0.5,2),(0.5,2)}
+        \fill \p circle[radius=2pt];
+      \draw (-1.5,2) -- (-1,0) -- (1,0) -- (0.5,2) -- cycle;
+      \draw (-1,0) -- (-0.5,2) -- (0,0) -- (0.5,2);
+    \end{tikzpicture}
+  \end{center}
+  \caption{The dual graph of the Voronoi diagram of a lattice and the subgraph induced by a disk.}
+  \label{fig:voronoi-graph}
+\end{figure}
+
+\begin{lemma}
+  $G[B]$ is connected.
+\end{lemma}
+\begin{proof}
+  Let $B = B(z,r)$ and let us briefly argue that we may assume,
+  by a simple perturbation argument,
+  that $z$ has a unique closest vector $x^\star \in \Lambda$.
+  First, we can choose $\varepsilon > 0$ such that there is no lattice point at distance
+  less than $\varepsilon$ outside $B$.
+  Then, if $z$ has multiple closest vectors, we may choose one of them as $x^\star$
+  and move $z$ by $\varepsilon/2$ towards it to obtain a new center $z'$.
+  The ball $B(z', r + \varepsilon/2)$ contains the same lattice points as $B$,
+  and $z'$ has a unique closest vector, see Figure~\ref{fig:perturbation-center-of-ball-keeps-lattice-points}.
+
+  \begin{figure}
+    \begin{center}
+      \begin{tikzpicture}
+        \clip (-2.2,-2.3) rectangle (2.2,4.3);
+
+        \coordinate (z) at (-0.5,0.9375);
+        \coordinate (z') at (-0.45,0.84375);
+
+        \draw[fill=black,fill opacity=0.1] (z) circle[radius=1.3cm];
+        \draw[fill=black,fill opacity=0.1] (z') circle[radius=1.4cm];
+
+        \foreach \y in {-1,0,1,2}
+          \foreach \x in {-3,-2,-1,0,1,2}
+            \fill ($\x*(1,0) + \y*(0.5,2)$) circle[radius=2pt];
+
+        \foreach \y in {-1,0,1,2}
+          \foreach \x in {-4,-3,-2,-1,0,1,2}
+            \draw[help lines] ($\x*(1,0) + \y*(0.5,2)$) +(0,1.0625) -- +(0.5,0.9375) -- +(0.5,-0.9375) -- +(0,-1.0625);
+
+        \fill (z) circle[radius=2pt] node[above left] {$z$};
+        \draw (z) -- +(20:1.3cm);
+        \fill (z') circle[radius=2pt] node[below left] {$z'$};
+        \draw (z') -- +(20:1.4cm);
+      \end{tikzpicture}
+    \end{center}
+    \caption{Perturbing $z$ results in a ball containing the same lattice point whose center has a unique closest vector.}
+    \label{fig:perturbation-center-of-ball-keeps-lattice-points}
+  \end{figure}
+
+  We will show that every $x \in \Lambda \cap B$ is connected to $x^\star$ by a path in $G[B]$.
+  Choose a maximal sequence $x = x_0, x_1, \ldots, x_N \in \Lambda$ satisfying
+  \begin{enumerate}
+    \item $x_{j+1} - x_j$ is Voronoi relevant and
+    \item $\|x_{j+1} - z\|_2 < \|x_j - z\|_2$.
+  \end{enumerate}
+  That is, greedily walk from $x$ along edges to get closer to $z$.
+  By maximality of the sequence (equivalently: by the fact that we cannot continue greedily from $x_N$), we have
+  \[
+    \|x_N - z\|_2 \leq \|x_N - (z + v)\|_2
+  \]
+  for all Voronoi relevant vectors $v$.
+  This means $x_N \in z + \overline{\cV}$,
+  which implies $x_N = x^\star$ since $z$ has a unique closest vector.
+  That is, we found a path from $x$ to $x^\star$ in $G[B]$.
+\end{proof}
+
+This suggests a straightforward approach to enumerating the lattice points in a ball.
+First, find a closest vector to the center of the ball.
+Then apply breadth-first search in $G[B]$.
+
+There is a subtle difficulty of implementation.
+Breadth-first search is well-known to take linear time when a graph is given explicitly.
+However, in our case, $G[B]$ is only known implicitly.
+When visiting a vertex $x \in B \cap \Lambda$,
+we can easily enumerate the \emph{coordinates} of its neighbours since we know the Voronoi relevant vectors.
+However, it is not so obvious how to check whether that neighbour has already been visited or not.
+
+A simple work-around is to store all visited vertices in an efficient data structure
+such as a balanced binary search tree.
+This certainly works,
+although it requires $O(\log |B \cap \Lambda|)$ time for each neighbour that we check.
+
+\begin{lemma}
+  $\log |B \cap \Lambda| \leq \poly(b)$,
+  where $b$ is the encoding size of $B$ and $\Lambda$.
+\end{lemma}
+\begin{proof}
+  Let $B = B(z,r)$.
+  Recall that we assume rational lattices for computational purposes.
+  By multiplying with least common denominators, we can assume $\Lambda \subset \Z^d$ for simplicity.
+  Then $\lambda_1 \geq 1$, and hence the balls of radius $1/2$ around lattice points are disjoint.
+  We obtain
+  \[
+    |B \cap \Lambda| \cdot \vol B(0,\frac{1}{2}) \leq \vol B(z,r) = 2^d r^d \vol B(0,\frac{1}{2})
+  \]
+  This implies the result.
+\end{proof}
+
+That is, we can fold the running time that is required to maintain and use the binary search tree
+into the catch-all factor of $\poly(b)$ that the running time of all our algorithms has anyway,
+and obtain:
+
+\begin{theorem}
+  There is an algorithm that,
+  given a lattice $\Lambda \subset \R^d$ and an ellipsoid $E$,
+  enumerates all points in $E \cap \Lambda$ in time
+  $(1 + |E \cap \Lambda|) 2^{O(d)} \poly(b)$.
+\end{theorem}
+\begin{proof}
+  We can assume that $E$ is a ball by applying a linear transformation to both $E$ and $\Lambda$.
+  The rest follows from the discussion above.
+\end{proof}
+
+% Unfortunately,
+% the \emph{space} required by the algorithm we outlined is of the same order of magnitude
+% as the running time, which grows very large when $E$ is large.
+% It turns out that we can eliminate this overhead.
+% The key observation is a parity argument similar to the ones we used in Chapter~\ref{chapter:voronoi-cell}:
+% 
+% \begin{lemma}
+%   Let $x \in \Lambda$.
+%   The set $x + 2\Lambda$ of lattice vectors of the same parity
+%   is an independent set in $G$.
+% \end{lemma}
+% \begin{proof}
+%   Edges connect only vertices with $y - x$ Voronoi relevant,
+%   but the vectors in $2\Lambda$ are not Voronoi relevant.
+% \end{proof}
+% 
+% 
+% 
+% Let $V$ be the set of Voronoi relevant vectors of $\Lambda$ and define
+% \[
+%   B_V := (B \cap \Lambda) + V
+% \]
+% Recall that the Voronoi relevant vectors come in pairs $v, -v$ of equal parity.
+% Arbitrarily pick one vector of each pair and call the resulting set $V_+$.
+% Note that $V = V_+ \cup -V_+$.
+
+
+
 
 
 
