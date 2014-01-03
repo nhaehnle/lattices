@@ -103,11 +103,11 @@ which is due to Micciancio and Voulgaris~\cite{MR2743283}.
   The inclusion from left to right is clear from the definition.
   For the inclusion from right to left,
   let $p \in H_x$ for all $x \in \Lambda\setminus\{0\}$ with $\|x\|_2 \leq 2R$.
-  In particular, this implies $x \in \overline{Q}$ and therefore $\|x\|_2 \leq R$.
-  This in turn implies $x \in H_y$ for all $y$ with $\|y\|_2 > 2R$.
+  In particular, this implies $p \in \overline{Q}$ and therefore $\|p\|_2 \leq R$.
+  This in turn implies $p \in H_y$ for all $y$ with $\|y\|_2 > 2R$.
   To summarize,
   \[
-     x \in \left( \bigcap_{x \in \Lambda\setminus\{0\} ~:~ \|x\|_2 \leq 2R} H_x \right)
+     p \in \left( \bigcap_{x \in \Lambda\setminus\{0\} ~:~ \|x\|_2 \leq 2R} H_x \right)
       \cap \left( \bigcap_{y \in \Lambda\setminus\{0\} ~:~ \|y\|_2 > 2R} H_y \right) = \cV_\Lambda
   \]
   which implies the claim.
@@ -177,7 +177,7 @@ can be found -- we need some basic tools.
   \label{lemma:voronoi-relevant-as-closest}
   Let $x \in \Lambda$.
   Then $x$ is Voronoi relevant if and only if
-  $0$ and $x$ are the unique closest vectors to $\frac{1}{2} x$.
+  $0$ and $x$ are the unique closest lattice vectors to $\frac{1}{2} x$.
 \end{lemma}
 \begin{proof}
   Let $x$ be Voronoi relevant and
@@ -199,7 +199,7 @@ can be found -- we need some basic tools.
   or is cut off by that hyperplane entirely.
   In any case, we have a contradiction with Lemma~\ref{lemma:voronoi-relevant-facet-interior}.
 
-  Now suppose $0$ and $x$ are the unique closest vectors to $\frac{1}{2} x$.
+  Now suppose $0$ and $x$ are the unique closest lattice vectors to $\frac{1}{2} x$.
   By compactness, there is a neighborhood of $\frac{1}{2} x$
   in the bounding hyperplane $\partial H_x$
   for which $0$ and $x$ are the unique closest vectors as well.

@@ -521,7 +521,7 @@ It only becomes useful, however, because we an analogue of Lemma~\ref{lemma:size
   In a $3/4$-reduced basis of a lattice of dimension $r$, one has:
   \begin{enumerate}
     \item $\| b_{j+1}^\star \|_2^2 \geq \frac{1}{2} \|b_j^\star\|_2^2$,
-    \item $\| b_j^\star \|_2^2 \geq (1/2)^{j-i} \|b_i\|_2^2$ for all $i < j$, and
+    \item $\| b_j^\star \|_2^2 \geq (1/2)^{j-i} \|b_i^\star\|_2^2$ for all $i < j$, and
     \item $b_1$ is a $2^{(r-1)/2}$-approximation to a shortest non-zero vector of $\Lambda(B)$.
   \end{enumerate}
 \end{lemma}
@@ -550,7 +550,7 @@ It only becomes useful, however, because we an analogue of Lemma~\ref{lemma:size
 \label{sec:nearest-plane-approximation}
 
 Now that we can approximate the shortest vector problem in the $\ell_2$-norm
-in polynomial time to within an exponential factor,
+in polynomial time within an exponential factor,
 we can ask whether the same is possible for the closest vector problem.
 Given a lattice basis $B \in \Q^{d \times d}$ and a target vector $t \in \Q^d$,
 can we find a vector $x \in \Lambda(B)$ that minimizes (at least approximately) $\|x-t\|_2$?
