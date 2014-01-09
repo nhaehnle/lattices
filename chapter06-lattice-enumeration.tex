@@ -45,7 +45,7 @@ where $N$ is the number of lattice points that are found.
 Then a natural algorithm for solving the shortest vector problem is as follows:
 Start with a lower bound $r = r_0$ on the $\|\cdot\|$-length of a shortest vector
 and enumerate lattice points in the $\|\cdot\|$-ball of radius $r$ around the origin.
-If a non-zero lattice point is found, output the shortest among them.
+If any non-zero lattice points are found, output the shortest among them.
 Otherwise, multiply $r$ by a constant factor and repeat.
 
 Due to a volume argument,
@@ -138,7 +138,7 @@ in the sense that $B_{\|\cdot\|}(0,1) = -B_{\|\cdot\|}(0,1)$.
 The polar is sometimes also called the dual of a convex body.
 Even though that terminology is also useful,
 for example due to the connection to dual lattices that we will see,
-we prefer the term polar so as not get confused with linear programming duality.
+we prefer the term polar so as not to get confused with linear programming duality.
 While the definition can be written down for arbitrary convex sets,
 we will see that it is most meaningful for sets that contain $0$.
 
@@ -189,7 +189,7 @@ we will see that it is most meaningful for sets that contain $0$.
   \[
     y^T x \leq \|x\|_2 \|y\|_2 \leq 1
   \]
-  Hence $B(0,1/R) \subseteq K^\star$
+  Hence $B(0,1/R) \subseteq K^\star$.
 
   For the third point, suppose $B(0,\varepsilon) \subseteq K$.
   Let $y \in K^\star$.
@@ -217,7 +217,7 @@ we will see that it is most meaningful for sets that contain $0$.
   Since $K$ is closed,
   there is a hyperplane that strictly separates $z$ from $K$.
   Formally, there exists a hyperplane with equation $a^Tx = b$
-  with $a^Tx < b$ for all $x \in K$ and $a^Tz > b$.
+  such that $a^Tx < b$ for all $x \in K$ and $a^Tz > b$.
 
   Since $0 \in K$, we have $b > 0$.
   By rescaling, we can ensure $b = 1$, which implies $a \in K^\star$.
@@ -428,8 +428,10 @@ However, it is not so obvious how to check whether that neighbour has already be
 
 A simple work-around is to store all visited vertices in an efficient data structure
 such as a balanced binary search tree.
-This certainly works,
-although it requires $O(\log |B \cap \Lambda|)$ time for each neighbour that we check.
+Alternatively, one might visit vertices in the order of increasing distance from $x^\star$ (or $z$).
+Both methods work,
+although both require $O(\log |B \cap \Lambda|)$-time operations for associated checks
+such as lookups in binary search trees or maintenance of a heap.
 
 \begin{lemma}
   $\log |B \cap \Lambda| \leq \poly(b)$,
@@ -447,8 +449,8 @@ although it requires $O(\log |B \cap \Lambda|)$ time for each neighbour that we 
   This implies the result.
 \end{proof}
 
-That is, we can fold the running time that is required to maintain and use the binary search tree
-into the catch-all factor of $\poly(b)$ that the running time of all our algorithms has anyway,
+That is, we can fold the running time that is required to maintain the assorted data structures
+into the catch-all factor of $\poly(b)$ that the running times of all our algorithms have anyway,
 and obtain:
 
 \begin{theorem}
@@ -468,17 +470,73 @@ and obtain:
 
 \section{Some examples on enumeration}
 
-Now that we can enumerate lattice points in an ellipsoid,
-a natural idea for enumerating points in a more general body $K$
-is to take an ellipsoid $E$ of smallest volume enclosing $K$.
-However, this approach cannot lead to an efficient algorithm.
+Given that we know how to enumerate lattice points in ellipsoids,
+our overall strategy for enumerating lattice points in arbitrary convex bodies $K$
+will be to cover $K$ by ellipsoids.
 
-Consider the cube
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}
+      \foreach \y in {0,1}
+        \foreach \x in {0,1,...,36.01} {
+          \fill ($\y*(1,-2.4) + \x*(0.1,0.02)$) circle[radius=.5pt];
+        }
+      
+      \draw[thick,fill=black!10] (0.5,0.05) -- (2.5,0.45) -- node[right] {$K$} (1.5,-0.35) --cycle;
+    \end{tikzpicture}
+  \end{center}
+  \caption{There may be arbitrarily many lattice points in a neighborhood of $K$.}
+  \label{fig:sparse-dense-close-to-K}
+\end{figure}
+
+Such a cover will usually not be exact, that is,
+the covering ellipsoids may contain lattice points that are not in $K$.
+In fact, there may be arbitrarily many lattice points just outside of $K$
+even when $K$ does not contain any lattice point,
+see Figure~\ref{fig:sparse-dense-close-to-K}.
+We cannot hope to achieve a running time proportional to $|K \cap \Lambda|$ in this case.
+
+\begin{definition}
+  Let $K \subseteq \R^d $ be a bounded convex body and let $\Lambda \subset \R^d$ be a lattice.
+  We define $G(K,\Lambda) := \max_{p \in \R^d} |(p + K) \cap \Lambda|$.
+\end{definition}
+
+Our goal will be to enumeration points in $K$ in time proportional to $G(K, \Lambda)$.
+
+Let us now see why we cannot just enumerate points in (an approximation of)
+a smallest enclosing ellipsoid.
+Consider the cross-polytope $P = \conv\{\pm e_j\}$,
+whose smallest enclosing ellipsoid is the unit ball.
+\begin{center}
+  \begin{tikzpicture}
+    \draw (-1.3,0) -- (1.3,0);
+    \draw (0,-1.3) -- (0,1.3);
+    \draw[thick] (-1,0) -- (0,1) -- (1,0) -- (0,-1) -- cycle;
+    \draw[thick] (0,0) circle[radius=1cm];
+  \end{tikzpicture}
+\end{center}
+The cross-polytope is a union of $2^d$ unit simplices,
+one for each orthant.
+Hence we can compute its volume as
 \[
-  P := [-1, +1]^d,
+  \vol(P) = 2^d \cdot \frac{1}{d!} \sim 2^d \frac{1}{\sqrt{2\pi d}} \left( \frac{e}{d} \right)^d
 \]
-whose smallest enclosing ellipsoid is the $\ell_2$ ball $B = B(0,\sqrt{d})$.
-Let us place a cube
+where we use Stirling's approximation for the factorial.
+The volume of the Euclidean unit ball is
+\[
+  \frac{\pi^{d/2}}{\Gamma(d/2 + 1)} \sim \pi^{d/2} \frac{1}{\sqrt{\pi d}} \left( \frac{2e}{d} \right)^{d/2}
+\]
+For sufficiently dense lattices, we have
+$|K \cap \Lambda| \sim \frac{\vol(K)}{\det(\Lambda)}$ (see the exercises).
+So let us compare volumes:
+\[
+  \frac{\vol(B)}{\vol(P)} \sim \frac{\pi^{d/2} \sqrt{2}}{2^{d/2}} \left( \frac{d}{e} \right)^{d/2} = 2^{\Omega(d \log d)}
+\]
+For a sufficiently dense lattice $\Lambda$,
+the same relation holds for $|B \cap \Lambda|$ and $|P \cap \Lambda|$.
+That is, enumerating the points in $B$ necessarily introduces a $2^{\Omega(d \log d)}$ factor into the running time,
+which is too wasteful for our purposes.
+
 
 
 
@@ -487,4 +545,36 @@ Let us place a cube
 
 \begin{enumerate}
   \item Show: $K^\star = K$ if and only if $K$ is the closed Euclidean unit ball.
+  
+  \item Let $K \subset \R^d$ be a convex body of positive volume.
+    The goal of this exercise is to show
+    that the number of lattice points in $K$ is asymptotically equal to $\vol(K) / \det(\Lambda)$
+    for dense lattices.
+  \begin{enumerate}[(a)]
+    \item Let $\varepsilon > 0$ and consider the tiling of $\R^d$
+      obtained by placing the cube $C_\varepsilon := [-\varepsilon/2, +\varepsilon/2]^d$ at
+      the points $\varepsilon \Z^d$.
+      Furthermore, let
+      \begin{align*}
+        L_\varepsilon &:= \{x \in \varepsilon \Z^d ~:~ x + C_\varepsilon \subseteq K \} \\
+        U_\varepsilon &:= \{x \in \varepsilon \Z^d ~:~ (x + C_\varepsilon) \cap K \neq \emptyset \}
+      \end{align*}
+      Show: $|L_\varepsilon| \leq |K \cap \varepsilon \Z^d| \leq |U_\varepsilon|$ and
+        $|L_\varepsilon| \leq \frac{\vol(K)}{\varepsilon^d} \leq |U_\varepsilon|$.
+    
+    \item Which of the inequalities in part (a) are tight?
+
+    \item Show: There is a constant $c_K > 0$ that depends on $K$
+      such that for all sufficiently small $\varepsilon > 0$ one has $|L_\varepsilon| \geq c_K \frac{\vol(K)}{\varepsilon^d}$.
+      
+      \emph{Hint:} Scale $K$ around an interior point.
+    
+    \item Show: $\lim_{\varepsilon \to 0} \frac{|U_\varepsilon|}{|L_\varepsilon|} = 1$.
+    
+    \emph{Hint:} You may use the fact that
+      $\lim_{\varepsilon \to 0} \frac{\vol(\partial K + B(0,\varepsilon))}{2\varepsilon} = \vol_{d-1}(\partial K)$.
+
+    \item Let $\Lambda \subset \R^d$ be a lattice.
+      Show: $\lim_{\varepsilon \to 0} \frac{\vol(K)}{\varepsilon^d \det\Lambda |K \cap \varepsilon \Lambda|} = 1$.
+  \end{enumerate}
 \end{enumerate}
