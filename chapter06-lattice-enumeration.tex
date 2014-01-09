@@ -468,7 +468,7 @@ and obtain:
 
 
 
-\section{Some examples on enumeration}
+\section{Enumeration by ellipsoid coverings}
 
 Given that we know how to enumerate lattice points in ellipsoids,
 our overall strategy for enumerating lattice points in arbitrary convex bodies $K$
@@ -503,41 +503,205 @@ We cannot hope to achieve a running time proportional to $|K \cap \Lambda|$ in t
 
 Our goal will be to enumeration points in $K$ in time proportional to $G(K, \Lambda)$.
 
-Let us now see why we cannot just enumerate points in (an approximation of)
-a smallest enclosing ellipsoid.
-Consider the cross-polytope $P = \conv\{\pm e_j\}$,
-whose smallest enclosing ellipsoid is the unit ball.
-\begin{center}
+\begin{example}
+  Let us see why we cannot just enumerate points in (an approximation of)
+  a smallest enclosing ellipsoid.
+  Consider the cross-polytope $P = \conv\{\pm e_j\}$,
+  whose smallest enclosing ellipsoid is the unit ball.
+  \begin{center}
+    \begin{tikzpicture}
+      \draw (-1.3,0) -- (1.3,0);
+      \draw (0,-1.3) -- (0,1.3);
+      \draw[thick] (-1,0) -- (0,1) -- (1,0) -- (0,-1) -- cycle;
+      \draw[thick] (0,0) circle[radius=1cm];
+    \end{tikzpicture}
+  \end{center}
+  The cross-polytope is a union of $2^d$ unit simplices,
+  one for each orthant.
+  Hence we can compute its volume as
+  \[
+    \vol(P) = 2^d \cdot \frac{1}{d!} \sim 2^d \frac{1}{\sqrt{2\pi d}} \left( \frac{e}{d} \right)^d
+  \]
+  where we use Stirling's approximation for the factorial.
+  The volume of the Euclidean unit ball is
+  \[
+    \frac{\pi^{d/2}}{\Gamma(d/2 + 1)} \sim \pi^{d/2} \frac{1}{\sqrt{\pi d}} \left( \frac{2e}{d} \right)^{d/2}
+  \]
+  For sufficiently dense lattices, we have
+  $|K \cap \Lambda| \sim \frac{\vol(K)}{\det(\Lambda)}$ (see the exercises).
+  So let us compare volumes:
+  \[
+    \frac{\vol(B)}{\vol(P)} \sim \frac{\pi^{d/2} \sqrt{2}}{2^{d/2}} \left( \frac{d}{e} \right)^{d/2} = 2^{\Omega(d \log d)}
+  \]
+  For a sufficiently dense lattice $\Lambda$,
+  the same relation holds for $|B \cap \Lambda|$ and $|P \cap \Lambda|$.
+  That is, enumerating the points in $B$ necessarily introduces a $2^{\Omega(d \log d)}$ factor into the running time,
+  which is too wasteful for our purposes.
+\end{example}
+
+\begin{example}
+  \label{example:cover-the-ball-with-cubes}
+  Let us now consider that case where $P = [-1,+1]^d$ is a cube.
+  The smallest volume enclosing ellipsoid is the ball $B = B(0, \sqrt{d})$.
+  \begin{center}
+    \begin{tikzpicture}
+      \draw (-.9,0) -- (.9,0);
+      \draw (0,-.9) -- (0,.9);
+      \draw[thick] (-.5,-.5) -- (-.5,.5) -- (.5,.5) -- (.5,-.5) -- cycle;
+      \draw[thick] (0,0) circle[radius=.7cm];
+    \end{tikzpicture}
+  \end{center}
+  Comparing their volumes, we obtain $\vol(P) = 2^d$ and
+  \[
+    \vol(B) = \sqrt{d}^d \frac{\pi^{d/2}}{\Gamma(d/2+1)} \sim \frac{d^{d/2} \pi^{d/2}}{\sqrt{\pi d}} \left( \frac{2e}{d} \right)^{d/2}
+      = \frac{(2 e \pi)^{d/2}}{\sqrt{\pi d}}
+  \]
+  The ratio between these volumes is $2^{O(d)}$.
+
+  How many more lattice points are contained in $B$ than in $P$?
+  We can bound this number by observing that $B$ can be covered by translated copies of $P$,
+  see Figure~\ref{fig:cover-B-by-P}.
+  Let
+  \[
+    S := \{ x \in 2\Z^d ~:~ (x + P) \cap B \neq \emptyset \}
+  \]
+  We have
+  \[
+    |B \cap \Lambda| \leq |S| \cdot G(P, \Lambda).
+  \]
+  because $B \subseteq S + P$.
+  Furthermore,
+  since the length of the diagonal of $P$ is $2\sqrt{d}$
+  we have $x + P \subseteq B + B(0,2\sqrt{d}) = B(0,3\sqrt{d})$ for every $x \in S$.
+  Using the disjointness of the $x + P$ (up to sets of measure $0$),
+  we compute
+  \[
+    |S| \cdot 2^d = |S| \cdot \vol P \leq \vol B(0,3\sqrt{d}) \sim 3^d d^{d/2} \cdot \frac{\pi^{d/2}}{\sqrt{\pi d}} \left( \frac{2e}{d} \right)^{d/2}
+    = 2^{O(d)}
+  \]
+  and hence $|S| = 2^{O(d)}$ and $|B \cap \Lambda| \leq 2^{O(d)} \cdot G(P, \Lambda)$.
+  
+  This means that we may enumerate the lattice points in a cube
+  (and, by linear transformation, in a parallelepiped)
+  by enumerating the lattice points in the smallest enclosing ellipsoid.
+\end{example}
+\begin{figure}
+  \begin{center}
   \begin{tikzpicture}
-    \draw (-1.3,0) -- (1.3,0);
-    \draw (0,-1.3) -- (0,1.3);
-    \draw[thick] (-1,0) -- (0,1) -- (1,0) -- (0,-1) -- cycle;
-    \draw[thick] (0,0) circle[radius=1cm];
+    \draw (-1.7,0) -- (1.7,0);
+    \draw (0,-1.7) -- (0,1.7);
+    \draw[thick] (-.5,-.5) -- (-.5,.5) -- (.5,.5) -- (.5,-.5) -- cycle;
+    \foreach \x / \y in {1/0,-1/0,0/1,0/-1}
+      \draw (\x,\y) +(-.5,-.5) -- +(-.5,.5) -- +(.5,.5) -- +(.5,-.5) -- cycle;
+    \draw[thick] (0,0) circle[radius=.7cm];
   \end{tikzpicture}
-\end{center}
-The cross-polytope is a union of $2^d$ unit simplices,
-one for each orthant.
-Hence we can compute its volume as
-\[
-  \vol(P) = 2^d \cdot \frac{1}{d!} \sim 2^d \frac{1}{\sqrt{2\pi d}} \left( \frac{e}{d} \right)^d
-\]
-where we use Stirling's approximation for the factorial.
-The volume of the Euclidean unit ball is
-\[
-  \frac{\pi^{d/2}}{\Gamma(d/2 + 1)} \sim \pi^{d/2} \frac{1}{\sqrt{\pi d}} \left( \frac{2e}{d} \right)^{d/2}
-\]
-For sufficiently dense lattices, we have
-$|K \cap \Lambda| \sim \frac{\vol(K)}{\det(\Lambda)}$ (see the exercises).
-So let us compare volumes:
-\[
-  \frac{\vol(B)}{\vol(P)} \sim \frac{\pi^{d/2} \sqrt{2}}{2^{d/2}} \left( \frac{d}{e} \right)^{d/2} = 2^{\Omega(d \log d)}
-\]
-For a sufficiently dense lattice $\Lambda$,
-the same relation holds for $|B \cap \Lambda|$ and $|P \cap \Lambda|$.
-That is, enumerating the points in $B$ necessarily introduces a $2^{\Omega(d \log d)}$ factor into the running time,
-which is too wasteful for our purposes.
+  \end{center}
+  \caption{Bounding the number of lattice points in $B$ in terms of $G(P,\Lambda)$.}
+  \label{fig:cover-B-by-P}
+\end{figure}
+
+\begin{definition}
+  Let $A, B \subset \R^d$ be convex bodies.
+  We define
+  \[
+    N(A,B) := \min\{ |S| ~:~ A \subseteq S + B \}
+  \]
+\end{definition}
+
+\begin{example}
+  We saw previously that for $P = [-1,+1]^d$ and $B$ a ball of radius $\sqrt{d}$,
+  one has $N(P,B) = 1$ and $N(B,P) = 2^{O(d)}$.
+\end{example}
+
+For the remainder of this section, we will work towards a proof of the following:
+\begin{theorem}
+  \label{thm:enumerate-in-K-given-E}
+  There is an algorithm that, given a lattice $\Lambda \subset \R^d$,
+  a convex body $K \subset \R^d$, and an ellipsoid $E \subset \R^d$,
+  enumerates all points of $K \cap \Lambda$ (possibly multiply)
+  in time $N(K,E) \cdot N(E,K) \cdot G(K,\Lambda) \cdot 2^{O(d)} \cdot \poly(b)$.
+\end{theorem}
+
+\begin{lemma}
+  Given a convex body $K \subset \R^d$ and an ellipsoid $E \subset \R^d$,
+  one can compute a set $S \subset \R^d$ satisfying
+  (i) $K \subseteq S + E$ and (ii) $|S| \leq 2^{O(d)} N(K,E)$
+  in time $N(K,E) \cdot 2^{O(d)} \cdot \poly(b)$.
+\end{lemma}
+\begin{proof}
+  By a linear transformation,
+  we may assume $E = B(0,\sqrt{d})$.
+  We generalize the tiling approach of Example~\ref{example:cover-the-ball-with-cubes}.
+  Let $C := [-1,+1]^d$ and
+  \[
+    S := \{ x \in 2\Z^d ~:~ (x + C) \cap \operatorname{int} K \neq \emptyset \}
+  \]
+  First, one easily sees that $K \subseteq S + E$.
+  
+  To show the desired bound on $|S|$,
+  let $S^\star$ be a set of $N(K,E)$ points
+  such that $K \subseteq S^\star + E$.
+  By forming a Minkowski sum on both sides of the set inclusion, we get
+  \[
+    K + B(0,2\sqrt{d}) \subseteq S^\star + \underbrace{E + B(0,2\sqrt{d})}_{= B(0,3\sqrt{d})}
+  \]
+  On the other hand,
+  \[
+    S + C \subseteq K + B(0,2\sqrt{d})
+  \]
+  since the length of the diagonal of $C$ is $2\sqrt{d}$.
+  Using the fact that the translates of $C$ are disjoint (up to sets of measure $0$),
+  we get
+  \[
+    \vol(K + B(0,2\sqrt{d})) \geq |S| \cdot \vol C = |S| \cdot 2^d
+  \]
+  On the other hand,
+  \[
+    \vol(K + B(0,2\sqrt{d})) \leq |S^\star| \cdot \vol B(0,3\sqrt{d})
+    = N(K,E) \cdot 3^d d^{d/2} \cdot \frac{\pi^{d/2}}{\Gamma(d/2 + 1)}
+  \]
+  Putting these two inequalities together and using Stirling's approximation
+  yields $|S| \leq N(K,E) \cdot 2^{O(d)}$.
+  
+  Computing the set $S$ is fairly straightforward.
+  We can round any point $x \in \operatorname{int} K$ to the closest vector in $2 \Z^d$
+  to obtain an initial point $x^\star \in S$.
+
+  We claim that the dual graph on $S$,
+  that is,
+  the graph $G = (S,E)$ with $xy \in E$ if and only if $x+C$ and $y+C$,
+  is connected.
+
+  We show the claim by an argument similar to the algorithm~\proc{CVP-via-Voronoi-Simple}
+  of section~\ref{sec:svp-cvp-via-voronoi}.
+  Let $x \neq y \in S$.
+  Let $x' \in (x+C) \cap \operatorname{int} K$ and $y' \in (x+C) \cap \operatorname{int} K$.
+  If necessary, we can perturb $x'$ and $y'$ slightly
+  so that the line segment $x'y'$
+  does not intersect a lower-dimensional face of any of the cubes $z + C$ for $z \in S$.
+  The line segment $x'y'$ stays within $\operatorname{int} K$ due to convexity,
+  and so it naturally induces a path that connects $x$ and $y$ in $G$.
+
+  This means that we can perform a breadth-first search starting at $x^\star$ to find all vertices of the graph.
+  At each vertex of $G$, there are $2d$ potential neighbours for which we have to check
+  whether they have already been seen and whether they are in the graph.
+  The latter is a simple linear programming problem.
+  Overall, we can compute $S$ in the desired running time.
+\end{proof}
+
+\begin{proof}[Theorem~\ref{thm:enumerate-in-K-given-E}]
+  First, use the algorithm of the Lemma
+  to construct a covering of $K$ by $N(K,E) \cdot 2^{O(d)}$ translates of $E$ using the algorithm of the Lemma.
+  Recall that each translate of $E$ can be covered by $N(E,K)$ translates of $K$,
+  and so each translate contains at most $N(E,K) \cdot G(K,\Lambda)$ lattice points.
+  We can enumerate these points for every translate using the algorithm of the previous section.
+  
+  The overall running time is dominated by the enumeration,
+  which is precisely as desired.
+\end{proof}
 
 
+\section{M-ellipsoids}
 
 
 
