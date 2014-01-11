@@ -124,6 +124,7 @@ Now that we have established that $\overline{\cV_\Lambda}$ is a polytope,
 a natural algorithmic representation suggests itself:
 
 \begin{definition}
+  \label{def:voronoi-relevant}
   We say that $x \in \Lambda$ is \emph{Voronoi relevant} if
   \[
     \| p \|_2 \leq \| x - p \|_2 \iff 2p^Tx \leq x^T x
@@ -336,6 +337,7 @@ and compare distances.
 
 
 \section{Shortest and closest vectors via the Voronoi cell}
+\label{sec:svp-cvp-via-voronoi}
 
 Now that we know how to compute the Voronoi cell,
 let us see how it can be used.
