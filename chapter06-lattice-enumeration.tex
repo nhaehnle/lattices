@@ -669,7 +669,7 @@ For the remainder of this section, we will work towards a proof of the following
 
   We claim that the dual graph on $S$,
   that is,
-  the graph $G = (S,E)$ with $xy \in E$ if and only if $x+C$ and $y+C$,
+  the graph $G = (S,E)$ with $xy \in E$ if and only if $x+C$ and $y+C$ intersect non-trivially,
   is connected.
 
   We show the claim by an argument similar to the algorithm~\proc{CVP-via-Voronoi-Simple}
@@ -690,8 +690,7 @@ For the remainder of this section, we will work towards a proof of the following
 \end{proof}
 
 \begin{proof}[Theorem~\ref{thm:enumerate-in-K-given-E}]
-  First, use the algorithm of the Lemma
-  to construct a covering of $K$ by $N(K,E) \cdot 2^{O(d)}$ translates of $E$ using the algorithm of the Lemma.
+  First, construct a covering of $K$ by $N(K,E) \cdot 2^{O(d)}$ translates of $E$ using the algorithm of the Lemma.
   Recall that each translate of $E$ can be covered by $N(E,K)$ translates of $K$,
   and so each translate contains at most $N(E,K) \cdot G(K,\Lambda)$ lattice points.
   We can enumerate these points for every translate using the algorithm of the previous section.
