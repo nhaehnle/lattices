@@ -700,7 +700,194 @@ For the remainder of this section, we will work towards a proof of the following
 \end{proof}
 
 
-\section{M-ellipsoids}
+\section{M-ellipsoids and probability distributions}
+
+\begin{definition}
+  Let $K \subset \R^d$ be a convex body.
+  An \emph{M-ellipsoid} of $K$ is an ellipsoid $E$ satisfying
+  $N(K,E) \cdot N(E,K) \leq 2^{O(d)}$.
+\end{definition}
+
+Note that for a formally complete definition,
+the constant hidden in the big-$O$ notation needs to be fixed somehow,
+but we will not concern ourselves with the exact constant here.
+The perhaps surprising fact is:
+
+\begin{theorem}[\cite{DPV10}]
+  \label{thm:computing-M-ellipsoids}
+  Given a convex body $K \subset \R^d$,
+  one can compute an M-ellipsoid for $K$
+  in time $2^{O(d)} \cdot \poly(b)$.
+\end{theorem}
+
+\begin{corollary}
+  Given a convex body $K \subset \R^d$ and a lattice $\Lambda \subset \R^d$,
+\end{corollary}
+\begin{proof}
+  This follows from combining Theorems~\ref{thm:computing-M-ellipsoids} and~\ref{thm:enumerate-in-K-given-E}.
+\end{proof}
+
+We will not prove Theorem~\ref{thm:computing-M-ellipsoids} entirely
+to avoid going down too deep into the convex geometry rabbit hole.
+The required results, such as algorithms for volume estimation,
+are very interesting but somewhat outside the scope of this text.
+However, we will discuss some of the key concepts for the case where $K$ is symmetric.
+
+First, we relate the covering numbers $N(A,B)$ to volumes.
+
+\begin{lemma}
+  \label{lemma:N(A,B)-via-volume}
+  Let $A, B \subseteq \R^d$ be convex bodies.
+  \begin{enumerate}
+  \item If $B$ is symmetric, $N(A,B) \leq \frac{\vol(A + B/2)}{\vol(B/2)}$.
+  \item If both $A$ and $B$ are symmetric, $N(A,B) \leq 3^d \cdot \frac{\vol A}{\vol(A \cap B)}$.
+  \end{enumerate}
+\end{lemma}
+\begin{proof}
+  Let us first consider the case where $A$ is not known to be symmetric.
+  Let $S \subset A$ be maximal such that $x + B/2$ and $y + B/2$
+  do not intersect for $x \neq y \in S$.
+  Observe that $x + B/2 \subseteq A + B/2$ for $x \in S$,
+  and so by disjointness of the $x + B/2$,
+  \[
+    |S| \cdot \vol (B/2) \leq \vol(A + B/2).
+  \]
+  We are done if we can show that $S + B$ covers $A$.
+  For the purpose of obtaining a contradiction,
+  suppose that there is an $x \in A$ which is not contained in $S + B$.
+  Then for all $y \in S$, $y + B/2$ does not intersect $x + B/2$
+  (for otherwise $x \in y + B$ by symmetry of $B$).
+  This contradicts the maximality of $S$.
+
+  Let us now consider the case where both $A$ and $B$ are known to be symmetric.
+  In this case, $A \cap B$ is symmetric as well,
+  and we can apply the previous result:
+  \[
+    N(A,B) \leq N(A,A\cap B)
+      \leq \frac{\vol(A + (A \cap B)/2)}{\vol((A \cap B)/2)}
+      \leq \frac{\vol(A + A/2)}{2^{-d} \vol(A \cap B)} = 3^d \frac{\vol A}{\vol(A \cap B)} \qedhere
+  \]
+\end{proof}
+
+Let $X \in \R^d$ be a random variable that is drawn uniformly from $K$.
+That is, for every measurable set $S \subseteq K$, one has
+\[
+  \Pr[X \in S] = \frac{\vol(S)}{\vol(K)}
+\]
+Furthermore, the expected value of $X$,
+\[
+  \E[X] = \frac{1}{\vol(K)} \int_{K} x \,dx
+\]
+is the barycenter, or center of mass, of $K$.
+More generally, for reasonably well-behaved functions $f: \R^d \to V$, $V$ some vector space, we have
+\[
+  \E[f(X)] = \frac{1}{\vol(K)} \int_{K} f(x) \,dx
+\]
+We will also consider the matrix-valued \emph{variance}
+\[
+  \Var[X] = \E[ (X - \E[X])(X - \E[X])^T ] \in \R^{d \times d}
+\]
+which is often called a covariance matrix,
+because its entries describe the covariances of the components $X_1, \ldots, X_d$ of $X$.
+For our purposes, however, we prefer to think of $X$ as a single random variable
+rather than a set of $d$ random variables.
+From this perspective, it is preferable to talk of the variance of $X$.
+
+\begin{proposition}
+  $\Var[X]$ is positive semi-definite.
+\end{proposition}
+\begin{proof}
+  Non-negative linear combinations of positive semi-definite matrices are positive semi-definite.
+  Alternatively,
+  \[
+    y^T \Var[X] y = \E[ \underbrace{y^T (X - \E[X]) (X - \E[X])^T y}_{\geq 0} ] \geq 0
+  \]
+  by linearity of expectation.
+\end{proof}
+
+Consequently, there is a matrix $Q_K \in \R^{d \times d}$ with
+\[
+  \Var[X] = Q_K Q_K^T
+\]
+that is similar to a square root and should therefore play a role related to the standard deviation
+of a one-dimensional random variable.
+We will investigate this relationship soon.
+
+\begin{definition}
+  The \emph{inertial ellipsoid} of $K$ is given by
+  \[
+    E_K := Q_K \cdot B(0,1) = \{ x \in \R^d ~:~ x^T \Var[X]^{-1} x \leq 1 \}
+  \]
+\end{definition}
+
+\begin{lemma}
+  The two definitions of $E_K$ are equivalent.
+  Furthermore, $E_{AK} = A \cdot E_K$ for every invertible matrix $A \in \R^{d \times d}$.
+\end{lemma}
+\begin{proof}
+  The first part says that
+  \[
+    Q_K \cdot B(0,1) = \underbrace{\{ x \in \R^d ~:~ x^T \Var[X]^{-1} x \leq 1 \}}_{=:E}
+  \]
+  To show the inclusion from left to right, suppose $x \in Q_K \cdot B(0,1)$.
+  That is, $x = Q_K y$ for some $y \in \R^d$ with $y^Ty \leq 1$.
+  Computing
+  \begin{align*}
+    1 &\geq (Q_K^{-1} x)^T (Q_K^{-1} x) = x^T Q_K^{-T} Q_K^{-1} x
+     = x^T (Q Q^T)^{-1} x \\
+    &= x^T \Var[X]^{-1} x
+  \end{align*}
+  shows that $x \in E$.
+  The reverse inclusion is similar.
+
+  For the second part, let $Y$ be distributed uniformly in $AK$.
+  We can link $X$ and $Y$ so that $Y = AX$ always holds, and compute
+  \begin{align*}
+    \Var[Y] &= \Var[AX] = \E[ (AX - \E[AX]) (AX - \E[AX])^T] \\
+       & = A \Var[X] A^T = A Q_K Q_K^T A^T
+  \end{align*}
+  It follows that $Q_{AK} = A Q_K$ and therefore $E_{AK} = A E_K$.
+\end{proof}
+
+\begin{example}
+  Let $K = B(0,r) \subseteq \R^d$ and let $X \sim K$.
+  Clearly, $\E[X] = 0$.
+  Furthermore, we have rotational symmetry.
+  In particular, $E_{UK} = E_K$ for every orthogonal matrix $U \in \R^{d\times d}$,
+  because $X$ and $UX$ have the same probability distribution.
+  This implies $Q_K = \lambda \Id_d$ for some $\lambda > 0$.
+  Observe that
+  \[
+    \E[ \|X\|_2^2 ] = \E[ X^T X ] = \E[ \tr( X X^T ) ] = \tr \Var[X] = d \lambda^2.
+  \]
+  On the other hand,
+  \begin{align*}
+    \E[ \|X\|_2^2 ]
+      &= \frac{1}{\vol(B(0,r))} \int_0^r s^2 \vol_{d-1} (\partial B(0,s)) \,ds \\
+      &= \frac{1}{r^d \vol(B(0,1))} \int_0^r s^2 s^{d-1} d \vol(B(0,1)) \,ds \\
+      &= d r^{-d} \left[ \frac{s^{d+2}}{d+2} \right]_0^r = \frac{d}{d + 2} \cdot r^2
+  \end{align*}
+  Combining these equations, we obtain
+  \[
+    \lambda = \frac{r}{\sqrt{d+2}}
+  \]
+  The inertial ellipsoid of $K$ is therefore $E_K = B(0,r / \sqrt{d+2})$.
+  Note that this is very small in terms of volume and probability measure:
+  \[
+    \Pr[X \in E_K] = \frac{\vol(E_K)}{\vol(K)} = \frac{1}{(d+2)^{d/2}}
+  \]
+\end{example}
+
+The inertial ellipsoid needs to be scaled appropriately
+before it can play the role of standard deviation.
+One concrete example is the following generalization of Chebyshev's inequality.
+
+\begin{lemma}
+  For $k > 0$, we have $\Pr[ X - \E[X] \not\in k\sqrt{d} \cdot E_K] < \frac{1}{k^2}$.
+\end{lemma}
+
+
+
 
 
 
