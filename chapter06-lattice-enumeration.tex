@@ -699,7 +699,6 @@ For the remainder of this section, we will work towards a proof of the following
   which is precisely as desired.
 \end{proof}
 
-
 \section{M-ellipsoids and probability distributions}
 
 \begin{definition}
@@ -721,7 +720,8 @@ The perhaps surprising fact is:
 \end{theorem}
 
 \begin{corollary}
-  Given a convex body $K \subset \R^d$ and a lattice $\Lambda \subset \R^d$,
+  Given a convex body $K \subset \R^d$ and a lattice $\Lambda \subset \R^d$, one can enumerate all points of 
+  $K \cap \Lambda$ in time $G(K, \Lambda) 2^{O(d)} \poly(b)$. 
 \end{corollary}
 \begin{proof}
   This follows from combining Theorems~\ref{thm:computing-M-ellipsoids} and~\ref{thm:enumerate-in-K-given-E}.
@@ -827,18 +827,16 @@ We will investigate this relationship soon.
 \begin{proof}
   The first part says that
   \[
-    Q_K \cdot B(0,1) = \underbrace{\{ x \in \R^d ~:~ x^T \Var[X]^{-1} x \leq 1 \}}_{=:E}
+    Q_K \cdot B(0,1) = \{ x \in \R^d ~:~ x^T \Var[X]^{-1} x \leq 1 \}
   \]
-  To show the inclusion from left to right, suppose $x \in Q_K \cdot B(0,1)$.
-  That is, $x = Q_K y$ for some $y \in \R^d$ with $y^Ty \leq 1$.
-  Computing
+  To show this, observe that
+  
   \begin{align*}
-    1 &\geq (Q_K^{-1} x)^T (Q_K^{-1} x) = x^T Q_K^{-T} Q_K^{-1} x
-     = x^T (Q Q^T)^{-1} x \\
-    &= x^T \Var[X]^{-1} x
+    x \in Q_K \cdot B(0,1) &\iff \|Q_K^{-1} x \|^2_2 \leq 1 \\
+                           &\iff (Q_K^{-1} x)^T Q_K^{-1} x \leq 1 \\
+                           &\iff x^T (Q_K Q_K^{T})^{-1} x \leq 1 \\
+                           &\iff x^T \Var[X]^{-1} x \leq 1
   \end{align*}
-  shows that $x \in E$.
-  The reverse inclusion is similar.
 
   For the second part, let $Y$ be distributed uniformly in $AK$.
   We can link $X$ and $Y$ so that $Y = AX$ always holds, and compute
