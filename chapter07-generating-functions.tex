@@ -86,6 +86,7 @@ in fixed dimension.
 
 
 \section{A simple example of generating functions}
+\label{sec:simple-example-generating-functions}
 
 Suppose we want to count the number of integer points in an interval $I := [a,b] \subset \R$
 in a way that might be extendable to higher dimension.
@@ -222,6 +223,7 @@ and $\cone{U}$ is the smallest cone containing $U$.
   \[
     L(P) := \{ v \in \R^d ~:~ \forall x\in P \,\forall \lambda \in \R:~ x + \lambda v \in P  \}
   \]
+  If $L(P) = 0$, $P$ is called \emph{pointed}.
 \end{definition}
 
 It is not difficult to check that $L(P)$ is a linear subspace of $\R^d$.
@@ -236,6 +238,7 @@ The following facts tie cones, polarity, and lineality spaces together.
 Their proofs are left as an exercise.
 
 \begin{lemma}
+  \label{lemma:cone-polars}
   Let $K \subseteq \R^d$ be a closed cone.
   \begin{enumerate}[(a)]
     \item $K^\star = \{ y \in \R^d ~:~ y^Tx \leq 0 \,\forall\, x\in K \}$.
@@ -262,6 +265,7 @@ Their proofs are left as an exercise.
 Again, the proofs of the following facts about simplicial and unimodular cones are left as an exercise.
 
 \begin{lemma}
+  \label{lemma:simplicial-cone-polars}
   Let $K = \cone\{u_1,\ldots,u_d\} \subset \R^d$ be a full-dimensional simplicial cone.
   \begin{enumerate}[(a)]
     \item Let $A = (u_1, \ldots, u_d)$. Then $K = \{ p \in \R^d ~:~ -A^{-1} p \leq 0 \}$.
@@ -349,9 +353,389 @@ see Figure~\ref{fig:triangulation-example}.
       \draw[thick] (n2) -- (t0);
     \end{tikzpicture}
   \end{center}
-  \caption{The first two pictures show triangulations, while the last picture does not satisfy the second condition of the definition.}
+  \caption{The first two pictures show triangulations. The last picture does not satisfy the second condition of the definition.}
   \label{fig:triangulation-example}
+\end{figure}
+
+\begin{theorem}
+  \label{thm:polytope-triangulation}
+  Let $P = \conv\{ v_1, \ldots, v_n \} \subset \R^d$ be a full-dimensional polytope.
+  There is a triangulation $\Delta_1, \ldots, \Delta_m$ of $P$
+  such that each simplex $\Delta_j$ is spanned by some subset of $d+1$ vectors from the set $\{ v_j \}_j$.
+
+  If $P$ is rational, such a triangulation can be computed in polynomial time if $d$ is fixed.
+\end{theorem}
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}
+      \draw[thick,fill=black!10] (0,0) -- (2,0) -- (3.4,0.8) -- (1.4,0.8) -- cycle;
+      
+      \draw[dotted] (0,0) -- (0,1.5);
+      \draw[dotted] (2,0) -- (2,1.5);
+      \draw[dotted] (3.4,0.8) -- (3.4,3.0);
+      \draw[dotted] (1.4,0.8) -- (1.4,2.3);
+
+      \draw[thick,fill=black!10] (0,1.5) -- (2,1.5) -- (3.4,3.0) -- (1.4,2.3) -- cycle;
+      \draw[thick,dashed] (2,1.5) -- (1.4,2.3);
+      \draw[thick] (0,1.5) -- (3.4,3.0);
+      
+      \draw[thick,dashed] (2,0) -- (1.4,0.8);
+      
+      \draw (3.4,0.4) node {$P$};
+      \draw (3.4,2.25) node {$P'$};
+    \end{tikzpicture}
+  \end{center}
+  \caption{Triangulate a polytope $P \subset \R^2$ by the projection of the lower envelope of a lifting.}
+  \label{fig:triangulation-proof}
+\end{figure}
+\begin{proof}
+  The idea is to lift the vertices of $P$ into $\R^{d+1}$ in such a way
+  that essentially every facet of their convex hull $P'$ is a simplex.
+  The projection of the lower envelope of $P'$ will then be a triangulation of $P$,
+  see Figure~\ref{fig:triangulation-proof}.
+
+  Let us choose $t_1, \ldots, t_n \in \R$ in a manner that is to be described later
+  and let $v_i' := (v_i, t_i) \in \R^{d + 1}$.
+  Their convex hull
+  \[
+    P' := \conv\{v_1',\ldots,v_n'\}
+  \]
+  is a polytope with $\pi(P') = P$,
+  where $\pi:\R^{d+1} \to \R^d$ is the projection onto the first $d$ coordinates.
+
+  For every $x \in P$, let
+  \[
+    \ell(x) := \min\{ t ~:~ (x,t) \in P' \}
+  \]
+  The point $(x, \ell(x))$ lies in a facet of $P'$
+  whose defining inequality $a^Tx + \alpha t \geq \beta$ satisfies $\alpha > 0$.\footnote{This follows
+  from the minimality of $\ell(x)$.}
+  Let $F_1,\ldots,F_m$ be the set of facets of $P'$ whose defining inequality satisfies $\alpha > 0$
+  and let $\Delta_j := \pi(F_j)$.
+  We have already shown that
+  \[
+    P = \bigcup_j \Delta_j
+  \]
+  Since $\pi$ is injective on the $F_j$, the $\Delta_j$ are full-dimensional
+  and for $i \neq j$, $\Delta_i \cap \Delta_j$ is either empty or a face of both $\Delta_i$ and $\Delta_j$,
+  since the same property holds for the $F_j$ by basic combinatorics of polyhedra.
+
+  It remains to be shown that the $\Delta_j$ are simplices.
+  Standard perturbation arguments show that the $t_i$ can be chosen such that no $d+2$ of the $v_i'$ lie in a hyperplane that does not contain $\ker \pi$.
+
+  Let us show an argument via the polynomial method in detail.
+  Consider a subset of $d+1$ affinely independent vertices of $P$, say $v_1, \ldots, v_{d+1}$.
+  Their liftings $v_1', \ldots, v_{d+1}'$ will span a hyperplane $H \subset \R^{d+1}$ that does not contain $\ker \pi$.
+  Any normal vector $u' = (u,\nu)$ of $H$ satisfies
+  \[
+    (v_i' - v_{d+1}')^T u' = 0 \text{ for all } i = 1 \ldots d
+  \]
+  and we can normalize it by requiring
+  \[
+    \nu = 1.
+  \]
+  We have obtained a linear system for $u'$ with a square, invertible\footnote{%
+  Since we assumed $v_1, \ldots, v_{d+1}$ to be affinely independent, the vectors $v_j - v_{d+1}$ are linearly indpendent.}
+  coefficient matrix of the form:
+  \[
+    \begin{pmatrix}
+      v_1^T - v_{d+1}^T & t_1 - t_{d+1} \\
+      \vdots & \vdots \\
+      v_d^T - v_{d+1}^T & t_d - t_{d+1} \\
+      0 & 1
+    \end{pmatrix}
+  \]
+  Using Cramer's rule, we can conclude that each component of $u$ is a multilinear function of the $t_i$.
+
+  Our goal is to choose the $t$ in such a way that every set of $d+1$ affinely independent vertices ends up with a different vector $u$.
+  Let
+  \[
+    t(\lambda) := (\lambda^1, \ldots, \lambda^n)
+  \]
+  so that every component of every $u$ is a polynomial in $\lambda$.
+  Moreover, if we fix two different sets of $d+1$ affinely independent vertices
+  and call the corresponding normal vectors $u$ and $\hat u$,
+  then the components of the vector $u - \hat u$ are polynomials in $\lambda$,
+  at least one of which is non-zero.\footnote{To see this,
+  observe that the exponents of the monomials $\lambda^i$ appearing in the polynomials correspond to the indices of vertices.
+  Since different sets of vertices are used to define $u$ and $\hat u$,
+  they also contain different sets of monomials, which cannot all cancel.}
+  That is, there are finitely many values of $\lambda$ for which $u$ and $\hat u$ are equal.
+
+  Taking all pairs of sets of vertices into account,
+  there are only finitely many values of $\lambda$
+  for which the liftings of two different affinely independent sets of $d+1$ vertices lie in the same hyperplane.
+  For all other values of $\lambda$, the facets on the lower envelope of the resulting $P'$ are guaranteed to be simplices.
+
+  Finally, let us remark that the convex hull of a set of points can be computed in polynomial time when the dimension $d$ is fixed,
+  and the number of ``bad'' values for $\lambda$ is bounded by $n \binom{n}{d+1}^2$, which is a polynomial in $n$ for fixed $d$.
+  Hence all steps of the proof can be made algorithmic, and the resulting algorithm runs in polynomial time
+  when the dimension $d$ is fixed.
+\end{proof}
+
+\begin{corollary}
+  Let $C = \cone\{ u_1, \ldots, u_n \} \subset \R^d$ be a full-dimensional pointed cone.
+  Then there exist full-dimensional simplicial cones $C_1, \ldots, C_m \subset \R^d$ spanned by the $u_i$
+  such that
+  \begin{enumerate}
+    \item $C = \bigcup_i C_i$ and
+    \item for all $i \neq j$, $C_i \cap C_j$ is a face of both $C_i$ and $C_j$ (possibly the face $\{ 0 \}$).
+  \end{enumerate}
+  If $C$ is a rational cone, this triangulation can be computed in polynomial time for fixed dimension $d$.
+\end{corollary}
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}
+      \draw[thick,dotted] (1,-1.5) -- (1.52,1.5);
+
+      \draw[thick,fill=black!10] (0,0) -- (2,0) -- (3.4,0.8) -- (1.4,0.8) -- cycle;
+      \draw[thick,dashed] (2,0) -- (1.4,0.8);
+
+      \draw[thick] (1,-1.5) -- (-1,1.5);
+      \draw[thick] (1,-1.5) -- (3,1.5);
+      \draw[thick] (1,-1.5) -- (4.13,1.5);
+    \end{tikzpicture}
+  \end{center}
+  \caption{The triangulation of a pointed cone can be obtained from a triangulation of its so-called vertex figure.}
+  \label{fig:triangulation-cone}
+\end{figure}
+\begin{proof}
+  Since $C$ is pointed,
+  there is an inequality $a^T x \leq 0$ defining its vertex $0$.\footnote{%
+  That is, $a^Tx \leq 0$ is valid for $C$ and $a^Tx < 0$ for all $x \in C \setminus \{ 0 \}$.}
+  Let $P := C \cap \{ a^Tx = -1 \}$
+  and let $\Delta_1, \ldots, \Delta_n$ be its triangulation by Theorem~\ref{thm:polytope-triangulation},
+  see Figure~\ref{fig:triangulation-cone}.
+  Then the $C_i := \cone \Delta_i$ satisfy the desired properties.
+\end{proof}
+
+
+
+
+\section{The algebra of polyhedra}
+
+Given a triangulation of a cone $C$ into simplicial cones $C_1, \ldots, C_n$,
+it seems natural to express the generating function $f(C;x)$ as
+the sum of the generating functions $f(C_i;x)$.
+Note, however, that integer points on lower-dimensional cones that arise from intersections $C_i \cap C_j$
+will be counted multiple cones.
+The generating functions corresponding to those lower dimensional cones must then be subtracted,
+but then points that have been subtracted too often must be added again, and so on.
+In this section, we will put such computations on a rigorous foundation.
+
+\begin{definition}
+  We denote
+  \begin{enumerate}[(a)]
+    \item by $\cP^d$ the set of rational polyhedra in $\R^d$,
+    \item by $\cP_0^d \subset \cP^d$ the set of rational polyhedra that contain lines,
+    \item by $\cP_v^d \subset \cP^d$ the set of rational polyhedra that do not contain lines (i.e., polyhedra with vertices aka pointed polyhedra),
+    \item by $\cP_b^d \subset \cP^d$ the set of bounded rational polyhedra, and
+    \item by $\cP_\ell^d \subset \cP^d$ the set of rational polyhedra that is not full-dimensional.
+  \end{enumerate}
+\end{definition}
+The relationships between those families of polyhedra are as follows:
+\begin{center}
+  \begin{tikzpicture}
+    \draw[thick] (0,0) rectangle (6,2);
+    \draw[thick] (2,0) rectangle (2,2);
+    \draw (1,1) node {$\cP_0^d$};
+    \draw (5,0.5) node {$\cP_v^d$};
+    \draw[thick] (3.5,1) ellipse[x radius=1cm,y radius=0.5cm] node {$\cP_b^d$};
+    \draw[dashed] (1,2) .. controls (2,0) .. (4,2);
+    \draw (2,1.5) node {$\cP_\ell^d$};
+  \end{tikzpicture}
+\end{center}
+
+\begin{definition}
+  Let $P \in \cP^d$.
+  The \emph{indicator} or \emph{characteristic} function of $P$ is denoted by $[P] = \chi_P : \R^d \to \R$,
+  where
+  \[
+    [P](x) := \begin{cases}
+                1 & x \in P \\
+                0 & x \not\in P
+              \end{cases}
+  \]
+  Then $\R \cP^d$ is the sub-vector space of the space of all functions
+  that is generated by $\{ [P] : P \in \cP^d \}$.
+  The vector spaces $\R \cP_0^d$ etc. are defined analogously.
+\end{definition}
+
+\begin{lemma}[Inclusion-exclusion formula]
+  \label{lemma:inclusion-exclusion}
+  Let $P_1, \ldots, P_m \in \cP^d$.
+  Then
+  $[A_1 \cup \dots \cup A_m] = \sum_{\emptyset \neq I \subseteq [m]} (-1)^{|I| - 1} [\bigcap_{i \in I} A_i]$.
+\end{lemma}
+\begin{proof}
+  Left as an exercise.
+\end{proof}
+
+\begin{lemma}
+  \label{lemma:generating-functions-linear-as-series}
+  Let $R := \R[[x_1,\ldots,x_d,x_1^{-1},\ldots,x_d^{-d}]]$ be the vector space of formal power series in $d$ variables.\footnote{%
+  This is \emph{not} a ring, because multiplication of formal power series with unbounded positive \emph{and} negative exponents is not defined.}
+  There exists a unique linear map $F: \R \cP^d \to R$
+  such that $F([P]) = f(P;x)$ for all $P \in \cP^d$.
+\end{lemma}
+\begin{proof}
+  If we can show that one such $F$ exists,
+  then uniqueness follows immediately because its values are fixed on a generating set of $\R\cP^d$.
+  If the $[P]$ for $P \in \cP^d$ were linearly independent,
+  then existence of $F$ would be obvious.
+  Since they are not, we need to show that our desired values of $F$ are consistent under linear dependencies.
+
+  To be precise, we need to show that for all linear dependencies of the form
+  \[
+    \sum_{i=1}^n \alpha_i [P_i] = 0
+  \]
+  one has
+  \[
+    \sum_{i=1}^n \alpha_i f(P_i; x) = 0,
+  \]
+  where the equality is in the sense of formal power series.
+
+  The equality of formal power series is defined as the equality of all coefficients.
+  That is,
+  we need to determine the coefficient $a_p$ of the monomial $x^p$
+  for every integer point $p \in \Z^d$.
+  In fact,
+  \[
+    a_p = \sum_{i: p \in P_i} \alpha_i = \left(\sum_{i=1}^n \alpha_i [P_i] \right)(p) = 0 \text{ for all } p \in \Z^d,
+  \]
+  which completes the proof.
+\end{proof}
+
+\begin{corollary}
+  \label{corollary:cone-triangulation-series}
+  Let $C \in \cP^d$ be a pointed cone with triangulation $C_1, \ldots, C_n \in \cP^d$.
+  Then
+  \[
+    f(C;x) = \sum_{\emptyset \neq I \subseteq [n]} (-1)^{|I| - 1} f(\bigcap_{i \in I} C_i; x)
+  \]
+  where the equality is understood as equality of formal power series.
+\end{corollary}
+\begin{proof}
+  Follows from Lemmas~\ref{lemma:inclusion-exclusion} and~\ref{lemma:generating-functions-linear-as-series}.
+\end{proof}
+
+The sum in Corollary~\ref{corollary:cone-triangulation-series} typically contains
+many index sets $I$ for which the intersection $\bigcap_{i \in I} C_i$ is trivial,
+i.e., equal to $\{ 0 \}$.
+Using tools that we will develop later, it turns out that those summands can be ignored.
+Showing this is left as an exercise.
+
+While Lemma~\ref{lemma:generating-functions-linear-as-series}
+rigorously justifies computations with power series $f(P;x)$,
+we really want an anologous statement for rational functions.
+This is not immediate because, as we have seen in Section~\ref{sec:simple-example-generating-functions},
+the series $f(P;x)$ converges nowhere for $P \in \cP_0^d$,
+and so it is not clear what rational function to assign to such polyhedra.
+However, it turns out that assigning rational functions to \emph{pointed} polyhedra is sufficient:
+
+\begin{lemma}
+  \label{lemma:algebra-generated-by-pointed}
+  $\R \cP^d = \R\cP_v^d$.
+\end{lemma}
+\begin{proof}
+  The inclusion from right to left is immediate.
+  We need to show that $[P] \in \R\cP_v^d$ for all $P \in \cP_0^d$;
+  the inclusion from left to right then follows by linearity.
+
+  Let $Q_1, \ldots, Q_n \in \cP_v^d$ and $\varepsilon_1, \ldots, \varepsilon_n \in \R$ such that
+  \[
+    [\R^d] = \sum_{i=1}^n \varepsilon_i [Q_i]
+  \]
+  One can obtain such an equation by applying the inclusion-exclusion formula to the orthants of $\R^d$.
+  We then observe that pointwise multiplication of indicator functions of polyhedra
+  corresponds to taking intersections, and compute:
+  \[
+    [P] = [\R^d] \cdot [P] = \sum_{i=1}^n \varepsilon_i [Q_i] \cdot [P] = \sum_{i=1}^n \varepsilon_i [Q_i \cap P] \in \R\cP_v^d,
+  \]
+  since the subset $Q_i \cap P$ of the pointed polyhedron $Q_i$ is pointed as well.
+\end{proof}
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{scope}
+        \clip (-1,-1) rectangle (1,1);
+
+        \draw[thick,fill=black!10] (-1,1.5) -- (1.5,-1) -- (1.5,1.5) -- cycle;
+        \draw (-1,0) -- (1,0);
+        \draw (0,-1) -- (0,1);
+      \end{scope}
+
+      \draw (1.25,0) node {$=$};
+
+      \begin{scope}[xshift=2.5cm]
+        \clip (-1,-1) rectangle (1,1);
+
+        \draw[thick,fill=black!10] (-1,1.5) -- (0,0.5) -- (0,1.5) -- cycle;
+        \draw (-1,0) -- (1,0);
+        \draw (0,-1) -- (0,1);
+      \end{scope}
+
+      \draw (3.75,0) node {$+$};
+
+      \begin{scope}[xshift=5cm]
+        \clip (-1,-1) rectangle (1,1);
+
+        \draw[thick,fill=black!10] (0,1.5) -- (0,0.5) -- (0.5,0) -- (1.5,0) -- (1.5,1.5) -- cycle;
+        \draw (-1,0) -- (1,0);
+        \draw (0,-1) -- (0,1);
+      \end{scope}
+
+      \draw (6.25,0) node {$+$};
+
+      \begin{scope}[xshift=7.5cm]
+        \clip (-1,-1) rectangle (1,1);
+
+        \draw[thick,fill=black!10] (1.5,-1) -- (0.5,0) -- (1.5,0) -- cycle;
+        \draw (-1,0) -- (1,0);
+        \draw (0,-1) -- (0,1);
+      \end{scope}
+
+      \draw (8.75,0) node {$-$};
+
+      \begin{scope}[xshift=10cm]
+        \clip (-1,-1) rectangle (1,1);
+
+        \draw[thick,fill=black!10] (0,0.5) -- (0,1) -- cycle;
+        \draw[thick,fill=black!10] (0.5,0) -- (1,0) -- cycle;
+        \draw (-1,0) -- (1,0);
+        \draw (0,-1) -- (0,1);
+      \end{scope}
+    \end{tikzpicture}%
+  \end{center}
+  \caption{An illustration of the proof of Lemma~\ref{lemma:algebra-generated-by-pointed}.}
+  \label{fig:algebra-generated-by-pointed}
 \end{figure}
 
 
 
+
+\section{Rational generating functions of polyhedra}
+
+
+
+
+
+\section*{Exercises}
+
+\begin{enumerate}
+  \item Show Lemma~\ref{lemma:cone-polars}.
+
+  \item Show Lemma~\ref{lemma:simplicial-cone-polars}.
+
+  \item Show the inclusion-exclusion formula (Lemma~\ref{lemma:inclusion-exclusion}).
+
+  \item Show the remark after Corollary~\ref{corollary:cone-triangulation-series}:
+    In the expression
+    \[
+      f(C;x) = \sum_{\emptyset \neq I \subseteq [n]} (-1)^{|I| - 1} f(\bigcap_{i \in I} C_i; x)
+    \]
+    for a triangulation of a pointed cone $C$,
+    the trivial summands on the right hand side add up to $0$.
+
+    \emph{Hint:} You can apply the Euler characteristic to the inclusion-exclusion formula applied to the vertex figure of the triangulation.
+\end{enumerate}

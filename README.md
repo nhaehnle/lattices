@@ -52,3 +52,4 @@ Nicolai Hähnle <nhaehnle@gmail.com>
 
 Contributions by:
 Rasmus Schroeder <schroeder@or.uni-bonn.de>
+Anna Hermann <hermann@or.uni-bonn.de>
