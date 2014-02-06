@@ -574,7 +574,7 @@ The relationships between those families of polyhedra are as follows:
 \begin{lemma}
   \label{lemma:generating-functions-linear-as-series}
   Let $R := \R[[x_1,\ldots,x_d,x_1^{-1},\ldots,x_d^{-d}]]$ be the vector space of formal power series in $d$ variables.\footnote{%
-  This is \emph{not} a ring, because multiplication of formal power series with unbounded positive \emph{and} negative exponents is not defined.}
+  This is \emph{not} a ring, because multiplication of formal power series with unbounded positive \emph{and} negative exponents is not defined in general.}
   There exists a unique linear map $F: \R \cP^d \to R$
   such that $F([P]) = f(P;x)$ for all $P \in \cP^d$.
 \end{lemma}
@@ -648,7 +648,7 @@ However, it turns out that assigning rational functions to \emph{pointed} polyhe
   \]
   One can obtain such an equation by applying the inclusion-exclusion formula to the orthants of $\R^d$.
   We then observe that pointwise multiplication of indicator functions of polyhedra
-  corresponds to taking intersections, and compute:
+  corresponds to taking intersections, and compute (see Figure~\ref{fig:algebra-generated-by-pointed}):
   \[
     [P] = [\R^d] \cdot [P] = \sum_{i=1}^n \varepsilon_i [Q_i] \cdot [P] = \sum_{i=1}^n \varepsilon_i [Q_i \cap P] \in \R\cP_v^d,
   \]
@@ -715,6 +715,467 @@ However, it turns out that assigning rational functions to \emph{pointed} polyhe
 
 
 \section{Rational generating functions of polyhedra}
+
+Let $C = \cone\{u_1,\ldots,u_d\} \in \cP^d$ be a simplicial cone
+with $u_j \in \Z^d$ primitive.
+Consider the fundamental parallelepiped
+\[
+  P(C) := \{ \sum_{j=1}^d \lambda_j u_j ~:~ 0\leq \lambda_j < 1 \}
+\]
+of the cone.
+From Chapter~\ref{chapter:basics},
+we know that $|P(C) \cap \Z^d| = \det(C)$.
+
+\begin{lemma}
+  \label{lemma:series-simplicial-cone}
+  $f(C;x) = \left(\sum_{p \in P(C) \cap \Z^d} x^p \right) \prod_{j=1}^d \sum_{n=0}^\infty x^{n u_j}$
+  as formal power series.
+\end{lemma}
+\begin{proof}
+  First, observe that the product on the right hand side is well-defined.
+  Since the $u_j$ are linearly independent, every $p \in \Z^d$ can be uniquely expressed as a linear combination
+  \[
+    p = \sum_{j=1}^d \lambda_j u_j
+  \]
+  and therefore there is at most one choice for $n$ in each of the sums
+  so that the corresponding monomials multiply to $x^p$.
+
+  In general, products of monomials correspond to sums of exponents.
+  To compare the coefficient of $x^p$ on the left and right hand sides,
+  observe that the only possible factorization of $x^p$ on the right hand side is based on
+  \[
+    p = \sum_{j=1}^d \lfloor \lambda_j \rfloor u_j + \underbrace{\sum_{j=1}^d \{ \lambda_j \} u_j}_{\in P(C) \cap \Z^d}
+  \]
+  From this, it is easy to see that the coefficients match, and the overall equation follows.
+\end{proof}
+
+
+\begin{lemma}
+  \label{lemma:convergence-simplicial-cone}
+  There is an open set $U \subset \C^d$ on which $f(C;x)$ converges absolutely and uniformly on compact subsets.
+  Furthermore, $f(C;x) = \left(\sum_{p \in P(C) \cap \Z^d} x^p \right) \frac{1}{\prod_{j=1}^d 1 - x^{u_j}}$
+  where the series converges absolutely.
+\end{lemma}
+\begin{proof}
+  Each series $\sum_{n=0}^\infty x^{n u_j}$ is a geometric series
+  which converges absolutely and uniformly on compact subsets in the set $\{ x\in \C^d ~:~ |x^{u_j}| < 1 \}$.
+  Let $a^T p \leq 0$ be an inequality defining the vertex $0 \in C$;
+  that is, $a^T u_j < 0$ for all $j$.
+  Let
+  \[
+    y := (e^{a_1}, \ldots, e^{a_d}) \in \C^d
+  \]
+  Then all series $\sum_{n=0}^\infty x^{n u_j}$ converge absolutely to $\frac{1}{1 - x^{u_j}}$ on a neighborhood of $y$.
+  The convergence is uniform on compact subsets of the neighborhood.
+  The desired properties then extend to the series $f(C;x)$ as a whole, because we merely form a finite product with a finite sum.
+\end{proof}
+
+
+We will extend this formula first to general pointed polyhedral cones and then to pointed polyhedra.
+First, we make the simple observation that convergence can only get better for generating series
+that contain subsets of monomials:
+
+\begin{fact}
+  \label{fact:polyhedra-subset-convergence-superset}
+  Let $P \subseteq Q$ be polyhedra.
+  If $f(Q;x)$ converges absolutely and uniformly on compact subsets on an open set $U \subset \C^d$,
+  then so does $f(P;x)$.
+\end{fact}
+
+\begin{lemma}
+  \label{lemma:series-pointed-converges}
+  Let $P \in \cP_v^d$ be a pointed polyhedron.
+  Then there is an open set $U \subset \C^d$ on which
+  $f(P;x)$ converges absolutely and uniformly on compact subsets.
+\end{lemma}
+\begin{proof}
+  We show that $P$ is contained in a translated simplicial cone,
+  so that the result follows from the previous fact combined with Lemma~\ref{lemma:convergence-simplicial-cone}.
+
+  Write $P = \{ p ~:~ Ap \leq b \}$
+  and choose a subset of $d$ linearly independent defining inequalities.
+  These inequalities define a (translated) simplicial cone $C = \{ p ~:~ A'p \leq b' \}$.
+  We can increase the right hand sides $b'$ to obtain a translated cone $C'$
+  with integral apex $v \in \Z^d$ and $P \subseteq C \subseteq C'$, see Figure~\ref{fig:series-pointed-converges}.
+
+  Say $C' = v + K$, where $K$ is a simplicial cone (with apex $0$).
+  It is easy to see that $f(C';x) = x^v f(K;x)$,
+  where the equation is understood in terms of formal series.
+  Multiplication with a monomial does not change convergence,
+  and so the result follows.
+\end{proof}
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}
+      \clip (-0.3,-0.3) rectangle (6.3,3.3);
+
+      \draw[thick,fill=black!10] (0.3,3.5) -- (2.4,1.4) -- (3.6,1.4) -- (4.8,1.6) -- (6.8,3.6);
+
+      \foreach \x in {0,1,...,6.01}
+        \foreach \y in {0,1,...,3.01}
+          \fill[black!50] (\x,\y) circle[radius=2pt];
+
+      \draw[thick] (-0.5,1.4) -- (4.6,1.4) -- (6.8,3.6);
+      \draw[thick] (-0.5,1.0) -- (5,1.0) -- (8,4);
+      \fill[black] (5,1) circle[radius=2pt] node[below right] {$v$};
+    \end{tikzpicture}
+  \end{center}
+  \caption{Every pointed polyhedron is contained in a (translated) simplicial cone with integral apex.}
+  \label{fig:series-pointed-converges}
+\end{figure}
+
+\begin{lemma}
+  \label{lemma:pointed-cone-rational-function}
+  Let $C \in \cP_v^d$ be a pointed cone
+  with triangulation $C_1 \cup \dots \cup C_n$.
+  Let $\hat f_j$ be the rational function associated to $C_j$ by Lemma~\ref{lemma:convergence-simplicial-cone}.
+  Then
+  \[
+    f(C;x) = \sum_{\emptyset \neq I \subseteq [n]} (-1)^{|I| - 1} \hat f_j(x)
+  \]
+  wherever the series converges absolutely and the rational functions are defined.
+\end{lemma}
+\begin{proof}
+  By Corollary~\ref{corollary:cone-triangulation-series},
+  \[
+    f(C;x) = \sum_{\emptyset \neq I \subseteq [n]} (-1)^{|I| - 1} f(C_j;x)
+  \]
+  holds for the formal power series.
+  We have $f(C_j;x) = \hat f_j(x)$ where $f(C_j;x)$ converges absolutely,
+  and by Fact~\ref{fact:polyhedra-subset-convergence-superset},
+  there is an open set $U \subset \C^d$ where all $f(C_j;x)$ and $f(C;x)$
+  converge absolutely and uniformly on compact subsets.
+  Hence the statement of the Lemma holds on $U$.
+  Since the functions involved are complex differentiable,
+  it must hold wherever $f(C;x)$ converges absolutely and the rational functions $\hat f_j$ are defined.
+\end{proof}
+
+Now that we have covered all pointed cones,
+we can use \emph{homogenization} to extend our results to pointed polyhedra.
+Let $P = \{ p \in \R^d ~:~ Ax \leq b \} \in \cP_v^d$ be a pointed polyhedron and define its homogenization
+\[
+  P' := \{ (p,t) \in \R^{d+1} ~:~ Ax - tb \leq 0, t \geq 0 \}
+\]
+One easily checks that $P \times \{ 1 \} = P' \cap \{ t = 1\}$, see Figure~\ref{fig:generating-series-homogenization}.
+
+\begin{lemma}
+  $P'$ is a pointed cone.
+\end{lemma}
+\begin{proof}
+  Clearly, $P'$ is a cone.
+
+  Assume that it is not pointed, that is, it has a non-zero lineality space.
+  That is, there is a $(v,\tau) \in \R^{d + 1}$ with $(v,\tau),-(v,\tau) \in P'$.
+  The constraint $t \geq 0$ implies $\tau = 0$.
+  Plugging this in, we can conclude $Av = 0$.
+  However, this means that $v$ lies in the lineality space of $P$,
+  which contradicts the assumption that $P$ is pointed.
+\end{proof}
+
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}
+      \draw[thick,fill=black!10] (0,3.3) -- (0,0) -- (6.6,3.3);
+
+      \foreach \x in {0,1,...,6.01}
+        \foreach \y in {0,1,...,3.01}
+          \fill (\x,\y) circle[radius=2pt];
+
+      \draw (-0.3,1) -- (6.6,1) node[right] {$t = 1$};
+      \draw[thick] (0,1) -- node[above] {$P$} (2,1);
+      \draw (0,0) node[below left] {$0$};
+    \end{tikzpicture}
+  \end{center}
+  \caption{An example of homogenization.}
+  \label{fig:generating-series-homogenization}
+\end{figure}
+
+\begin{example}
+  Consider the polytope $P = [0,2] \subset \R$ and its homogenization,
+  as illustrated in Figure~\ref{fig:generating-series-homogenization}.
+  \[
+    f(P;x) = 1 + x + x^2
+  \]
+  and
+  \[
+    f(P';(x,t)) = 1 + t + tx + tx^2 + t^2 + t^2x + \dots
+  \]
+  Let us understand the series $f(P';(x,t))$ as a series in $t$ with coefficients in the formal power series $\R[[x,x^{-1}]]$.
+  Then we recover $f(P;x)$ as the coefficient of the monomial $t$.
+\end{example}
+
+\begin{lemma}
+  Let $\hat f$ be the rational function associated to $P'$ by Lemma~\ref{lemma:pointed-cone-rational-function}.
+  Then
+  $f(P;x) = \left. \frac{d}{dt} \hat f(x,t) \right\rvert_{t = 0}$
+  wherever the series converges absolutely.
+\end{lemma}
+\begin{proof}
+  One easily checks that
+  \[
+    f(P;x) = \left. \frac{d}{dt} f(P';(x,t)) \right\rvert_{t = 0}
+  \]
+  holds in the sense of symbolic differentiation of formal power series.
+  Let us carefully extend the equation to rational functions.
+
+  From the proof of Lemma~\ref{lemma:series-pointed-converges},
+  we know that
+  \[
+    P \subseteq v + C,
+  \]
+  where $v \in \Z^d$ and $C$ is a simplicial cone.
+  Furthermore, we know that there is an $x^\star \in \C^d$
+  such that $f(C;x)$ converges absolutely and uniformly on subsets on a neighborhood $U$ of $x^\star$.
+  We can also give a uniform upper bound $M$ on the sum of absolute values of summands of $f(C;x)$ for $x \in U$ (possibly by reducing $U$ slightly).
+  We have
+  \[
+    P' \cap \{ t = k \} \subseteq kv + C
+  \]
+  for all $k \in \N_{\geq 0}$,
+  and so we can bound the sum of absolute values of $f(P';(x,t))$ by
+  \[
+    \sum_{k=0}^\infty M |x^v t|^k
+  \]
+  for all $x \in U$ and $t \in \C$.
+  This sum is finite for $|t| < \frac{1}{|x^v|}$,
+  so as long as $U$ is bounded,
+  the series $f(P';(x,t))$ converges absolutely and uniformly on compact subsets on $U \times (-t^\star, t^\star)$ for some $t^\star > 0$.
+
+  As a consequence, the formal derivative coincides with the derivative of $\hat f$ on this set,
+  and we can evaluate the derivate on $U \times \{ 0 \}$.
+  This means that the claim of the Lemma holds on $U$.
+  Since the functions involved are complex differentiable,
+  the claim extends wherever the series converges absolutely.
+\end{proof}
+
+We can now prove an analogue of Lemma~\ref{lemma:generating-functions-linear-as-series}
+for rational functions.
+We denote the set of rational functions by $\C(x)$
+and remind the reader that equality of rational functions is understood to be up to negligible differences
+in their domain.
+
+\begin{theorem}
+  \label{thm:rational-generating-functions}
+  There exists a unique linear map $F: \R\cP^d \to \C(x)$
+  such that for all $P \in \R\cP^d$ one has $F([P]) = f(P;x)$ wherever the series converges absolutely.
+  This map satisfies
+  \begin{enumerate}[(a)]
+    \item $F([u + P]) = x^u F([P])$ for all $u \in \Z^d$ and
+    \item $F([P]) = 0$ for all $P \in \cP_0^d$.
+  \end{enumerate}
+\end{theorem}
+\begin{proof}
+  By the previous sequence of Lemmas, we have candidate rational functions $f_P$
+  for every $P \in \cP_v^d$.
+  By Lemma~\ref{lemma:algebra-generated-by-pointed},
+  this is sufficient to ensure that $F$ is unique if it exists.
+  To show that our candidate rational functions give rise to a linear map $F$,
+  we have to show that they are consistent with linear dependencies.
+  That is, whenever we have $P_1,\ldots,P_m \in \cP_v^d$ and $\alpha_1,\ldots,\alpha_m \in \R$ with
+  \[
+    \sum_j \alpha_j [P_j] = 0
+  \]
+  we must have
+  \[
+    \sum_j \alpha_j f_{P_j} = 0.
+  \]
+  Lemma~\ref{lemma:generating-functions-linear-as-series} implies that
+  \[
+    \sum_j \alpha_j f(P_j;x) = 0
+  \]
+  holds in the sense of formal power series,
+  so we are done immediately if the $f(P_j;x)$ have a common region of absolute convergence.
+  However, this is not the case in general.
+
+  As in the proof of Lemma~\ref{lemma:algebra-generated-by-pointed},
+  let $Q_1, \ldots, Q_n \in \cP_v^d$ and $\varepsilon_1, \ldots, \varepsilon_n \in \R$ such that
+  \[
+    [\R^d] = \sum_{i=1}^n \varepsilon_i [Q_i]
+  \]
+  Fix a $Q_i$. Pointwise multiplication by $Q_i$ tells us that
+  \[
+    \sum_j \alpha_j [P_j \cap Q_i] = 0,
+  \]
+  and since the $P_j \cap Q_i \subseteq Q_i$ have a common region of absolute convergence,
+  we get
+  \[
+    \sum_j \alpha_j f_{P_j \cap Q_i} = 0.
+  \]
+  Similarly, we can fix a $P_j$ and get
+  \[
+    [P_j] = \sum_{i=1}^n \varepsilon_i [P_j \cap Q_i]
+  \]
+  Since $P_j$ is pointed, all the $P_j \cap Q_i$ have a common region of absolute convergence
+  and we get
+  \[
+    f_{P_j} = \sum_{i=1}^n \varepsilon_i f_{P_j \cap Q_i}.
+  \]
+  Putting things together, we can compute
+  \begin{align*}
+    \sum_j \alpha_j f_{P_j}
+     &= \sum_j \alpha_j \sum_{i=1}^n \varepsilon_i f_{P_j \cap Q_i} \\
+     &= \sum_{i=1}^n \varepsilon_i \underbrace{\sum_j \alpha_j f_{P_j \cap Q_i}}_{=0} = 0,
+  \end{align*}
+  which shows that our choice of $f_{P_j}$ can indeed be extended to a linear map $F$.
+
+  Let $P \in \cP_v^d$ and let $u \in \Z^d$.
+  One easily verifies that
+  \[
+    f(u+P;x) = x^u f(P;x)
+  \]
+  holds in the sense of formal power series.
+  The series share a region of absolute convergence, and so
+  \[
+    F([u + P]) = x^u F([P])
+  \]
+  holds for pointed polyhedra.
+  Since the pointed polyhedra generate all of $\R\cP^d$,
+  the equation holds for all polyhedra by linear extension.
+
+  Let $P \in \cP_0^d$. Since $P$ is rational, there is a vector $u \in \Z^d \cap L(P)$; that is, $P = u + P$.
+  Using the previous result, we compute
+  \[
+    F([P]) = F([u + P]) = x^u F([P]),
+  \]
+  from which we conclude $F([P]) = 0$.
+\end{proof}
+
+Theorem~\ref{thm:rational-generating-functions} completely resolves
+the problems that were discussed at the end of Section~\ref{sec:simple-example-generating-functions}.
+
+At this point, we already have tools to obtain rational generating functions for polytopes.
+However, there are still some weaknesses, in particular:
+\begin{enumerate}
+  \item Correctly triangulating a cone involves setting up a linear combination with many lower dimensional cones.
+
+  \item The size of the generating function of a simplicial cone $C$ is proportional to $\det C$,
+    which can be exponentially large.
+\end{enumerate}
+We will address these issues in the next section.
+
+
+
+
+\section{The Euler characteristic and the polarity trick}
+
+The main surprise of this section is that taking polars is a linear operation
+as far as the algebra of polyhedra is concerned.
+That is, if
+\[
+  \sum_i \alpha_i [P_i] = 0,
+\]
+then
+\[
+  \sum_i \alpha_i [P_i^\star] = 0
+\]
+holds as well.
+This leads to a useful alternative approach for decomposing a cone $C$:
+\begin{enumerate}
+  \item Decompose $C^\star$ into pointed cones $C_j$, including lower-dimensional cones.
+
+  \item Take the polar of this decomposition.
+    Lower-dimensional cones $C_j$ turn into cones $C_j^\star$ that contain lines,
+    whose rational generating function is $0$.
+\end{enumerate}
+This way, we avoid keeping track of lower-dimensional cones during decomposition.
+To obtain this result, we need a powerful tool that is quite surprising in its own right.
+
+\begin{lemma}[Euler characteristic]
+  \label{lemma:euler-characteristic}
+  There exists a unique linear map $\mu: \R\cP^d \to \R$
+  with $\mu([P]) = 1$ for all non-empty polyhedra $P \in \cP^d$.
+\end{lemma}
+
+Before we take a look at the proof,
+take a moment to appreciate some consequences of the existence of this map.
+Say we triangulated a polytope $P$ into simplices $\Delta_1, \ldots, \Delta_n$.
+Inclusion-exclusion tells us that
+\[
+  [P] = \sum_{\emptyset \neq I \subseteq [n]} (-1)^{|I| - 1} [\bigcap_{i \in I} \Delta_i],
+\]
+and it is a simple matter of the binomial formula that the coefficients of the sum in the right-hand-side sum up to $1$.
+What the Euler characteristic tells us is that we \emph{also} obtain $1$
+if we only sum up the coefficients for sets $I$
+where the intersection $\bigcap_{i \in I} \Delta_i$ is non-empty.
+This is by no means obvious.
+
+\begin{proof}
+  Again, uniqueness is immediate if we can show existence.
+  To show existence, we need to show that whenever
+  \[
+    \sum_i \alpha_i [P_i] = 0
+  \]
+  for some non-empty polyhedra $P_1, \ldots, P_n \in \cP^d$ and $\alpha_i \in \R$,
+  we have
+  \[
+    \sum_i \alpha_i = 0.
+  \]
+  This follows immediately if the $P_i$ share one point in common.
+  In particular, it holds when $d = 0$.
+  For the general case, we proceed by induction on $d$.
+  Since the result holds for $d = 0$, let $d \geq 1$.
+
+  Let $\pi : \R^d \to \R$ be a linear projection (e.g. onto the first coordinate).
+  For $t \in \R$, let
+  \[
+    \sigma(t) := \sum_{i : t \in \pi(P_i)} \alpha_i
+  \]
+  Observe that
+  \[
+    \sigma(t) = \sum_i \alpha_i \mu([P_i \cap \pi^{-1}(t)]) = 0
+  \]
+  by the induction hypothesis.
+  As $t$ travels along $\R$,
+  the summands in the definition of $\sigma(t)$ change,
+  yet $\sigma(t)$ stays the same, see Figure~\ref{fig:proof-euler-characteristic}.
+  This allows us to partition the $\alpha_i$ into sets based on the point in time when they enter the definition of $\sigma(t)$.
+  Formally, let
+  \[
+     t_i := \min\pi(P_i) \in \R \cup \{ -\infty \}
+  \]
+  For $t$ sufficiently small,
+  we get
+  \[
+    0 = \sigma(t) = \sum_{i : t_i = -\infty} \alpha_i
+  \]
+  For $t^\star \in \R$, we get
+  \[
+    0 = \sigma(t^\star) - \lim_{\varepsilon \to 0+} \sigma(t^\star - \varepsilon) = \sum_{i: t_i = t^\star} \alpha_i
+  \]
+  Overall, we obtain
+  \[
+    \sum_i \alpha_i = \underbrace{\sum_{i : t_i = -\infty} \alpha_i}_{=0} + \sum_{t^\star \in \R} \underbrace{\sum_{i: t_i = t^\star} \alpha_i}_{=0} = 0 \qedhere
+  \]
+\end{proof}
+\begin{figure}
+  \begin{center}
+  \begin{tikzpicture}
+    \draw (0,0) -- (5,0);
+
+    \fill[black!10] (0,0.5) -- (3,0.5) -- (3,1.8) -- (0,2.5);
+    \fill[black!10] (2.2,0.9) -- (4.8,1.5) -- (3.3,2.2) -- cycle;
+    \fill[black!10] (2.2,3.0) -- (2.2,2.7) -- (4.5,0.4) -- (4.6,0.8) -- cycle;
+
+    \draw[thick] (0,0.5) -- (3,0.5) -- (3,1.8) -- (0,2.5);
+    \draw[thick] (2.2,0.9) -- (4.8,1.5) -- (3.3,2.2) -- cycle;
+    \draw[thick] (2.2,3.0) -- (2.2,2.7) -- (4.5,0.4) -- (4.6,0.8) -- cycle;
+
+    \draw[dashed] (2.2,3.0) -- (2.2,-0.1) node[below] {$t^\star$};
+    \draw[dashed] (2.0,3.0) -- (2.0,-0.1);
+  \end{tikzpicture}
+  \end{center}
+  \caption{An illustration of the proof of Lemma~\ref{lemma:euler-characteristic}.}
+  \label{fig:proof-euler-characteristic}
+\end{figure}
+
+
+
+
+
+
+
+
+
 
 
 
