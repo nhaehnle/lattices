@@ -474,6 +474,7 @@ see Figure~\ref{fig:triangulation-example}.
 \end{proof}
 
 \begin{corollary}
+  \label{corollary:cone-triangulation}
   Let $C = \cone\{ u_1, \ldots, u_n \} \subset \R^d$ be a full-dimensional pointed cone.
   Then there exist full-dimensional simplicial cones $C_1, \ldots, C_m \subset \R^d$ spanned by the $u_i$
   such that
@@ -1069,7 +1070,8 @@ then
   \sum_i \alpha_i [P_i^\star] = 0
 \]
 holds as well.
-This leads to a useful alternative approach for decomposing a cone $C$:
+This leads to a useful alternative approach for decomposing a cone $C$,
+the so-called \emph{polarity trick}:
 \begin{enumerate}
   \item Decompose $C^\star$ into pointed cones $C_j$, including lower-dimensional cones.
 
@@ -1078,7 +1080,7 @@ This leads to a useful alternative approach for decomposing a cone $C$:
     whose rational generating function is $0$.
 \end{enumerate}
 This way, we do not have to keep track of lower-dimensional cones during decomposition.
-To obtain this result, we need a powerful tool that is quite surprising in its own right.
+To obtain this result, we use a powerful tool that is quite surprising in its own right.
 
 \begin{lemma}[Euler characteristic]
   \label{lemma:euler-characteristic}
@@ -1099,54 +1101,10 @@ if we only sum up the coefficients for sets $I$
 where the intersection $\bigcap_{i \in I} \Delta_i$ is non-empty.
 This is by no means obvious.
 
-\begin{proof}
-  Again, uniqueness is immediate if we can show existence.
-  To show existence, we need to show that whenever
-  \[
-    \sum_i \alpha_i [P_i] = 0
-  \]
-  for some non-empty polyhedra $P_1, \ldots, P_n \in \cP^d$ and $\alpha_i \in \R$,
-  we have
-  \[
-    \sum_i \alpha_i = 0.
-  \]
-  This follows immediately if the $P_i$ share one point in common.
-  In particular, it holds when $d = 0$.
-  For the general case, we proceed by induction on $d$.
-  Since the result holds for $d = 0$, let $d \geq 1$.
+Some additional non-trivial consequences
+including the Euler formula for polyhedra
+are found in the exercises.
 
-  Let $\pi : \R^d \to \R$ be a linear projection (e.g. onto the first coordinate).
-  For $t \in \R$, let
-  \[
-    \sigma(t) := \sum_{i : t \in \pi(P_i)} \alpha_i
-  \]
-  Observe that
-  \[
-    \sigma(t) = \sum_i \alpha_i \mu([P_i \cap \pi^{-1}(t)]) = 0
-  \]
-  by the induction hypothesis.
-  As $t$ travels along $\R$,
-  the summands in the definition of $\sigma(t)$ change,
-  yet $\sigma(t)$ stays the same, see Figure~\ref{fig:proof-euler-characteristic}.
-  This allows us to partition the $\alpha_i$ into sets based on the point in time when they enter the definition of $\sigma(t)$.
-  Formally, let
-  \[
-     t_i := \min\pi(P_i) \in \R \cup \{ -\infty \}
-  \]
-  For $t$ sufficiently small,
-  we get
-  \[
-    0 = \sigma(t) = \sum_{i : t_i = -\infty} \alpha_i
-  \]
-  For $t^\star \in \R$, we get
-  \[
-    0 = \sigma(t^\star) - \lim_{\varepsilon \to 0+} \sigma(t^\star - \varepsilon) = \sum_{i: t_i = t^\star} \alpha_i
-  \]
-  Overall, we obtain
-  \[
-    \sum_i \alpha_i = \underbrace{\sum_{i : t_i = -\infty} \alpha_i}_{=0} + \sum_{t^\star \in \R} \underbrace{\sum_{i: t_i = t^\star} \alpha_i}_{=0} = 0 \qedhere
-  \]
-\end{proof}
 \begin{figure}
   \begin{center}
   \begin{tikzpicture}
@@ -1167,17 +1125,621 @@ This is by no means obvious.
   \caption{An illustration of the proof of Lemma~\ref{lemma:euler-characteristic}.}
   \label{fig:proof-euler-characteristic}
 \end{figure}
+\begin{proof}
+  Again, uniqueness is immediate if we can show existence.
+  To show existence, we need to show that whenever
+  \[
+    \sum_i \alpha_i [P_i] = 0
+  \]
+  for some non-empty polyhedra $P_1, \ldots, P_n \in \cP^d$ and $\alpha_i \in \R$,
+  we have
+  \[
+    \sum_i \alpha_i = 0.
+  \]
+  This follows immediately if the $P_i$ share one point in common.
+  In particular, it holds when $d = 0$.
+  For the general case, we proceed by induction on $d$.
+  Since the result holds for $d = 0$, let $d \geq 1$.
+
+  Let $\pi : \R^d \to \R$ be a linear projection (e.g. onto the first coordinate).
+  For $t \in \R$, let
+  \[
+    \sigma(t) := \sum_{i : t \in \pi(P_i)} \alpha_i.
+  \]
+  Observe that
+  \[
+    \sigma(t) = \sum_i \alpha_i \mu([P_i \cap \pi^{-1}(t)]) = 0
+  \]
+  by the induction hypothesis.
+  As $t$ travels along $\R$,
+  the summands in the definition of $\sigma(t)$ change,
+  yet $\sigma(t)$ stays the same, see Figure~\ref{fig:proof-euler-characteristic}.
+  This allows us to partition the $\alpha_i$ into sets based on the point in time when they enter the definition of $\sigma(t)$.
+  Formally, let
+  \[
+     t_i := \min\pi(P_i) \in \R \cup \{ -\infty \}
+  \]
+  For $t$ sufficiently small,
+  we get
+  \[
+    0 = \sigma(t) = \sum_{i : t_i = -\infty} \alpha_i.
+  \]
+  For $t^\star \in \R$, we get
+  \[
+    0 = \sigma(t^\star) - \lim_{\varepsilon \to 0+} \sigma(t^\star - \varepsilon) = \sum_{i: t_i = t^\star} \alpha_i.
+  \]
+  Overall, we obtain
+  \[
+    \sum_i \alpha_i = \underbrace{\sum_{i : t_i = -\infty} \alpha_i}_{=0} + \sum_{t^\star \in \R} \underbrace{\sum_{i: t_i = t^\star} \alpha_i}_{=0} = 0 \qedhere
+  \]
+\end{proof}
+
+
+
+\begin{lemma}[Polarity is linear]
+  \label{lemma:polarity-is-linear}
+  There is a unique linear map $\cD: \R\cP^d \to \R\cP^d$
+  with $\cD([P]) = [P^\star]$ for all $P \in \cP^d$.
+\end{lemma}
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}
+      \draw[thick,fill=black!10] (-1,-1) -- (1,-1) -- (1,1) -- (-1,1) -- cycle;
+      \fill (0,0) circle[radius=2pt] node[below] {$0$};
+
+      \draw (-1,-2) -- (3,0) node[above right] {$y^Tx = 1$};
+
+      \fill[black!10] (-.5,-2) -- (3,-.25) -- (3,-2) -- cycle;
+      \draw[thick] (-.5,-2) -- (3,-.25) node[below right] {$K_\varepsilon(\cdot, y)$};
+
+      \draw[->] (1,-1) -- node[right, near end] {$y$} +(.25,-.5);
+    \end{tikzpicture}
+  \end{center}
+  \caption{The proof of Lemma~\ref{lemma:polarity-is-linear}. $\mu(K_0(\cdot, y)\cdot [P]) = 1$,
+    but the limit is $0$.}
+  \label{fig:proof-polarity-is-linear}
+\end{figure}
+\begin{proof}
+  We use the \emph{kernel map}
+  \[
+    K_\varepsilon(x,y) := \begin{cases}
+                1 & y^Tx \geq 1 + \varepsilon \\
+                0 & y^Tx < 1 + \varepsilon
+              \end{cases}
+  \]
+  for $\varepsilon > 0$ to define
+  \[
+    \cD(f)(y) := \mu(f) - \lim_{\varepsilon \to 0} \mu(K_\varepsilon(\cdot, y) \cdot f).
+  \]
+  For a fixed $y \in \R^d$,
+  the map $K_\varepsilon(\cdot, y): \R^d \to \R$ is the indicator function
+  of the half-space $\{ x \in \R^d ~:~ y^Tx \geq 1 + \varepsilon\}$,
+  and $K_\varepsilon(\cdot, y) \cdot f$ is simply point-wise multiplication.
+  See Figure~\ref{fig:proof-polarity-is-linear} for an illustration.
+
+  To see that the definition of $\cD$ makes sense,
+  we need to verify that the limit exists.
+  Choose an arbitrary representation
+  \[
+    f = \sum_i \alpha_i [P_i]
+  \]
+  with $P_i \in \cP^d$.
+  We can compute
+  \begin{align*}
+    \lim_{\varepsilon \to 0} \mu(K_\varepsilon(\cdot, y) \cdot f)
+      &= \sum_i \alpha_i \cdot \lim_{\varepsilon \to 0} \mu(K_\varepsilon(\cdot, y) \cdot [P_i]) \\
+      &= \sum_i \alpha_i \cdot \lim_{\varepsilon \to 0} \mu([P_i \cap \{ x ~:~ y^Tx \geq 1 + \varepsilon \}])
+  \end{align*}
+  The term $\mu([P_i \cap \{ x ~:~ y^Tx \geq 1 + \varepsilon \}])$ is either $0$ or $1$,
+  and it is monotonically increasing as $\varepsilon$ goes to $0$ from above, so the limit exists.
+
+  In fact, if $f = [P]$ for some polyhedron $P \in \cP^d$,
+  the limit is equal to $1$ if and only if $y^Tx > 1$ for some $x \in P$.
+  It follows that
+  \[
+    \cD([P]) = [P^\star].
+  \]
+  One easily verifies that $\cD(f)(y)$ is linear in $f$, and therefore $\cD$ is linear.
+  By linearity, it also follows that $\cD(f) \in \R\cP^d$ for all $f \in \R\cP^d$.
+  As usual, uniqueness follows because the value of the desired map $\cD$ is fixed on a generating set of $\R\cP^d$.
+\end{proof}
+
+
+
+
+
+\section{Signed decomposition into unimodular cones}
+
+Recall that our candidate rational generating function for a simplicial cone
+$C = \cone\{u_1, \ldots, u_d \}$ with $u_j \in \Z^d$ primitive is
+\[
+  f(C;x) = \left(\sum_{p \in P(C) \cap \Z^d} x^p \right) \frac{1}{\prod_{j=1}^d 1 - x^{u_j}},
+\]
+where the fundamental parallelepiped $P(C)$ of $C$ may contain exponentially many integer points
+in the encoding length of $C$.
+This is clearly wasteful, so we would like to decompose $C$ into unimodular cones.
+
+Every cone can be triangulated into finitely many unimodular cones (showing this is left as an exercise),
+but doing so may be wasteful as well.
+Consider the cone
+\[
+  C := \cone\{ \underbrace{\begin{pmatrix} 0 \\ 1 \end{pmatrix}}_{=: u_1}, \underbrace{\begin{pmatrix} N \\ 1 \end{pmatrix}}_{=: u_2} \},
+\]
+see Figure~\ref{fig:cone-bad-unimodular-triangulation}.
+The reader may convince themselves that any unimodular cone contained in $C$
+covers at most $1$ unit of the line segment between $u_1$ and $u_2$.
+Hence at least $N$ unimodular cones are required in any unimodular triangulation,
+which is an exponential number in the encoding length of $C$.
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}
+      \clip (-1,-1) rectangle (6.3,3.3);
+
+      \draw[thick,fill=black!10] (0,3.3) -- (0,0) -- (16,4);
+
+      \foreach \x in {0,1,...,6.01}
+        \foreach \y in {0,1,...,3.01}
+          \fill[black] (\x,\y) circle[radius=2pt];
+
+      \draw (0,0) node[below left] {$0$};
+      \draw (0,1) node[left] {$u_1$};
+      \draw (4,1) node[below right] {$u_2$};
+    \end{tikzpicture}
+  \end{center}
+  \caption{Every unimodular triangulation requires at least $N$ cones.}
+  \label{fig:cone-bad-unimodular-triangulation}
+\end{figure}
+
+On the other hand,
+the cones $C_1 = \cone\{ e_1, e_2 \}$ and $C_2 = \cone\{ e_1, u_2 \}$ are both unimodular
+and we can write
+\[
+  [C] \equiv [C_1] - [C_2] \pmod{\R\cP_\ell^d},
+\]
+where we ignore lower-dimensional cones because they will ultimately be irrelevant thanks to the polarity trick.
+We will show that this idea can be generalized.
+
+\begin{lemma}
+  \label{lemma:simplicial-cone-signed-star}
+  Let $C = \cone\{u_1,\ldots,u_d\}$ be a simplicial cone and let
+  $v = \sum_{j=1}^d \lambda_j u_j$ be a vector with at least one $\lambda_j > 0$.
+  Then
+  \[
+    [C] \equiv \sum_{j=1}^d \sgn \lambda_j [C_j] \pmod{\R\cP_\ell^d},
+  \]
+  where $C_j = \cone\{u_1,\ldots,v,\ldots,u_d\}$ is the simplicial cone obtained by
+  replacing $u_j$ by $v$.
+\end{lemma}
+\begin{proof}
+  Left as an exercise.
+\end{proof}
+
+Observe that if one of the $\lambda_j = 0$,
+the number of cones in the decomposition is less than $d$.
+This is intuitively plausible because in this situation,
+$v$ lies in one of the facets of $C$.
+
+\begin{lemma}
+  \label{lemma:signed-decomposition-determinants}
+  Let $C \in \R\cP^d$ be a simplicial cone with $\det C \geq 2$.
+  There exists a signed decomposition
+  \[
+    [C] \equiv \sum_{j=1}^d \varepsilon_j [C_j] \pmod{\R\cP_\ell^d},
+  \]
+  with $\varepsilon_j = \pm1$ such that $\det C_j \leq (\det C)^{1-1/d}$.
+
+  If $d$ is fixed, such a decomposition can be computed in polynomial time.
+\end{lemma}
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}
+      \clip (-3,-2) rectangle (4,3);
+
+      \draw (-4,-2) -- (4,2);
+      \draw (-1,-3) -- (1,3);
+      \draw[thick,fill=black!10] (1,3) -- (0,0) -- (8,4);
+      \draw[thick,->] (0,0) -- (2,1) node[below right] {$u_1$};
+      \draw[thick,->] (0,0) -- (.5,1.5) node[above left] {$u_2$};
+      \draw[dashed] (.5,1.5) -- (2.5,2.5) node[right] {$P(C)$} -- (2,1);
+
+      \draw[thick] (1,1) -- ++(-.4,-1.2) node[right] {$P$} -- ++(-1.6,-.8) -- ++(.4,1.2) -- cycle;
+
+      \fill (-.4,.1) circle[radius=2pt] node[below left] {$v$};
+    \end{tikzpicture}
+  \end{center}
+  \caption{To obtain a good decomposition of a simplicial cone,
+    we find integer vectors in a scaling of the fundamental parallelepiped.}
+  \label{fig:signed-decomposition-determinants}
+\end{figure}
+\begin{proof}
+  Let $C = \cone\{ u_1, \ldots, u_d \}$ with $u_j \in \Z^d$ primitive.
+  We will make use of the signed decomposition of Lemma~\ref{lemma:simplicial-cone-signed-star}.
+  Given
+  \[
+    v = \sum_j \lambda_j u_j \in \Z^d,
+  \]
+  the cone $C_j = \cone\{u_1,\ldots,v,\ldots,u_d\}$ has determinant
+  \[
+    \det C_j = |\lambda_j| \det C.
+  \]
+  To see this, recall that $\det C$ is the volume of the fundamental parallelepiped $P(C)$ spanned by the $u_j$.
+  Replacing $u_j$ by $v$ multiplies the height of $P(C)$ above the facet spanned by $u_i$, $i \neq j$,
+  by a factor of $\lambda_j$, and hence we get the desired relation for the volume and determinants.
+
+  Given that $\det C \geq 2$, there is a non-zero integer vector in $P(C)$.
+  However, we cannot guarantee that its coefficients in the basis of the $u_j$ are sufficiently small.
+  So let us symmetrize and scale $P(C)$ to obtain the compact parallelepiped
+  \[
+    P := \{ \sum_j \lambda_j u_j ~:~ |\lambda_j| \leq (\det C)^{-1/d} \},
+  \]
+  see Figure~\ref{fig:signed-decomposition-determinants}.
+  Its volume is
+  \[
+    \vol(P) = 2^d (\det C)^{-1} \vol P(C) = 2^d,
+  \]
+  so $P$ contains a non-zero integer vector $v$ by Minkowski's theorem.
+  Without loss of generality,
+  \[
+    v = \sum_j \lambda_j u_j
+  \]
+  with at least one $\lambda_j > 0$ (otherwise take $-v$).
+  We get the desired decomposition by Lemma~\ref{lemma:simplicial-cone-signed-star},
+  and
+  \[
+    \det C_j = |\lambda_j| \det C \leq (\det C)^{1-1/d}.
+  \]
+  Finding $v$ is a shortest vector problem in a linearly distorted $\ell_\infty$-norm.
+  If $d$ is fixed, this can be done in polynomial time.
+\end{proof}
+
+Let us now decompose simplicial cones recursively.
+We obtain a rooted tree of cones
+with outdegrees bounded by $d$:
+\begin{center}
+  \begin{tikzpicture}
+    \node[draw] (r) at (0,0) {$C$};
+    \node[right] at (4.5,0) {$\det C$};
+
+    \node[draw] (c1) at (-2,-1) {$C_1$};
+    \node at (0,-1) {$\dots$};
+    \node[draw] (cd) at (2,-1) {$C_d$};
+    \node[right] at (4.5,-1) {$\leq (\det C)^{1-1/d}$};
+
+    \draw[->] (r) -- (c1);
+    \draw[->] (r) -- (cd);
+
+    \node[draw] (c11) at (-2.8,-2) {$C_{11}$};
+    \node at (-2,-2) {$\dots$};
+    \node[draw] (c1d) at (-1.2,-2) {$C_{1d}$};
+    \node[draw] (cd1) at (1.2,-2) {$C_{d1}$};
+    \node at (2,-2) {$\dots$};
+    \node[draw] (cdd) at (2.8,-2) {$C_{dd}$};
+    \node[right] at (4.5,-2) {$\leq (\det C)^{(1-1/d)^2}$};
+
+    \draw[->] (c1) -- (c11);
+    \draw[->] (c1) -- (c1d);
+    \draw[->] (cd) -- (cd1);
+    \draw[->] (cd) -- (cdd);
+  \end{tikzpicture}
+\end{center}
+Let us bound the number of such cones.
+At level $k$, the determinant of each cone is at most $(\det C)^{(1-1/d)^k}$.
+Let us say that the tree goes down to level $\ell + 1$.
+Then at level $\ell$, there is at least one cone of determinant $\geq 2$:
+\[
+  2 \leq (\det C)^{(1 - 1/d)^\ell}.
+\]
+Taking logarithms, we get
+\[
+  1 \leq (1 - 1/d)^\ell \log\det C.
+\]
+Taking logarithms again, we get
+\[
+  0 \leq \ell \log(1 - 1/d) + \log\log\det C.
+\]
+Using $\ln(1 + x) \leq x$, we get
+\[
+  \ell \leq d \ln 2 \cdot \log\log\det C.
+\]
+Since every node of the tree has at most $d$ children,
+the number of leaves of the tree -- which is equal to the number of unimodular cones in the final decomposition -- is bounded by
+\[
+  d^{\ell + 1} = d \cdot d^{d \ln 2 \cdot \log\log\det C} \leq d \cdot (\log\det C)^{d \ln d}.
+\]
+Since $\log\det C$ is a polynomial in the encoding length of $C$,
+the overall number of unimodular cones in the decomposition is polynomial if $d$ is fixed.
+
+Let us now bound the encoding lengths of the resulting unimodular cones
+by bounding the lengths of their generating vectors.\footnote{%
+Equivalently, one might represent them as $Ax \leq 0$.
+The two representations are polynomially related to each other via linear algebra.}
+A conservative bound of the vector $v$ that is constructed in the proof of Lemma~\ref{lemma:signed-decomposition-determinants} is
+\[
+  \|v\|_\infty \leq d\cdot \max_j \|u_j\|_\infty.
+\]
+With $M := \max_j \|u_j\|_\infty$, where $u_j$ are the generators of the initial cone $C$,
+the $\ell_\infty$-norm of generating vectors at level $k$ of the tree are bounded by $d^k M$.
+That is, the encoding lengths of components of the generators of the final unimodular cones are bounded by
+\[
+  \log d^{\ell + 1} M = (1 + d \ln 2 \cdot \log\log\det C) \cdot \log d + \log M,
+\]
+which is polynomial in the encoding length of the original cone.
+
+\begin{theorem}
+  \label{thm:cone-decomposition}
+  For every full-dimensional cone $C \in \cP_v^d$
+  there is a set $C_1, \ldots, C_n$ of unimodular cones
+  and $\varepsilon_1, \ldots, \varepsilon_n$ such that
+  \[
+    [C] = \sum_{i=1}^n \varepsilon_i [C_i] \pmod{\R\cP_\ell^d}
+  \]
+  If $d$ is fixed, this decomposition can be computed in polynomial time.
+\end{theorem}
+\begin{proof}
+  Combine the preceding discussion with the triangulation into simplicial cones of Corollary~\ref{corollary:cone-triangulation}.
+\end{proof}
+
+\begin{corollary}
+  \label{corollary:cone-decomposition}
+  For every cone $C \in \cP_v^d$
+  there is a set $C_1, \ldots, C_n$ of unimodular cones
+  and $\varepsilon_1, \ldots, \varepsilon_n$ such that
+  \[
+    f(C;x) = \sum_{i=1}^n \varepsilon_i f(C_i;x)
+  \]
+  If $d$ is fixed, this decomposition can be computed in polynomial time.
+\end{corollary}
+\begin{proof}
+  We use the polarity trick:
+  Apply Theorem~\ref{thm:cone-decomposition} to $C^\star$.
+  Then polarize the resoluting decomposition to get an equation of indicator functions modulo $\R\cP_0^d$
+  and use the fact that the rational generating functions for polyhedra with lines are $0$.
+  Observe that the polar of a unimodular cone is again a unimodular cone.
+\end{proof}
 
 
 
 
 
 
+\section{Convolution and Brion's theorem}
+
+We will show one more surprising result about the algebra of polyhedra
+that generalizes an observation we have made at the end of Section~\ref{sec:simple-example-generating-functions}.
+
+\begin{definition}
+  Let $P \in \cP^d$ and let $x \in \R^d$.
+  The \emph{tangent cone} of $P$ at $x$ is the set
+  \[
+    \tcone(P,x) := x + \{ v \in \R^d ~:~ \exists \varepsilon > 0:~ x + \varepsilon v \in P \}
+  \]
+\end{definition}
+
+The tangent cone is not actually cone, but it is a translate of a cone.
+Note that it is defined for all $x$,
+but we are mostly interested in the case where $x$ is a vertex, see Figure~\ref{fig:tangent-cone}.
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}
+      \draw[thick,fill=black!10] (0,0) -- (2,0) -- (2.5,1) -- (1.1,1.8) -- (-0.2,0.9) -- cycle;
+      \node at (1,0.9) {$P$};
+
+      \fill (0,0) circle[radius=2pt] node[below] {$x$};
+
+      \draw[thick] (-0.6,2.7) -- (0,0) -- (3.3,0);
+    \end{tikzpicture}
+  \end{center}
+  \caption{The tangent cone of $P$ at $x$.}
+  \label{fig:tangent-cone}
+\end{figure}
+The main result of this section will be:
+
+\begin{theorem}[Brion]
+  \label{thm:brion}
+  Let $P \in \cP^d$ and let $V$ be the set of vertices of $P$.
+  Then
+  \[
+    [P] \equiv \sum_{x \in V} [\tcone(P,x)] \pmod{\R\cP_0^d}
+  \]
+\end{theorem}
+
+Note that we could also write
+\[
+  [P] \equiv \sum_{x \in \R^d} [\tcone(P,x)] \pmod{\R\cP_0^d}
+\]
+because $[\tcone(P,x)] \equiv 0 \pmod{\R\cP_0^d}$ when $x$ is not a vertex of $P$.
+Before we can proceed with the proof,
+we need to develop some more algebraic tools that are of independent interest.
+
+\begin{lemma}
+  \label{lemma:polyhedra-affine}
+  Let $A : \R^m \to \R^n$ be an affine map.
+  There is a unique linear map $\cA: \R\cP^m \to \R\cP^n$
+  that satisfies $\cA([P]) = [AP]$ for all $P \in \cP^m$.
+\end{lemma}
+\begin{proof}
+  The proof is analogous to the proof of Lemma~\ref{lemma:polarity-is-linear} that polarity is linear.
+  Using the kernel function
+  \[
+    K(x,y) := \begin{cases} 1 & Ax = y \\ 0 & Ax \neq y \end{cases}
+  \]
+  we define
+  \[
+    \cA(f)(y) := \mu(K(\cdot, y) \cdot f).
+  \]
+  The function $\cA$ is linear because $\cA(f)(y)$ is linear in $f$ for all $y$.
+  Since $K(\cdot,y)$ is the indicator function of the preimage of $y$ under $A$,
+  we get
+  \[
+    \cA([P]) = [AP]
+  \]
+  from the fact that $\mu(K(\cdot, y) \cdot [P]) = 1$ if and only if the preimage of $y$ under $A$ intersects $P$.
+  By linearity, it follows that $\cA(f) \in \R\cP^n$ for all $f \in \R\cP^m$.
+  As usual, uniqueness follows because the value of the desired map $\cA$ is fixed on a generating set of $\R\cP^m$.
+\end{proof}
+
+\begin{lemma}
+  \label{lemma:polyhedra-convolution}
+  There is a unique bilinear map $\star: \R\cP^d \times \R\cP^d \to \R\cP^d$
+  that satisfies $[P] \star [Q] = [P + Q]$ for all $P, Q \in \cP^d$.
+\end{lemma}
+\begin{proof}
+  We define $\star$ as a composition
+  \[
+    \star: \R\cP^d \times \R\cP^d \stackrel{\times}{\longrightarrow} \R\cP^{d+d} \stackrel{\cA}{\longrightarrow} \R\cP^d
+  \]
+  where
+  \[
+    (f \times g)(x,y) := f(x) \cdot g(y)
+  \]
+  for all $(f,g) \in \R\cP^d \times \R\cP^d$
+  and $\cA$ is the lifting of the linear map
+  \[
+    A(x,y) := x + y
+  \]
+  due to Lemma~\ref{lemma:polyhedra-affine}.
+  Note that $\times$ is well-defined since given
+  \[
+    f = \sum_i \alpha_i [P_i] \quad\text{ and }\quad g = \sum_j \beta_j [Q_j]
+  \]
+  one has
+  \[
+    f \times g = \sum_i \sum_j \alpha_i \beta_j [P_i \times Q_j],
+  \]
+  that is, $f\times g \in \R\cP^{d+d}$.
+  In particular,
+  \[
+    [P] \times [Q] = [P \times Q]
+  \]
+  and therefore
+  \[
+    [P] \star [Q] = [P + Q]
+  \]
+  as desired.
+
+  Since $\times$ is bilinear and $\cA$ is linear, $\star$ is bilinear.
+  It is the unique bilinear map with the desired property
+  since its value on a generating system is fixed.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:brion}]
+  Observe that the result is trivially true when $P$ contains lines,
+  so we can restrict our attention to pointed polyhedra.
+
+  Let us first consider the case of a full-dimensional simplex $\Delta$.
+  We can write
+  \[
+    \Delta = H_0 \cap H_1 \cap \dots \cap H_d
+  \]
+  where the $H_j$ are closed half-spaces, see Figure~\ref{fig:brion-simplex}.
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}
+      \clip (0,0) rectangle (6,3);
+
+      \fill[black!10] (0,0.5) -- ++(6,0) -- ++(0,0.2) -- ++(-6,0) -- cycle;
+      \fill[black!10] (1,0) -- ++(0,3) -- ++(0.2,0) -- ++(0,-3) -- cycle;
+      \fill[black!10] (-2,4) -- ++(8,-4) -- ++(-.09,-.18) --++(-8,4) -- cycle;
+      \draw[thick] (0,0.5) -- ++(6,0);
+      \draw[thick] (1,0) -- ++(0,3);
+      \draw[thick] (-2,4) -- ++(8,-4);
+
+      \coordinate (v0) at (1,0.5);
+      \coordinate (v1) at (5,0.5);
+      \coordinate (v2) at (1,2.5);
+
+      \fill (v0) circle[radius=2pt] node[below left] {$v_0$};
+      \fill (v1) circle[radius=2pt] node[below] {$v_1$};
+      \fill (v2) circle[radius=2pt] node[above right] {$v_2$};
+
+      \node[below] at (0.4,2.8) {$H_0$};
+      \node[above] at (0.3,0.5) {$H_2$};
+      \node[right] at (1,1.5) {$H_1$};
+    \end{tikzpicture}
+  \end{center}
+  \caption{A simplex is the intersection of half-spaces $H_j$.}
+  \label{fig:brion-simplex}
+\end{figure}
+  We write $v_j$ for the vertex opposite to the facet defined by $H_j$.
+  By the inclusion-exclusion principle,
+  \[
+    [\R^d] = \sum_{\emptyset \neq I \subseteq \{0,\ldots,d\}} (-1)^{|I| - 1} [\bigcap_{i\in I} H_i].
+  \]
+  Analyzing the individual intersections,
+  we find that for $I = \{0,\ldots,d\} \setminus \{ j \}$ we have
+  \[
+    \bigcap_{i \in I} H_i = \tcone(\Delta, v_j)
+  \]
+  and
+  \[
+    [\bigcap_{i \in I} H_i] \equiv 0 \pmod{\R\cP_0^d}
+  \]
+  for $|I| < d$.
+  Rearranging terms, we get
+  \[
+    [\Delta] \equiv \sum_{j=0}^{d} [\tcone(\Delta, v_j)] \pmod{\R\cP_0^d}.
+  \]
+  The same result follows for lower-dimensional simplices,
+  either by considering them in their affine hull or by adding an intersection with the affine hull of $\Delta$
+  everywhere in the argument above.
+
+  Now let $P = \conv\{ u_1, \ldots, u_n \}$ be a rational polytope.
+  Consider the simplex $\Delta := \conv\{ e_1, \ldots, e_n \} \subset \R^n$
+  and the linear map $A: \R^n \to \R^d$ defined by
+  \[
+    A(e_j) := u_j.
+  \]
+  Clearly, $A(\Delta) = P$.
+  Furthermore, we claim that $A(\tcone(\Delta, e_j)) = \tcone(P, u_j)$.
+  This follows from the fact that
+  \[
+    \tcone(\Delta, e_j) = e_j + \cone\{ e_1 - e_j,  \ldots, e_n - e_j \}
+  \]
+  and similarly for $\tcone(P, u_j)$.
+  Therefore, it is tempting to just apply the lifting of $A$ to the modular equation we have already obtained for $\Delta$.
+  This almost works, except for the fact that $A$ has a non-zero kernel,
+  and so the image under $A$ of a polyhedron with lines does not necessarily contain lines.
+  We have to argue that summands that we previously hid in the modulo equation do not reappear.
+
+  In fact, all of the hidden summands are intersections of facet-defining half-spaces of $\Delta$,
+  which means that every hidden summand contains a line through an edge of $\Delta$.
+  This line follows the direction $e_i - e_j$ for some $i \neq j$.
+  Its image follows the direction $A(e_i - e_j) = u_i - u_j \neq 0$,
+  so the images of all hidden summands are again polyhedra containing lines,
+  which we can safely ignore.
+  Hence, we get
+  \[
+    [P] \equiv \sum_i [\tcone(P, u_i)] \pmod{\R\cP_0^d}
+  \]
+  for any polytope $P \in \cP_b^d$.
+
+  Finally, let $P \in \cP_v^d$ be an unbounded but pointed polyhedron.
+  Let $u_1, \ldots, u_n$ be the vertices of $P$.
+  Then we can decompose $P$ as
+  \[
+    P = \underbrace{\conv\{ u_1, \ldots, u_n \}}_{=: Q} + C,
+  \]
+  where $C \in \cP_v^d$ is a cone.
+  From the previous step, we know
+  \[
+    [Q] \equiv \sum_i [\tcone(Q, u_i)] \pmod{\R\cP_0^d}.
+  \]
+  One easily verifies that $\tcone(P, u_i) = \tcone(Q, u_i) + C$, allowing us to compute
+  \begin{align*}
+    [P]
+    &\equiv [Q + C] \equiv [Q] \star [C] \pmod{\R\cP_0^d} \\
+    &\equiv \sum_i [\tcone(Q, u_i)] \star [C] \pmod{\R\cP_0^d} \\
+    &= \sum_i [\tcone(Q, u_i) + C] \pmod{\R\cP_0^d} \\
+    &= \sum_i [\tcone(P, u_i)] \pmod{\R\cP_0^d} \qedhere
+  \end{align*}
+\end{proof}
 
 
 
 
 
+
+\section{Counting integer points in polytopes using explicit rational generating functions}
 
 
 
@@ -1199,4 +1761,60 @@ This is by no means obvious.
     the trivial summands on the right hand side add up to $0$.
 
     \emph{Hint:} You can apply the Euler characteristic to the inclusion-exclusion formula applied to the vertex figure of the triangulation.
+
+  \item Let $f \in \R\cP^d$ be such that the support of $f$ is restricted to a $k$-dimensional affine subspace $U \subset \R^d$.
+    Let $\iota : \R^k \to U$ be an injective affine map.
+
+    Show: $\mu(f) = \mu(f \circ \iota)$.
+
+    \emph{Note:} The functions $\mu$ are defined on $\R\cP^d$ and $\R\cP^k$, respectively.
+
+  \item Show: $[\relint P] \in \R\cP^d$ for all $P \in \cP^d$.
+
+  \item In this problem, we explore an equivalent definition of the Euler characteristic
+    and its implications.
+    \begin{enumerate}[(a)]
+      \item Let $\pi : \R^d \to \R$ be a projection, say on the first coordinate.
+        For $f \in \R\cP_b^d$, let $\mu_t(f) := \mu_{d-1}(f|_{\pi^{-1}(t)})$, where $\mu_{d-1}$ is the $(d-1)$-dimensional Euler characteristic.
+
+        Show: For all $f \in \R\cP_b^d$ one has $\mu(f) = \sum_{t \in \R} \mu_t(f) - \lim_{\varepsilon \to 0+} \mu_{t-\varepsilon}(f)$.
+
+      \item Let $P \in \cP_b^d$ be a full-dimensional polytope.
+
+        Show: $\mu([\operatorname{int} P]) = (-1)^d$.
+
+      \item Let $f_0, \ldots, f_d \in \N_{\geq 0}$ be the so-called $f$-vector of $P$, that is,
+        $f_j$ is the number of $j$-dimensional faces of $P$ (in particular, $f_0$ is the number of vertices and $f_d = 1$).
+
+        Show the Euler formula $\sum_{j = 0}^d (-1)^j f_j = 1$.
+
+      \item Extend the previous results to unbounded pointed polyhedra.
+
+      \item Extend the previous results to general polyhedra.
+    \end{enumerate}
+
+  \item Show the Euler formula for planar graphs using the Euler characteristic.
+
+  \item Show: Every simplicial cone $C \in \cP_v^d$ can be triangulated into unimodular cones.
+
+  \item Show Lemma~\ref{lemma:simplicial-cone-signed-star}.
+
+  \item Show: $\R \cP^d$ is an $\R$-algebra with operations $+$ and $\star$.
+    Its neutral element is $1_\star = [\{0\}]$.
+
+  \item Let $P \in \cP_b^d$ be a polytope. Show: $[P]$ is invertible with respect to $\star$.
+    Its inverse is $(-1)^{\dim P} [\relint P]$.
+
+  \item Let $\cD : \R \cP^d \to \R \cP^d$ be polarity (aka duality) and let $\cdot : \R \cP^d \to \R \cP^d$ be pointwise multiplication.
+    \begin{enumerate}[(a)]
+      \item
+        Show: $\cD([K] \cdot [C]) = \cD([K]) \star \cD([C])$ and $\cD([K] \star [C]) = \cD([K]) \cdot \cD([C])$ for rational cones $K$ and $C$.
+
+      \item
+        Does the same relation hold for all $f, g \in \R \cP^d$?
+    \end{enumerate}
+
+  \item Let $c \in \R^d$.
+    Show: There exists a unique linear map $LP_c: \R \cP_b^d \to \R$
+    such that $LP_c([P]) = \max\{ c^Tx ~:~ x \in P \}$ for all $P \in \cP_b^d$.
 \end{enumerate}
