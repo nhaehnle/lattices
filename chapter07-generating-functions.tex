@@ -30,7 +30,7 @@ exponentially faster than \emph{enumerating} all those points.
 In the case of a box,
 computing the number of points is a polynomial problem even when the dimension $d$ is allowed to vary.
 We do not expect this to be true in general
-because the problem of deciding whether $|P \cap \Z^d|$ is $0$ for an arbitrary polytope $P$ is the integer programming problem,
+because the problem of deciding whether $|P \cap \Z^d| = 0$ for an arbitrary polytope $P$ is the integer programming problem,
 which is $NP$-hard.
 In fact, computing $|P \cap \Z^d|$ is easily seen to be a $\# P$-hard problem.
 So we should contend ourselves with looking for an algorithm that is polynomial so long as $d$ is fixed,
@@ -49,8 +49,8 @@ Consequently, for $\varepsilon \in (0,1)$ one has $|K_0 \cap \Z^2| - |K_\varepsi
   If there were a polynomial-time algorithm for computing the number of integer points in (somewhat general) convex bodies in $\R^2$,
   then one could factor integers in polynomial time.
 \end{fact}
-We don't expect factoring to be a polynomial time problem,
-so we cannot hope to count integer points in arbitrary convex bodies.
+We do not expect factoring to be a polynomial time problem,
+so we cannot hope to count integer points in arbitrary convex bodies efficiently.
 Instead, our goal will be a polynomial time algorithm that counts the number of integer points in \emph{polytopes}
 in fixed dimension.
 
@@ -95,13 +95,13 @@ One way of doing this is to symbolically determine the \emph{generating function
   f(I;x) = \sum_{p \in I \cap \Z} x^p
 \]
 and evaluate it at the point $f(I;1) = |I \cap \Z|$.
-Unfortunately, $f(I;x)$ is the sum of $|I \cap \Z|$ monomials.
-The memory space required for writing this sum down is therefore exponential in the encoding length of $I$.
+Unfortunately, $f(I;x)$ is the sum of $|I \cap \Z|$ monomials,
+and so the memory space required for writing this sum down is exponential in the encoding length of $I$.
 A better approach is needed. The geometric series
 \[
   \sum_{p = 0}^\infty x^p
 \]
-is at the same time the generating function for the unbounded interval $[0,\infty)$
+is the generating function of the unbounded interval $[0,\infty)$
 and satisfies
 \[
   \sum_{p = 0}^\infty x^p = \frac{1}{1 - x}
@@ -190,7 +190,7 @@ One finds that
   f(I;x) = \frac{x^a}{1-x} + \frac{x^b}{1-x^{-1}}
 \]
 where, again, the equality should be understood modulo negligible differences in the functions' domains.
-For now, the reader may want to convince themselves that the equation holds in this particular example,
+For now, the reader may want to convince themselves that the equation above does indeed hold in this particular case,
 for example by manual comparison to the rational function obtained previously.
 
 The remainder of this chapter generalizes the approach we have just laid out to higher dimension,
@@ -232,7 +232,7 @@ Polyhedra containing lines are somewhat unusual in the sense
 that if one thinks of polyhedra, one usually thinks of polyhedra that have vertices,
 and such polyhedra \emph{do not} contain lines.
 That is, their lineality space is $0$.
-However, their properties are crucial for the development of compact rational generating functions.
+However, polyhedra with lines are essential for the development of compact rational generating functions.
 
 The following facts tie cones, polarity, and lineality spaces together.
 Their proofs are left as an exercise.
@@ -361,7 +361,7 @@ see Figure~\ref{fig:triangulation-example}.
   \label{thm:polytope-triangulation}
   Let $P = \conv\{ v_1, \ldots, v_n \} \subset \R^d$ be a full-dimensional polytope.
   There is a triangulation $\Delta_1, \ldots, \Delta_m$ of $P$
-  such that each simplex $\Delta_j$ is spanned by some subset of $d+1$ vectors from the set $\{ v_j \}_j$.
+  such that each simplex $\Delta_j$ is spanned by some subset of $d+1$ vectors from the set $\{ v_i \}_i$.
 
   If $P$ is rational, such a triangulation can be computed in polynomial time if $d$ is fixed.
 \end{theorem}
@@ -405,7 +405,7 @@ see Figure~\ref{fig:triangulation-example}.
 
   For every $x \in P$, let
   \[
-    \ell(x) := \min\{ t ~:~ (x,t) \in P' \}
+    \ell(x) := \min\{ t ~:~ (x,t) \in P' \}.
   \]
   The point $(x, \ell(x))$ lies in a facet of $P'$
   whose defining inequality $a^Tx + \alpha t \geq \beta$ satisfies $\alpha > 0$.\footnote{This follows
@@ -414,7 +414,7 @@ see Figure~\ref{fig:triangulation-example}.
   and let $\Delta_j := \pi(F_j)$.
   We have already shown that
   \[
-    P = \bigcup_j \Delta_j
+    P = \bigcup_j \Delta_j.
   \]
   Since $\pi$ is injective on the $F_j$, the $\Delta_j$ are full-dimensional
   and for $i \neq j$, $\Delta_i \cap \Delta_j$ is either empty or a face of both $\Delta_i$ and $\Delta_j$,
@@ -519,8 +519,8 @@ Given a triangulation of a cone $C$ into simplicial cones $C_1, \ldots, C_n$,
 it seems natural to express the generating function $f(C;x)$ as
 the sum of the generating functions $f(C_i;x)$.
 Note, however, that integer points on lower-dimensional cones that arise from intersections $C_i \cap C_j$
-will be counted multiple cones.
-The generating functions corresponding to those lower dimensional cones must then be subtracted,
+will be counted multiple times.
+The generating functions corresponding to those lower dimensional cones must be subtracted,
 but then points that have been subtracted too often must be added again, and so on.
 In this section, we will put such computations on a rigorous foundation.
 
@@ -529,9 +529,10 @@ In this section, we will put such computations on a rigorous foundation.
   \begin{enumerate}[(a)]
     \item by $\cP^d$ the set of rational polyhedra in $\R^d$,
     \item by $\cP_0^d \subset \cP^d$ the set of rational polyhedra that contain lines,
-    \item by $\cP_v^d \subset \cP^d$ the set of rational polyhedra that do not contain lines (i.e., polyhedra with vertices aka pointed polyhedra),
+    \item by $\cP_v^d \subset \cP^d$ the set of rational polyhedra that do not contain lines
+      (i.e., polyhedra with vertices, also known as pointed polyhedra),
     \item by $\cP_b^d \subset \cP^d$ the set of bounded rational polyhedra, and
-    \item by $\cP_\ell^d \subset \cP^d$ the set of rational polyhedra that is not full-dimensional.
+    \item by $\cP_\ell^d \subset \cP^d$ the set of rational polyhedra that are not full-dimensional.
   \end{enumerate}
 \end{definition}
 The relationships between those families of polyhedra are as follows:
@@ -557,7 +558,7 @@ The relationships between those families of polyhedra are as follows:
                 0 & x \not\in P
               \end{cases}
   \]
-  Then $\R \cP^d$ is the sub-vector space of the space of all functions
+  We define $\R \cP^d$ as the sub-vector space of the space of all functions $\R^d \to \R$
   that is generated by $\{ [P] : P \in \cP^d \}$.
   The vector spaces $\R \cP_0^d$ etc. are defined analogously.
 \end{definition}
@@ -645,11 +646,11 @@ However, it turns out that assigning rational functions to \emph{pointed} polyhe
 
   Let $Q_1, \ldots, Q_n \in \cP_v^d$ and $\varepsilon_1, \ldots, \varepsilon_n \in \R$ such that
   \[
-    [\R^d] = \sum_{i=1}^n \varepsilon_i [Q_i]
+    [\R^d] = \sum_{i=1}^n \varepsilon_i [Q_i].
   \]
   One can obtain such an equation by applying the inclusion-exclusion formula to the orthants of $\R^d$.
   We then observe that pointwise multiplication of indicator functions of polyhedra
-  corresponds to taking intersections, and compute (see Figure~\ref{fig:algebra-generated-by-pointed}):
+  corresponds to taking intersections and compute (see Figure~\ref{fig:algebra-generated-by-pointed}):
   \[
     [P] = [\R^d] \cdot [P] = \sum_{i=1}^n \varepsilon_i [Q_i] \cdot [P] = \sum_{i=1}^n \varepsilon_i [Q_i \cap P] \in \R\cP_v^d,
   \]
@@ -745,9 +746,9 @@ we know that $|P(C) \cap \Z^d| = \det(C)$.
   To compare the coefficient of $x^p$ on the left and right hand sides,
   observe that the only possible factorization of $x^p$ on the right hand side is based on
   \[
-    p = \sum_{j=1}^d \lfloor \lambda_j \rfloor u_j + \underbrace{\sum_{j=1}^d \{ \lambda_j \} u_j}_{\in P(C) \cap \Z^d}
+    p = \sum_{j=1}^d \lfloor \lambda_j \rfloor u_j + \underbrace{\sum_{j=1}^d \{ \lambda_j \} u_j}_{\in P(C) \cap \Z^d}.
   \]
-  From this, it is easy to see that the coefficients match, and the overall equation follows.
+  From this, one can check that the coefficients match.
 \end{proof}
 
 
@@ -799,7 +800,7 @@ that contain subsets of monomials:
   We can increase the right hand sides $b'$ to obtain a translated cone $C'$
   with integral apex $v \in \Z^d$ and $P \subseteq C \subseteq C'$, see Figure~\ref{fig:series-pointed-converges}.
 
-  Say $C' = v + K$, where $K$ is a simplicial cone (with apex $0$).
+  Let us write $C' = v + K$ where $K$ is a simplicial cone (with apex $0$).
   It is easy to see that $f(C';x) = x^v f(K;x)$,
   where the equation is understood in terms of formal series.
   Multiplication with a monomial does not change convergence,
@@ -925,9 +926,10 @@ One easily checks that $P \times \{ 1 \} = P' \cap \{ t = 1\}$, see Figure~\ref{
     P \subseteq v + C,
   \]
   where $v \in \Z^d$ and $C$ is a simplicial cone.
-  Furthermore, we know that there is an $x^\star \in \C^d$
-  such that $f(C;x)$ converges absolutely and uniformly on subsets on a neighborhood $U$ of $x^\star$.
-  We can also give a uniform upper bound $M$ on the sum of absolute values of summands of $f(C;x)$ for $x \in U$ (possibly by reducing $U$ slightly).
+  Furthermore, we know that there is an open set $U \subset \C^d$
+  on which $f(C;x)$ converges absolutely and uniformly on subsets.
+  We can also give a uniform upper bound $M$ on the sum of absolute values of summands of $f(C;x)$
+  for all $x \in U$ (possibly by making $U$ slightly smaller).
   We have
   \[
     P' \cap \{ t = k \} \subseteq kv + C
@@ -991,7 +993,7 @@ in their domain.
   As in the proof of Lemma~\ref{lemma:algebra-generated-by-pointed},
   let $Q_1, \ldots, Q_n \in \cP_v^d$ and $\varepsilon_1, \ldots, \varepsilon_n \in \R$ such that
   \[
-    [\R^d] = \sum_{i=1}^n \varepsilon_i [Q_i]
+    [\R^d] = \sum_{i=1}^n \varepsilon_i [Q_i].
   \]
   Fix a $Q_i$. Pointwise multiplication by $Q_i$ tells us that
   \[
@@ -1004,7 +1006,7 @@ in their domain.
   \]
   Similarly, we can fix a $P_j$ and get
   \[
-    [P_j] = \sum_{i=1}^n \varepsilon_i [P_j \cap Q_i]
+    [P_j] = \sum_{i=1}^n \varepsilon_i [P_j \cap Q_i].
   \]
   Since $P_j$ is pointed, all the $P_j \cap Q_i$ have a common region of absolute convergence
   and we get
@@ -1052,7 +1054,7 @@ However, there are still some weaknesses, in particular:
   \item The size of the generating function of a simplicial cone $C$ is proportional to $\det C$,
     which can be exponentially large.
 \end{enumerate}
-We will address these issues in the next section.
+We will address these issues in the next sections.
 
 
 
@@ -1076,10 +1078,10 @@ the so-called \emph{polarity trick}:
   \item Decompose $C^\star$ into pointed cones $C_j$, including lower-dimensional cones.
 
   \item Take the polar of this decomposition.
-    Lower-dimensional cones $C_j$ turn into cones $C_j^\star$ that contain lines,
-    whose rational generating function is $0$.
+    Lower-dimensional cones $C_j$ turn into cones $C_j^\star$ that contain lines.
+    Their rational generating function is $0$.
 \end{enumerate}
-This way, we do not have to keep track of lower-dimensional cones during decomposition.
+This way, we do not have to keep track of lower-dimensional cones during the decomposition.
 To obtain this result, we use a powerful tool that is quite surprising in its own right.
 
 \begin{lemma}[Euler characteristic]
@@ -1095,7 +1097,7 @@ Inclusion-exclusion tells us that
 \[
   [P] = \sum_{\emptyset \neq I \subseteq [n]} (-1)^{|I| - 1} [\bigcap_{i \in I} \Delta_i],
 \]
-and it is a simple matter of the binomial formula that the coefficients of the sum in the right-hand-side sum up to $1$.
+and it is a simple matter of the binomial formula that the coefficients in the sum on the right-hand-side sum up to $1$.
 What the Euler characteristic tells us is that we \emph{also} obtain $1$
 if we only sum up the coefficients for sets $I$
 where the intersection $\bigcap_{i \in I} \Delta_i$ is non-empty.
@@ -1267,7 +1269,7 @@ Consider the cone
 \]
 see Figure~\ref{fig:cone-bad-unimodular-triangulation}.
 The reader may convince themselves that any unimodular cone contained in $C$
-covers at most $1$ unit of the line segment between $u_1$ and $u_2$.
+covers at most one unit of length on the line segment between $u_1$ and $u_2$.
 Hence at least $N$ unimodular cones are required in any unimodular triangulation,
 which is an exponential number in the encoding length of $C$.
 \begin{figure}
@@ -1422,10 +1424,11 @@ with outdegrees bounded by $d$:
     \draw[->] (cd) -- (cdd);
   \end{tikzpicture}
 \end{center}
-Let us bound the number of such cones.
+The unimodular cones that appear in the final decomposition correspond exactly to the leaves of the tree.
+Let us bound their number.
 At level $k$, the determinant of each cone is at most $(\det C)^{(1-1/d)^k}$.
 Let us say that the tree goes down to level $\ell + 1$.
-Then at level $\ell$, there is at least one cone of determinant $\geq 2$:
+Then there must be at least one cone of determinant $\geq 2$ at level $\ell$:
 \[
   2 \leq (\det C)^{(1 - 1/d)^\ell}.
 \]
@@ -1442,7 +1445,7 @@ Using $\ln(1 + x) \leq x$, we get
   \ell \leq d \ln 2 \cdot \log\log\det C.
 \]
 Since every node of the tree has at most $d$ children,
-the number of leaves of the tree -- which is equal to the number of unimodular cones in the final decomposition -- is bounded by
+the number of leaves of the tree is bounded by
 \[
   d^{\ell + 1} = d \cdot d^{d \ln 2 \cdot \log\log\det C} \leq d \cdot (\log\det C)^{d \ln d}.
 \]
@@ -1451,13 +1454,13 @@ the overall number of unimodular cones in the decomposition is polynomial if $d$
 
 Let us now bound the encoding lengths of the resulting unimodular cones
 by bounding the lengths of their generating vectors.\footnote{%
-Equivalently, one might represent them as $Ax \leq 0$.
+Alternatively, one might want to represent the cones using linear systems of the form $Ax \leq 0$.
 The two representations are polynomially related to each other via linear algebra.}
 A conservative bound of the vector $v$ that is constructed in the proof of Lemma~\ref{lemma:signed-decomposition-determinants} is
 \[
   \|v\|_\infty \leq d\cdot \max_j \|u_j\|_\infty.
 \]
-With $M := \max_j \|u_j\|_\infty$, where $u_j$ are the generators of the initial cone $C$,
+With $M := \max_j \|u_j\|_\infty$ where the $u_j$ are the generators of the initial cone $C$,
 the $\ell_\infty$-norm of generating vectors at level $k$ of the tree are bounded by $d^k M$.
 That is, the encoding lengths of components of the generators of the final unimodular cones are bounded by
 \[
@@ -1740,6 +1743,217 @@ we need to develop some more algebraic tools that are of independent interest.
 
 
 \section{Counting integer points in polytopes using explicit rational generating functions}
+
+Given a rational polytope $P = \{ p ~:~ Ap \leq b \}$,
+we can now give a nice, short, and mostly explicit rational formula for its generating function $f(P;x)$.
+First, enumerate its vertices and compute the associated tangent cones.
+Then compute a unimodular decomposition of each of these cones shifted to the origin.
+Finally, shift each unimodular cone back to the vertex from which it originated and determine its rational generating function.
+This last step deserves some more attention.
+
+Let $C_i = \cone\{ u_{i1}, \ldots, u_{id} \}$ be a unimodular cone that arose from the decomposition of the tangent cone
+of the vertex $v_i$ of $P$.
+We know that
+\[
+  f(C_i;x) = \frac{1}{\prod_{j=1}^d 1 - x^{u_{ij}}}
+\]
+and if $v_i \in \Z^d$, then
+\[
+  f(v_i + C_i;x) = \frac{x^{v_i}}{\prod_{j=1}^d 1 - x^{u_{ij}}}.
+\]
+However, $v_i$ need not be integral.
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}
+      \clip (-1,-1) rectangle (4.2,4.2);
+
+      \foreach \y in {0,1,2,3,4}
+        \draw[help lines] (0,\y) -- +(3.2,3.2);
+      \foreach \x in {0,1,2,3,4}
+        \draw[help lines] (\x,\x) -- +(0,3.2);
+
+      \draw[thick,fill=black!10] (1,4.2) -- (1,3) node[below left] {$w_i$} -- +(4,4);
+
+      \foreach \x in {0,1,...,4.01}
+        \foreach \y in {0,1,...,4.01}
+          \fill[black] (\x,\y) circle[radius=2pt];
+
+      \draw[thick] (0,4.2) -- (0,0) -- (4.2,4.2);
+      \draw[thick,->] (0,0) -- (0,1) node[left] {$u_{i1}$};
+      \draw[thick,->] (0,0) -- (1,1) node[below right] {$u_{i2}$};
+
+      \draw[thick] (0.4,4.2) -- (0.4,1.7) node[below left] {$v_i$} -- +(4,4);
+      \draw (0.4,2.7) -- ++(1,1) -- ++(0,-1);
+    \end{tikzpicture}
+  \end{center}
+  \caption{When a vertex $v_i$ is not integral, we obtain the generating function for $v_i + C_i$ by rounding to $w_i$.}
+  \label{fig:unimodular-cone-apex-shift}
+\end{figure}
+In any case, there is a unique integer point $w_i$ in the translated fundamental parallelepiped $v_i + P(C_i)$,
+see Figure~\ref{fig:unimodular-cone-apex-shift},
+and
+\[
+  f(v_i + C_i;x) = f(w_i + C_i;x) = \frac{x^{w_i}}{\prod_{j=1}^d 1 - x^{u_{ij}}}
+\]
+because $v_i + C_i$ and $w_i + C_i$ contain the same integer points.
+
+If we write
+\[
+  v_i = \sum_j \lambda_j u_{ij},
+\]
+then
+\[
+  w_i = \sum_j \lceil \lambda_j \rceil u_{ij}.
+\]
+The $\lambda$ are linear in $v_i$,
+and $v_i$ is the solution of the system
+\[
+  A_{B_i} p = b_{B_i}
+\]
+associated to a basis of $v_i$.
+That is, the $\lambda$ are linear in $b$.
+Overall, we can find a matrix $T_i$ and a matrix $W_i$ such that
+\[
+  w_i = W_i \lceil T_i b \rceil,
+\]
+where the ceiling operation is component-wise.
+We can now summarize:
+
+\begin{theorem}
+  \label{thm:rational-generating-function}
+  Let $P = \{ p ~:~ Ax \leq b \} \subseteq \R^d$ be a rational polytope.
+  Then
+  \[
+    f(P;x) = \sum_{i \in I} \varepsilon_i \frac{x^{w_i}}{\prod_{j=1}^d 1 - x^{u_{ij}}},
+  \]
+  where
+  \begin{itemize}
+    \item $\varepsilon_i = \pm1$ for all $i \in I$,
+    \item the $u_{ij}$ span a unimodular cone for all $i \in I$, and
+    \item $w_i = W_i \lceil T_i b \rceil$ for all $i \in I$,
+  \end{itemize}
+  where $W_i \in \Z^{d \times d}$ is unimodular and $T_i$ is a matrix
+  such that $T_i b$ is integral if $P$ is an integral polytope.
+
+  If $d$ is fixed, this formula for $f(P;x)$ can be computed in polynomial time.
+
+  If the right hand side $b$ is changed without changing the combinatorial structure of $P$,
+  then only the $w_i$ change as described by point~3.
+\end{theorem}
+
+In the last claim of Theorem~\ref{thm:rational-generating-function},
+the combinatorial structure of $P$ refers means the set of bases of $A$ that give rise to vertices of $P$.
+Changing the right hand side $b$ corresponds to a parallel translation of some of the inequalities that define $P$.
+Such translations may cause new vertices to appear or old vertices to disappear.
+However, as long as that does not happen, the underlying structure of $f(P;x)$ remains unchanged.
+
+Counting the integer points in $P$ amounts to evaluating $f(P;1)$.
+Unfortunately, the formula that we obtained is not defined at $x = 1$.
+We solve this problem by replacing
+\[
+  x = g(t) := (e^{tc_1}, \ldots, e^{tc_d})
+\]
+for a suitable vector $c \in \Z^d$ and evaluating
+\[
+  |P \cap \Z^d| = \lim_{t \to 0} f(P; g(t)) = \lim_{t \to 0} \sum_{i \in I} \varepsilon_i \frac{e^{t c^Tv_i}}{\prod_j 1 - e^{t c^T u_{ij}}}
+    = \lim_{t \to 0} \sum_{i \in I} \varepsilon_i \frac{e^{t \eta_i}}{\prod_j 1 - e^{t \mu_{ij}}}
+\]
+with $\eta_i$ and $\mu_{ij}$ appropriately defined.
+Let us develop the power series of numerator and denominator:
+\begin{align*}
+  e^{t \eta_i} &= 1 + t\eta_i + t^2 \frac{\eta_i}{2} + \dots \\
+  \prod_j 1 - e^{t \mu_{ij}} &= t^d (-1)^d \prod_j \mu_{ij} + \dots
+\end{align*}
+The power series of the numerator has a constant term,
+while the power series of the denominator begins only at the $d$-th term,
+and that only if all $\mu_{ij} \neq 0$.
+
+\begin{lemma}
+  We can choose $c \in \Z^d$ such that all $\mu_{ij} \neq 0$.
+  This choice can be made in polynomial time.
+\end{lemma}
+\begin{proof}
+  Consider $c(\lambda) := (\lambda, \lambda^2, \dots, \lambda^d)$.
+  Given this choice of $c$,
+  $\mu_{ij}$ is a non-zero polynomial in $\lambda$ of degree at most $d$.
+  As a consequence, there are at most $d^2 |I|$ many values of $\lambda$ for which some $\mu_{ij} = 0$.
+  After trying out polynomially many  integral values of $\lambda$,
+  an appropriate $c \in \Z^d$ is found.
+\end{proof}
+
+Let us reformulate our limit as
+\[
+  |P \cap \Z^d| = \lim_{t \to 0} \frac{1}{t^d} \sum_{i \in I} \varepsilon_i \frac{t^d e^{t \eta_i}}{\prod_j 1 - e^{t \mu_{ij}}}
+\]
+so that now the power series of both the numerator and the denominator begin at the $d$-th term
+in each summand.
+As a consequence, we can write
+\[
+  |P \cap \Z^d| = \lim_{t \to 0} \frac{1}{t^d} \sum_{i \in I} \sum_{n=0}^\infty a_{in} t^n,
+\]
+for some $a_{in} \in \R$.
+In fact, the $a_{in}$ can be computed using polynomial division applied to partial sums of the series.
+For fixed $d$, this takes time that is polynomial in $n$,
+where $n$ is the index of the largest coefficient that is to be computed,
+and the encoding lengths of $\eta_i$ and the $\mu_{ij}$.
+By analyzing this polynomial division, we also get:
+
+\begin{fact}
+  \label{fact:a_ik-polynomial}
+  $a_{ik}$ is a polynomial in $\eta_i$ of degree at most $k$.
+\end{fact}
+
+Let $a_n := \sum_{i \in I} a_{in}$.
+We already know that $t = 0$ is a removable singularity since the limit exists,
+so we must have $a_0 = \dots = a_{d-1} = 0$. Furthermore,
+\[
+  |P \cap \Z^d| = a_d.
+\]
+We can now state the main algorithmic result of this chapter:
+
+\begin{theorem}
+  There is an algorithm that computes the number of integer points in a rational polytope
+  in polynomial time in fixed dimension.
+\end{theorem}
+
+\begin{theorem}[Ehrhart polynomial]
+  Let $P \subset \R^d$ be a full-dimensional integral polytope,
+  that is, all vertices of $P$ are integer points.
+  Then there is a polynomial $f$ of degree $d$
+  such that
+  \[
+    |kP \cap \Z^d| = f(k)
+  \]
+  for all $k \in \N_{\geq 0}$.
+\end{theorem}
+\begin{proof}
+  Notice that if $P = \{ p ~:~ Ap \leq b \}$ then $kP = \{ p ~:~ Ap \leq kb \}$.
+  So $kP$ is obtained from $P$ by a linear change of the right hand side while keeping the combinatorial structure intact.
+  As a consequence, the only change in the computation outlined above is in the $\eta_i$.
+  Recall that
+  \[
+    \eta_i = c^T w_i = c^T W_i \lceil T_i b \rceil.
+  \]
+  However, since both $P$ and $kP$ for integral $k$ are integral polytopes,
+  the ceiling operation is unnecessary.
+  It follows that $\eta_i$ is a linear function in $k$,
+  and so $f := a_d$ is a polynomial in $k$ of degree at most $d$ by Fact~\ref{fact:a_ik-polynomial}.
+
+  An intuitive scaling argument shows that $f$ must be of degree exactly $d$:
+  Since $P$ is a full-dimensional polytope, it contains a small rational cube $C$.
+  Since $C$ is rational, there is an integer $M > 0$ such that $MC$ is integral with side length $N$.
+  Therefore,
+  \[
+    f(kM) = |kM P \cap \Z^d| \geq |kMC \cap \Z^d| \geq (kN)^d.
+  \]
+  Therefore, $f$ must be of degree at least $d$.
+\end{proof}
+
+
+
+
+
+
 
 
 
