@@ -844,7 +844,8 @@ that contain subsets of monomials:
   \]
   holds for the formal power series.
   We have $f(C_j;x) = \hat f_j(x)$ where $f(C_j;x)$ converges absolutely,
-  and by Fact~\ref{fact:polyhedra-subset-convergence-superset},
+  and by Fact~\ref{fact:polyhedra-subset-convergence-superset}
+  and Lemma~\ref{lemma:series-pointed-converges},
   there is an open set $U \subset \C^d$ where all $f(C_j;x)$ and $f(C;x)$
   converge absolutely and uniformly on compact subsets.
   Hence the statement of the Lemma holds on $U$.
@@ -859,6 +860,11 @@ Let $P = \{ p \in \R^d ~:~ Ax \leq b \} \in \cP_v^d$ be a pointed polyhedron and
   P' := \{ (p,t) \in \R^{d+1} ~:~ Ax - tb \leq 0, t \geq 0 \}
 \]
 One easily checks that $P \times \{ 1 \} = P' \cap \{ t = 1\}$, see Figure~\ref{fig:generating-series-homogenization}.
+More generally, one has
+\[
+  P' \cap \{ t = t^\star \} = t^\star P \times \{ t^\star \} \text{ for all } t^\star > 0,
+\]
+and $P' \cap \{ t = 0 \}$ equals the recession cone of $P$.
 
 \begin{lemma}
   $P'$ is a pointed cone.
@@ -927,12 +933,12 @@ One easily checks that $P \times \{ 1 \} = P' \cap \{ t = 1\}$, see Figure~\ref{
   \]
   where $v \in \Z^d$ and $C$ is a simplicial cone.
   Furthermore, we know that there is an open set $U \subset \C^d$
-  on which $f(C;x)$ converges absolutely and uniformly on subsets.
+  on which $f(C;x)$ converges absolutely and uniformly on compact subsets.
   We can also give a uniform upper bound $M$ on the sum of absolute values of summands of $f(C;x)$
   for all $x \in U$ (possibly by making $U$ slightly smaller).
   We have
   \[
-    P' \cap \{ t = k \} \subseteq kv + C
+    P' \cap \{ t = k \} \subseteq (kv + C) \times \{ k \}
   \]
   for all $k \in \N_{\geq 0}$,
   and so we can bound the sum of absolute values of $f(P';(x,t))$ by
@@ -1150,7 +1156,9 @@ are found in the exercises.
   \]
   Observe that
   \[
-    \sigma(t) = \sum_i \alpha_i \mu([P_i \cap \pi^{-1}(t)]) = 0
+    \sigma(t) = \sum_i \alpha_i \mu([P_i \cap \pi^{-1}(t)])
+      = \mu\big( \underbrace{\sum_i \alpha_i [P_i \cap \pi^{-1}(t)]}_{=0} \big)
+      = 0
   \]
   by the induction hypothesis.
   As $t$ travels along $\R$,
