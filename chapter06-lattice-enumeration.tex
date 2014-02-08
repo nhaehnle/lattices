@@ -481,7 +481,7 @@ will be to cover $K$ by ellipsoids.
         \foreach \x in {0,1,...,36.01} {
           \fill ($\y*(1,-2.4) + \x*(0.1,0.02)$) circle[radius=.5pt];
         }
-      
+
       \draw[thick,fill=black!10] (0.5,0.05) -- (2.5,0.45) -- node[right] {$K$} (1.5,-0.35) --cycle;
     \end{tikzpicture}
   \end{center}
@@ -580,7 +580,7 @@ Our goal will be to enumeration points in $K$ in time proportional to $G(K, \Lam
     = 2^{O(d)}
   \]
   and hence $|S| = 2^{O(d)}$ and $|B \cap \Lambda| \leq 2^{O(d)} \cdot G(P, \Lambda)$.
-  
+
   This means that we may enumerate the lattice points in a cube
   (and, by linear transformation, in a parallelepiped)
   by enumerating the lattice points in the smallest enclosing ellipsoid.
@@ -637,7 +637,7 @@ For the remainder of this section, we will work towards a proof of the following
     S := \{ x \in 2\Z^d ~:~ (x + C) \cap \operatorname{int} K \neq \emptyset \}
   \]
   First, one easily sees that $K \subseteq S + E$.
-  
+
   To show the desired bound on $|S|$,
   let $S^\star$ be a set of $N(K,E)$ points
   such that $K \subseteq S^\star + E$.
@@ -662,7 +662,7 @@ For the remainder of this section, we will work towards a proof of the following
   \]
   Putting these two inequalities together and using Stirling's approximation
   yields $|S| \leq N(K,E) \cdot 2^{O(d)}$.
-  
+
   Computing the set $S$ is fairly straightforward.
   We can round any point $x \in \operatorname{int} K$ to the closest vector in $2 \Z^d$
   to obtain an initial point $x^\star \in S$.
@@ -694,7 +694,7 @@ For the remainder of this section, we will work towards a proof of the following
   Recall that each translate of $E$ can be covered by $N(E,K)$ translates of $K$,
   and so each translate contains at most $N(E,K) \cdot G(K,\Lambda)$ lattice points.
   We can enumerate these points for every translate using the algorithm of the previous section.
-  
+
   The overall running time is dominated by the enumeration,
   which is precisely as desired.
 \end{proof}
@@ -720,8 +720,8 @@ The perhaps surprising fact is:
 \end{theorem}
 
 \begin{corollary}
-  Given a convex body $K \subset \R^d$ and a lattice $\Lambda \subset \R^d$, one can enumerate all points of 
-  $K \cap \Lambda$ in time $G(K, \Lambda) 2^{O(d)} \poly(b)$. 
+  Given a convex body $K \subset \R^d$ and a lattice $\Lambda \subset \R^d$, one can enumerate all points of
+  $K \cap \Lambda$ in time $G(K, \Lambda) 2^{O(d)} \poly(b)$.
 \end{corollary}
 \begin{proof}
   This follows from combining Theorems~\ref{thm:computing-M-ellipsoids} and~\ref{thm:enumerate-in-K-given-E}.
@@ -830,7 +830,7 @@ We will investigate this relationship soon.
     Q_K \cdot B(0,1) = \{ x \in \R^d ~:~ x^T \Var[X]^{-1} x \leq 1 \}
   \]
   To show this, observe that
-  
+
   \begin{align*}
     x \in Q_K \cdot B(0,1) &\iff \|Q_K^{-1} x \|^2_2 \leq 1 \\
                            &\iff (Q_K^{-1} x)^T Q_K^{-1} x \leq 1 \\
@@ -893,7 +893,7 @@ One concrete example is the following generalization of Chebyshev's inequality.
 
 \begin{enumerate}
   \item Show: $K^\star = K$ if and only if $K$ is the closed Euclidean unit ball.
-  
+
   \item Let $K \subset \R^d$ be a convex body of positive volume.
     The goal of this exercise is to show
     that the number of lattice points in $K$ is asymptotically equal to $\vol(K) / \det(\Lambda)$
@@ -909,16 +909,16 @@ One concrete example is the following generalization of Chebyshev's inequality.
       \end{align*}
       Show: $|L_\varepsilon| \leq |K \cap \varepsilon \Z^d| \leq |U_\varepsilon|$ and
         $|L_\varepsilon| \leq \frac{\vol(K)}{\varepsilon^d} \leq |U_\varepsilon|$.
-    
+
     \item Which of the inequalities in part (a) are tight?
 
     \item Show: There is a constant $c_K > 0$ that depends on $K$
       such that for all sufficiently small $\varepsilon > 0$ one has $|L_\varepsilon| \geq c_K \frac{\vol(K)}{\varepsilon^d}$.
-      
+
       \emph{Hint:} Scale $K$ around an interior point.
-    
+
     \item Show: $\lim_{\varepsilon \to 0} \frac{|U_\varepsilon|}{|L_\varepsilon|} = 1$.
-    
+
     \emph{Hint:} You may use the fact that
       $\lim_{\varepsilon \to 0} \frac{\vol(\partial K + B(0,\varepsilon))}{2\varepsilon} = \vol_{d-1}(\partial K)$.
 

@@ -59,11 +59,11 @@ in fixed dimension.
     \begin{tikzpicture}
       \draw[->] (0,0) -- (4.2,0);
       \draw[->] (0,0) -- (0,4.2);
-      
+
       \draw[dashed] (0,0.666) -- (3,0.666);
       \draw[dashed] (0,2) -- (1,2);
       \draw[dashed] (0,4) -- (1,4);
-      
+
       \draw[dashed] (1,0) -- (1,2);
       \draw[dashed] (3,0) -- (3,0.666);
 
@@ -75,7 +75,7 @@ in fixed dimension.
       \draw (0,2) +(2pt,0) -- +(-2pt,0) node[left] {$N/a$};
       \draw (0,0.666) +(2pt,0) -- +(-2pt,0) node[left] {$N/b$};
       \draw (0,4) +(2pt,0) -- +(-2pt,0) node[left] {$N$};
-      
+
       \draw[thick,fill=black!10] plot[domain=1:3] (\x, {2 / \x}) -- (3,4) -- (1,4) -- cycle;
     \end{tikzpicture}
   \end{center}
@@ -113,12 +113,12 @@ The following picture suggest a way to leverage the geometric series for our pro
     \draw (-0.2,0) -- (8.2,0);
     \foreach \x in {0,0.5,...,8.01}
       \draw (\x,0) +(0,2pt) -- +(0,-2pt);
-    
+
     \draw[very thick] (2,0) node[below] {$a$} -- node[above] {$I$} (5,0) node[below] {$b$};
-    
+
     \draw (2,-1) +(0,2pt) -- +(0,-2pt) +(0,0) -- (8.2,-1);
     \draw (5.5,-1.5) +(0,2pt) -- +(0,-2pt) +(0,0) -- (8.2,-1.5);
-    
+
     \draw (1,-1) node {$=$};
     \draw (1,-1.5) node {$-$};
   \end{tikzpicture}
@@ -159,13 +159,13 @@ The following picture shows an alternative formula:
     \draw (-0.2,0) -- (8.2,0);
     \foreach \x in {0,0.5,...,8.01}
       \draw (\x,0) +(0,2pt) -- +(0,-2pt);
-    
+
     \draw[very thick] (2,0) node[below] {$a$} -- node[above] {$I$} (5,0) node[below] {$b$};
-    
+
     \draw (2,-1) +(0,2pt) -- +(0,-2pt) +(0,0) -- (8.2,-1);
     \draw (-0.2,-1.5) -- (5,-1.5)  +(0,2pt) -- +(0,-2pt);
     \draw (-0.2,-2) -- (8.2,-2);
-    
+
     \draw (-1,-1) node {$=$};
     \draw (-1,-1.5) node {$+$};
     \draw (-1,-2) node {$-$};
@@ -179,7 +179,7 @@ There are two problems:
 \begin{itemize}
   \item The first two series on the right hand side are geometric series for which a rational function expression is known.
     However, their regions of absolute convergence are disjoint.
-  
+
   \item The last series does not converge anywhere, and it is unclear what rational function expression could be used in its place.
 \end{itemize}
 Over the course of this chapter,
@@ -204,12 +204,12 @@ exploring some rather fascinating algebraic structures on the way.
   \begin{enumerate}[(a)]
     \item A non-empty convex set $K \subseteq \R^d$ is a \emph{cone}
       if $p \in K$ and $\lambda \geq 0$ imply $\lambda p \in K$.
-  
+
     \item A \emph{conic combination} of vectors $u_1, \ldots, u_n \in \R^d$ is
       a linear combination with non-negative coefficients.
-  
+
     \item Given $U \subset \R^d$, the set $\cone(U)$ is the set of conic combinations of vectors in $U$.
-  
+
     \item A cone $K$ is \emph{polyhedral} if $K$ is a polyhedron.
   \end{enumerate}
 \end{definition}
@@ -278,7 +278,7 @@ Again, the proofs of the following facts about simplicial and unimodular cones a
   \begin{center}
     \begin{tikzpicture}
       \clip (-3.1,-3.1) rectangle (3.1,3.1);
-      
+
       \draw[thick,fill=black!10] (-0.5,5) -- (0,0) -- (6,5);
       \draw[thick,fill=black!10] (-10,-1) -- (0,0) -- (10,-12);
       \draw (2,2.5) node {$K$};
@@ -312,7 +312,7 @@ see Figure~\ref{fig:triangulation-example}.
       \coordinate (n4) at (1.8,2.5);
       \coordinate (n5) at (0.5,2.5);
       \coordinate (n6) at (-0.2,1);
-      
+
       \draw[thick,fill=black!10] (n1) -- (n2) -- (n3) -- (n4) -- (n5) -- (n6) -- cycle;
       \draw[thick] (n1) -- (n3);
       \draw[thick] (n1) -- (n4);
@@ -327,7 +327,7 @@ see Figure~\ref{fig:triangulation-example}.
       \coordinate (n6) at (-0.2,1);
       \coordinate (t0) at (0.9,0);
       \coordinate (t1) at (1,1.1);
-      
+
       \draw[thick,fill=black!10] (n1) -- (n2) -- (n3) -- (n4) -- (n5) -- (n6) -- cycle;
       \draw[thick] (n1) -- (t1);
       \draw[thick] (n6) -- (t1);
@@ -345,7 +345,7 @@ see Figure~\ref{fig:triangulation-example}.
       \coordinate (n5) at (0.5,2.5);
       \coordinate (n6) at (-0.2,1);
       \coordinate (t0) at (1.15,0.75);
-      
+
       \draw[thick,fill=black!10] (n1) -- (n2) -- (n3) -- (n4) -- (n5) -- (n6) -- cycle;
       \draw[thick] (n1) -- (n3);
       \draw[thick] (n1) -- (n4);
@@ -369,7 +369,7 @@ see Figure~\ref{fig:triangulation-example}.
   \begin{center}
     \begin{tikzpicture}
       \draw[thick,fill=black!10] (0,0) -- (2,0) -- (3.4,0.8) -- (1.4,0.8) -- cycle;
-      
+
       \draw[dotted] (0,0) -- (0,1.5);
       \draw[dotted] (2,0) -- (2,1.5);
       \draw[dotted] (3.4,0.8) -- (3.4,3.0);
@@ -378,9 +378,9 @@ see Figure~\ref{fig:triangulation-example}.
       \draw[thick,fill=black!10] (0,1.5) -- (2,1.5) -- (3.4,3.0) -- (1.4,2.3) -- cycle;
       \draw[thick,dashed] (2,1.5) -- (1.4,2.3);
       \draw[thick] (0,1.5) -- (3.4,3.0);
-      
+
       \draw[thick,dashed] (2,0) -- (1.4,0.8);
-      
+
       \draw (3.4,0.4) node {$P$};
       \draw (3.4,2.25) node {$P'$};
     \end{tikzpicture}
@@ -1924,7 +1924,7 @@ We can now state the main algorithmic result of this chapter:
   \[
     |kP \cap \Z^d| = f(k)
   \]
-  for all $k \in \N_{\geq 0}$.
+  for all $k \in \N_{\geq 1}$.
 \end{theorem}
 \begin{proof}
   Notice that if $P = \{ p ~:~ Ap \leq b \}$ then $kP = \{ p ~:~ Ap \leq kb \}$.
@@ -1944,7 +1944,7 @@ We can now state the main algorithmic result of this chapter:
   Since $C$ is rational, there is an integer $M > 0$ such that $MC$ is integral with side length $N$.
   Therefore,
   \[
-    f(kM) = |kM P \cap \Z^d| \geq |kMC \cap \Z^d| \geq (kN)^d.
+    f(kM) = |kM P \cap \Z^d| \geq |kMC \cap \Z^d| \geq (kN + 1)^d.
   \]
   Therefore, $f$ must be of degree at least $d$.
 \end{proof}
