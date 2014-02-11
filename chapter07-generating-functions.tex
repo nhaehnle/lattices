@@ -505,7 +505,7 @@ see Figure~\ref{fig:triangulation-example}.
   there is an inequality $a^T x \leq 0$ defining its vertex $0$.\footnote{%
   That is, $a^Tx \leq 0$ is valid for $C$ and $a^Tx < 0$ for all $x \in C \setminus \{ 0 \}$.}
   Let $P := C \cap \{ a^Tx = -1 \}$
-  and let $\Delta_1, \ldots, \Delta_n$ be its triangulation by Theorem~\ref{thm:polytope-triangulation},
+  and let $\Delta_1, \ldots, \Delta_m$ be its triangulation by Theorem~\ref{thm:polytope-triangulation},
   see Figure~\ref{fig:triangulation-cone}.
   Then the $C_i := \cone \Delta_i$ satisfy the desired properties.
 \end{proof}
@@ -575,7 +575,7 @@ The relationships between those families of polyhedra are as follows:
 
 \begin{lemma}
   \label{lemma:generating-functions-linear-as-series}
-  Let $R := \R[[x_1,\ldots,x_d,x_1^{-1},\ldots,x_d^{-d}]]$ be the vector space of formal power series in $d$ variables.\footnote{%
+  Let $R := \R[[x_1,\ldots,x_d,x_1^{-1},\ldots,x_d^{-1}]]$ be the vector space of formal power series in $d$ variables.\footnote{%
   This is \emph{not} a ring, because multiplication of formal power series with unbounded positive \emph{and} negative exponents is not defined in general.}
   There exists a unique linear map $F: \R \cP^d \to R$
   such that $F([P]) = f(P;x)$ for all $P \in \cP^d$.
@@ -1067,7 +1067,7 @@ We will address these issues in the next sections.
 
 \section{The Euler characteristic and the polarity trick}
 
-The main surprise of this section is that taking polars is a linear operation
+The main surprise of this section is that taking polars of (closed) polyhedra is a linear operation
 as far as the algebra of polyhedra is concerned.
 That is, if
 \[
@@ -1160,7 +1160,9 @@ are found in the exercises.
       = \mu\big( \underbrace{\sum_i \alpha_i [P_i \cap \pi^{-1}(t)]}_{=0} \big)
       = 0
   \]
-  by the induction hypothesis.
+  by the induction hypothesis,
+  where $\mu$ is understood to refer to the Euler characteristic in $d-1$ dimensions,
+  whose existence has already been established.
   As $t$ travels along $\R$,
   the summands in the definition of $\sigma(t)$ change,
   yet $\sigma(t)$ stays the same, see Figure~\ref{fig:proof-euler-characteristic}.
@@ -1334,9 +1336,9 @@ $v$ lies in one of the facets of $C$.
   Let $C \in \R\cP^d$ be a simplicial cone with $\det C \geq 2$.
   There exists a signed decomposition
   \[
-    [C] \equiv \sum_{j=1}^d \varepsilon_j [C_j] \pmod{\R\cP_\ell^d},
+    [C] \equiv \sum_{j=1}^k \varepsilon_j [C_j] \pmod{\R\cP_\ell^d},
   \]
-  with $\varepsilon_j = \pm1$ such that $\det C_j \leq (\det C)^{1-1/d}$.
+  with $\varepsilon_j = \pm1$ such that $\det C_j \leq (\det C)^{1-1/d}$ and $k \leq d$.
 
   If $d$ is fixed, such a decomposition can be computed in polynomial time.
 \end{lemma}
@@ -1364,6 +1366,8 @@ $v$ lies in one of the facets of $C$.
 \begin{proof}
   Let $C = \cone\{ u_1, \ldots, u_d \}$ with $u_j \in \Z^d$ primitive.
   We will make use of the signed decomposition of Lemma~\ref{lemma:simplicial-cone-signed-star}.
+  If one of the signs is $0$, we simply remove the corresponding cone.
+  We will proceed as if none of the cones were dropped to simplify the exhibition.
   Given
   \[
     v = \sum_j \lambda_j u_j \in \Z^d,
@@ -1480,7 +1484,7 @@ which is polynomial in the encoding length of the original cone.
   \label{thm:cone-decomposition}
   For every full-dimensional cone $C \in \cP_v^d$
   there is a set $C_1, \ldots, C_n$ of unimodular cones
-  and $\varepsilon_1, \ldots, \varepsilon_n$ such that
+  and $\varepsilon_1, \ldots, \varepsilon_n = \pm 1$ such that
   \[
     [C] = \sum_{i=1}^n \varepsilon_i [C_i] \pmod{\R\cP_\ell^d}
   \]
@@ -1494,7 +1498,7 @@ which is polynomial in the encoding length of the original cone.
   \label{corollary:cone-decomposition}
   For every cone $C \in \cP_v^d$
   there is a set $C_1, \ldots, C_n$ of unimodular cones
-  and $\varepsilon_1, \ldots, \varepsilon_n$ such that
+  and $\varepsilon_1, \ldots, \varepsilon_n = \pm1$ such that
   \[
     f(C;x) = \sum_{i=1}^n \varepsilon_i f(C_i;x)
   \]
@@ -1526,7 +1530,7 @@ that generalizes an observation we have made at the end of Section~\ref{sec:simp
   \]
 \end{definition}
 
-The tangent cone is not actually cone, but it is a translate of a cone.
+The tangent cone is not actually a cone, but it is a translate of a cone.
 Note that it is defined for all $x$,
 but we are mostly interested in the case where $x$ is a vertex, see Figure~\ref{fig:tangent-cone}.
 \begin{figure}
@@ -2024,8 +2028,38 @@ We can now state the main algorithmic result of this chapter:
   \item Show: $\R \cP^d$ is an $\R$-algebra with operations $+$ and $\star$.
     Its neutral element is $1_\star = [\{0\}]$.
 
-  \item Let $P \in \cP_b^d$ be a polytope. Show: $[P]$ is invertible with respect to $\star$.
-    Its inverse is $(-1)^{\dim P} [\relint P]$.
+  \item Let $P \in \cP_b^d$ be a polytope.
+  \begin{enumerate}[(a)]
+    \item Show: $P - P = \partial P - P$.
+
+    \item Using an example, convince yourself that in general, $[P] \star [-P] \neq [\partial P] \star [-P]$.
+
+    \item Let $F_1, \ldots, F_m$ be the facets of $P$.
+      Show: $0 \in (\bigcap_{i \in I} F_i) - P$ whenever $\bigcap_{i \in I} F_i$ is non-empty.
+
+    \item Let $0 \neq x \in \R^d$ and let $\pi_x : \R^d \to \langle x \rangle^\bot$ be orthogonal projection.
+      Show: The set
+      \[
+        S_x := \{ y \in \langle x \rangle^\bot ~:~ \exists x_1, x_2 \in P \cap \pi^{-1}(y) :~ x = x_1 - x_2 \}
+      \]
+      is convex.
+      Furthermore, it is a polytope.
+
+    \item
+      Let $0 \neq x \in \R^d$ and
+      let $\cI_x$ be the set of $\emptyset \neq I \subset [m]$ such that $x \in (\bigcap_{i \in I} F_i) - P$.
+      Show: $\sum_{I \in \cI_x} (-1)^{|I|-1} = 1$.
+
+      \emph{Hint:} Apply $\pi_x$ and the Euler characteristic.
+
+    \item Show: $[\relint P] \star [-P] = (-1)^{\dim P} [0]$.
+
+      \emph{Hint:} Use $[P] = [\partial P] + [\relint P]$ and the inclusion-exclusion formula for $[\partial P]$.
+
+    \item Show: $[P]$ is invertible with respect to $\star$.
+      Its inverse is $(-1)^{\dim P} [-\relint P]$.
+  \end{enumerate}
+
 
   \item Let $\cD : \R \cP^d \to \R \cP^d$ be polarity (aka duality) and let $\cdot : \R \cP^d \to \R \cP^d$ be pointwise multiplication.
     \begin{enumerate}[(a)]
