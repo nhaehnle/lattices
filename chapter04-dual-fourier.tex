@@ -277,7 +277,7 @@ together with the approach to integer programming based on lattice hyperplanes.
   \]
   The \emph{lattice width of $K$} is
   \[
-    w(K, \Lambda) := \min_{y \in \Lambda^\star \setminus 0} w_y(K,\Lambda)
+    w(K, \Lambda) := \min_{y \in \Lambda^\star \setminus \{0\} } w_y(K,\Lambda)
   \]
   We write $w_y(K)$ or $w(K)$ when the lattice is clear from the context.
 \end{definition}
@@ -422,7 +422,7 @@ since it is tight e.g. for simplices.
     d \cdot w(E) = w(d \star E) \geq w(K) \geq 2d \cdot c_d
   \]
   we have $w(E) \geq 2c_d$,
-  so there is a lattice point $x \in \Lambda \cap E \subseteq \Lambda \cap E$
+  so there is a lattice point $x \in \Lambda \cap E \subseteq \Lambda \cap K$
   by Theorem~\ref{thm:flatness-ellipsoids}.
 \end{proof}
 
@@ -430,7 +430,7 @@ The best possible \emph{flatness constant} that can be derived with this approac
 A better flatness constant has been shown using more advanced techniques~\cite{MR1854250, MR1755679}:
 if $K$ is an arbitrary convex body with $w(K) > \Omega(d^{4/3} \log^c d)$,
 then $K$ contains a lattice point.
-For centrally symmetric empty convex bodies
+For centrally symmetric convex bodies
 and for polytopes with polynomially many vertices or facets,
 the flatness constant is known to be $O(d \log d)$~\cite{MR1410163,MR1854250}.
 
@@ -746,9 +746,9 @@ In particular, $f_\Lambda(p)$ is exponentially small if $d(p,\Lambda) > \sqrt{d}
 \begin{lemma}
   \label{lemma:f-small-close-to-lattice}
   For all $p \in \R^d$ and $k \in \N$, $k \geq 2$,
-  one has $f(p) \leq k^d e^{-(1-1/k^2) \pi d(p,\Lambda)^2}$.
+  one has $f_\Lambda(p) \leq k^d e^{-(1-1/k^2) \pi d(p,\Lambda)^2}$.
 
-  When $d(p,\Lambda) \geq \sqrt{d}$, we have $f(p) \leq e^{-\pi d(p,\Lambda)^2 / 2}$.
+  When $d(p,\Lambda) \geq \sqrt{d}$, we have $f_\Lambda(p) \leq e^{-\pi d(p,\Lambda)^2 / 2}$.
 \end{lemma}
 \begin{proof}
   We compare the lattices $\Lambda$ and $\frac{1}{k} \Lambda$.
@@ -916,7 +916,7 @@ This is a contradiction.
 \begin{enumerate}
   \item
     Let $\Lambda \subset \R^d$ be a full-dimensional lattice.
-    Show: a vector $y \in \Lambda^\star \setminus 0$ is primitive
+    Show: a vector $y \in \Lambda^\star \setminus \{0\}$ is primitive
     if and only if
     every lattice hyperplane $\{ y^T x = \alpha\}$, $\alpha \in \Z$, contains a point of $\Lambda$.
 

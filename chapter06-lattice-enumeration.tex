@@ -264,18 +264,18 @@ We can immediately extend some of the statements from Chapter~\ref{chapter:dual-
   i.e. $\|y\|_{K^\star} = w_y(K) / 2$.
   Finally,
   \[
-    w(K,\Lambda) = \min_{y\in K^\star\setminus 0} w_y(K) = \min_{y\in K^\star\setminus 0} 2 \|y\|_{K^\star}
+    w(K,\Lambda) = \min_{y\in K^\star\setminus \{0\} } w_y(K) = \min_{y\in K^\star\setminus \{0\} } 2 \|y\|_{K^\star}
       = 2 \lambda_1(\Lambda^\star, K^\star) \qedhere
   \]
 \end{proof}
 
 \begin{lemma}[Flatness Lemma]
-  Suppose one has $\lambda_1^\star(\Lambda^\star, K^\star) \cdot \mu(\Lambda, K) \leq c_d$
+  Suppose one has $\lambda_1(\Lambda^\star, K^\star) \cdot \mu(\Lambda, K) \leq c_d$
   for all lattices $\Lambda \subset \R^d$ and symmetric convex bodies $K \subseteq \R^d$.
   Then $w(K,\Lambda) \geq 2c_d$ implies that $p + K$ contains a lattice point for every $p \in \R^d$.
 \end{lemma}
 \begin{proof}
-  By the previous Lemma, $2c_d \leq w(K,\Lambda) = 2 \lambda_1^\star(\Lambda^\star, K^\star)$.
+  By the previous Lemma, $2c_d \leq w(K,\Lambda) = 2 \lambda_1(\Lambda^\star, K^\star)$.
   This implies $\mu(\Lambda, K) \leq 1$,
   which by definition means that for every $p \in \R^d$,
   there is an $x \in \Lambda$ with $\|p - x\|_K \leq 1$.
