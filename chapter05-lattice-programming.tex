@@ -60,9 +60,9 @@ We assume that convex bodies $K \subset \R^d$ are given by an enclosing ellipsoi
 and access to a \emph{separation oracle}.
 The separation oracle is a black box algorithm which, given $z \in \R^d$,
 tells us whether $z \in K$.
-Furthermore, if $z \not\in K$, it returns a separating hyperplane $a^Tx \leq \beta$.
-We assume that each call to the oracle takes constant time,
+Furthermore, if $z \not\in K$, it returns a separating hyperplane $a^Tx \leq \beta$,
 see Figure~\ref{fig:separating-hyperplane}.
+We assume that each call to the oracle takes constant time.
 \begin{figure}
   \begin{center}
     \begin{tikzpicture}
@@ -129,7 +129,7 @@ By symmetry, the smallest volume ellipsoid containing $E \cap \{ x_1 \geq -\eta 
 \[
   E' = \{ x \in \R^d ~:~ \alpha^2 (x_1 - c)^2 + \beta^2 (x_2^2 + \dots + x_d^2) \leq 1 \}
 \]
-Intuitively, we expect $\alpha > 1$ and $\beta < 1$ so that $E'$ results from the unit ball
+Intuitively, we expect $|\alpha| > 1$ and $|\beta| < 1$ so that $E'$ results from the unit ball
 by compressing it in the $x_1$ direction and scaling it in the other directions.
 The centroid of $E'$ is at $(c,0,\ldots,0)$.
 
@@ -168,11 +168,15 @@ Let us compute the derivative with respect to $c$:
 \[
   2d \frac{(1 - \frac{2c}{\kappa})^{d-1}}{(1-c)^{2d+1}} - \frac{(d-1) \frac{2}{\kappa} (1-\frac{2c}{\kappa})^{d-2}}{(1-c)^{2d}}
 \]
-We set this quantity to $0$ and simplify
+We set this quantity to $0$ and simplify to
 \begin{align*}
-  2d\frac{1-\frac{2c}{\kappa}}{1-c} &= \frac{2(d-1)}{\kappa}
+  d(1-\frac{2c}{\kappa}) &= \frac{d-1}{\kappa} \cdot (1-c).
 \end{align*}
-and eventually obtain:
+Isolating the multiples of $c$, we get
+\[
+  d - \frac{d-1}{\kappa} = \frac{2d - (d-1)}{\kappa} c
+\]
+and eventually:
 \[
   c = \frac{1 - \eta d}{d + 1}
 \]
@@ -181,18 +185,65 @@ Intuitively, this means that $E'$ approaches the unit ball,
 and we do not get a genuinely new ellipsoid if $\eta > \frac{1}{d}$.
 Still, we do obtain the following result:
 
-\begin{lemma}
+\begin{lemma}[Generalized half-ball lemma]
   Let $E \subseteq \R^d$ be an ellipsoid and let
-  $a^Tx \leq \beta$ be an inequality such that $a^Tx \geq \beta$ for some point of $\eta \star E$ for some $\eta \leq \frac{1}{2d}$.
-  Then there exists an ellipsoid $E' \supset E \cap \{ x ~:~ a^Tx \leq \beta \}$
-  with $\vol(E') \leq \vol(E) ...$.
+  $a^Tx \leq \beta$ be an inequality.
+  Let
+  \[
+    \eta := \max(\{ 0 \} \cup \{ r > 0 ~:~ r \star E \text{ satisfies } a^Tx \leq \beta \}).
+  \]
+  There is a global constant $c > 0$
+  such that if $\eta \leq \frac{1}{2d}$,
+  there exists an ellipsoid $E' \supset E \cap \{ x ~:~ a^Tx \leq \beta \}$
+  with $\vol(E') \leq e^{-c/(d+1)}\vol(E)$.
 \end{lemma}
 \begin{proof}
-  The condition on $\eta \star E$ ensures that a linear transformation can be used to reduce the problem to the setting we just discussed.
-  The ellipsoid compute above satisfies
+  The condition on $\eta$ ensures that a linear transformation can be used to reduce the problem to the setting we just discussed,
+  with the same value for $\eta$.
+  The ellipsoid computed above satisfies
   \begin{align*}
-    \frac{\vol E'}{\vol E} = \alpha^{-1} \beta^{-{d-1}}
+    \frac{\vol E'}{\vol E}
+      &= \alpha^{-1} \beta^{-{d-1}}
   \end{align*}
+  Plugging in the value for $c$ that we obtained above, we get
+  \begin{align*}
+    1 - c &= \frac{d(1 + \eta)}{d + 1} \\
+    \alpha^2 &= \frac{1}{(1-c)^2} = \left( \frac{d+1}{d(1+\eta)} \right)^2 \\
+    \beta^2 &= \frac{1}{1 - \eta^2} \left( 1 - \frac{(c+\eta)^2}{(1-c)^2} \right) = \frac{1}{1-\eta^2} \left(1 - \frac{1}{d^2} \right) = \frac{d^2 - 1}{d^2(1 - \eta^2)}
+  \end{align*}
+  For the inverses, we can use $1 + x \leq e^x$ to estimate
+  \begin{align*}
+    \alpha^{-2} &= \left(\frac{d(1+\eta)}{d+1}\right)^2 = \left(1 - \frac{1 - d\eta}{d+1}\right)^2 \leq e^{-2 \frac{1 - d\eta}{d+1}} \\
+    \beta^{-2} &= \frac{d^2(1 - \eta^2)}{d^2 - 1} = 1 + \frac{1 - d^2\eta^2}{d^2-1} \leq e^{\frac{1 - d^2\eta^2}{d^2 - 1}}
+  \end{align*}
+  We can put these together to get a bound on the ratio of squared volumes:
+  \begin{align*}
+    \alpha^{-2} \beta^{-2(d-1)}
+      &\leq e^{-2 \frac{1-d\eta}{d+1} + (d-1) \frac{1 - d^2\eta^2}{d^2 - 1}}
+      = e^{-\frac{2 - 2d\eta - 1 + d^2\eta^2}{d+1}}
+      = e^{-\frac{(1 - d\eta)^2}{d+1}}
+  \end{align*}
+  Observe that $1 - d\eta \geq 1/2$ and the desired bound on the volume follows.
+  In fact, we can compute the constant $c$:
+  \begin{align*}
+    \frac{\vol E'}{\vol E}
+    &\leq e^{-\frac{1}{2}\cdot \frac{(1/2)^2}{d+1}} = e^{-\frac{1/8}{d+1}}.
+  \end{align*}
+  It remains to be shown that $E' \supset E \cap \{ x ~:~ a^Tx \leq \beta \}$.
+  We show this in the simplified setting of the discussion before,
+  where $E$ is a unit ball and the inequality is simply $x_1 \geq -\eta$.
+  Due to convexity, it suffices to show that every $x \in \partial E$ with $x_1 \geq -\eta$ is contained in $E'$.
+  Let
+  \[
+    f(x) = \alpha^2 (x_1-c)^2 + \beta^2(x_2^2 + \dots + x_d^2)
+  \]
+  For points on the surface of $E$, we can think of $f$ as a function in $x_1$ only:
+  \[
+    f(x_1) = \alpha^2 (x_1-c)^2 + \beta^2(1-x_1^2)
+  \]
+  This is a quadratic function with leading coefficient $\alpha^2 - \beta^2 > 0$.
+  Since $f(-\eta) = f(1) = 1$, it follows that $f(x_1) < 1$ for all $-\eta < x_1 < 1$.
+  This completes the proof.
 \end{proof}
 
 
@@ -202,7 +253,7 @@ Still, we do obtain the following result:
 
 
 
-
+\section{Weak splits imply good recursion}
 
 
 
