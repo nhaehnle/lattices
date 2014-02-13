@@ -186,6 +186,7 @@ and we do not get a genuinely new ellipsoid if $\eta > \frac{1}{d}$.
 Still, we do obtain the following result:
 
 \begin{lemma}[Generalized half-ball lemma]
+  \label{lemma:generalized-half-ball}
   Let $E \subseteq \R^d$ be an ellipsoid and let
   $a^Tx \leq \beta$ be an inequality.
   Let
@@ -254,6 +255,118 @@ Still, we do obtain the following result:
 
 
 \section{Weak splits imply good recursion}
+
+Let us return to the problem of lattice programming.
+As we discussed before, if the closest vector $z \in \Lambda$
+to the center of the ball $E \supset K$ is not contained in $K$,
+then we can use the resulting separating hyperplane to get a new ellipsoid bounding $K$.
+We obtain a sequence of ellipsoids with exponentially decreasing volume,
+unless the separating hyperplane lies so far away from the center of $E$
+that the $\eta$ in Lemma~\ref{lemma:generalized-half-ball} is too big.
+
+Let $z'$ be the center of $E$ and $r$ its radius.
+We have
+\[
+  \mu(\Lambda) \geq \|z - z'\|_2 \geq \eta r \geq \frac{r}{2d}
+\]
+in this case, because $z$ does not lie in $\eta \star E$ by the definition of $\eta$
+and the fact that $z$ is cut off by the separating hyperplane.
+Using Theorem~\ref{thm:transference-bound},
+this implies
+\[
+  \lambda_1^\star(\Lambda) \leq \frac{d}{\mu(\Lambda)} \leq \frac{2d^2}{r},
+\]
+which is a statement about lattice hyperplanes of $\Lambda$.
+Let $y \in \Lambda^\star$ be a shortest vector.
+Then adjacent lattice hyperplanes orthogonal to $y$ lie at distance
+\[
+  \frac{1}{\|y\|_2} \geq \frac{r}{2d^2},
+\]
+which implies that at most $4d^2 + 1$ lattice hyperplanes orthogonal to $y$ intersect $E$.
+We can now reduce the original problem to one lower-dimensional problem for each of those hyperplanes,
+and this gives us the informal outline for our algorithm:
+\begin{enumerate}
+  \item Assume that $E \supset K$ is a ball, either by an explicit or implicit linear transformation applied
+    to $E$, $K$, and $\Lambda$.
+
+  \item Compute a shortest vector $y \in \Lambda^\star$.
+    If $\|y\|_2 \leq \frac{2d^2}{r}$,
+    there are at most $4d^2 + 1$ lattice hyperplanes orthogonal to $y$
+    that intersect $E$.
+    We can solve the problem by recursing on the lower-dimensional problem
+    in each of these hyperplanes.\footnote{%
+Observe that the intersection of an ellipsoid with a hyperplane is an ellipsoid.
+Furthermore, the ratio $\vol(E)/\det(\Lambda)$ in the lower-dimensional instances can be polynomially bounded
+by the same ratio for the original instance.}
+    If none of the lattice hyperplanes orthogonal to $y$ intersect $E$,
+    we know that $K$ does not contain a lattice point.
+
+  \item If $\|y\|_2 > \frac{2d^2}{r}$,
+    then by the reverse of the argument above,
+    there is a closest vector $z \in \Lambda$ at distance at most $\frac{r}{2d}$
+    from the center of $E$, which we compute.
+
+  \item Query the separation oracle for $K$ with $z$.
+    If $z \in K$, a lattice point in $K$ has been found.
+
+  \item Otherwise,
+    we can compute a new ellipsoid using Lemma~\ref{lemma:generalized-half-ball} and repeat.
+    The new ellipsoid's volume is smaller by a factor of $e^{-c/(d+1)}$.
+\end{enumerate}
+This algorithm is clearly correct.
+It remains to bound its running time.
+We clearly have a bound of
+\[
+  (c')^d d^2 (d-1)^2 \cdots 2^2 = 2^{O(d \log d)}
+\]
+on the size of the recursion tree.
+But how often do we iterate with a smaller ellipsoid before we enter the recursion?
+
+We will bound this number of iterations using the ratio $\vol E / \det \Lambda$,
+which is unaffected by linear transformations.
+Let $M_0 := \vol E  / \det \Lambda$ be the initial ratio.
+After $t$ iteration, the ratio has dropped to at most $e^{-ct/(d+1)} M_0$.
+
+\begin{lemma}
+  If $\vol E / \det \Lambda < d^{2d} (\vol B(0,1))^2$,
+  where $E$ is a ball of radius $r$,
+  one has $\lambda_1^\star \leq \frac{2d^2}{r}$.
+\end{lemma}
+\begin{proof}
+  Consider the ball $B$ of radius $\frac{2d^2}{r}$ around the origin.
+  \[
+    \vol B = \left(\frac{2d^2}{r}\right)^d \vol B(0,1)
+  \]
+  We have
+  \[
+    d^{2d} (\vol B(0,1))^2 > \frac{\vol E}{\det \Lambda} = r^d \vol B(0,1) \det \Lambda^\star
+  \]
+  and so
+  \[
+    \vol B > 2^d \det \Lambda^\star
+  \]
+  which implies the result by Minkowski's theorem.
+\end{proof}
+
+That is, once the relative volume of $\vol E$ becomes small enough,
+we are guaranteed to go into the recursive step.
+We can bound the number of iterations before this happens by observing that we must have
+\begin{align*}
+  e^{-ct/(d+1)} M_0 > d^{2d} (\vol B(0,1))^2
+\end{align*}
+which implies
+\[
+  t \leq O(d (d \log d + \log M_0))
+\]
+for the number $t$ of iterations.
+
+\begin{theorem}
+  There is an algorithm that,
+  given a lattice $\Lambda \subset \Q^d$ and a convex body $K$ given by a separation oracle
+  and an enclosing ellipsoid $E$,
+  either finds a lattice point in $K$ or asserts that none exist
+  in time $2^{O(d \log d)} \cdot \poly(b, \log(\vol E / \det \Lambda))$.
+\end{theorem}
 
 
 
